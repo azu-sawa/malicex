@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dead Man's Hand: The Last Table v7.0</title>
+    <title>Malicex v8.1</title>
     <script src="https://cdn.tailwindcss.com">
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
@@ -1295,6 +1295,97 @@
         #btn-raise:disabled {
             opacity: 0.3;
         }
+    
+        /* ========== v8.0 ADDITIONS ========== */
+        .event-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 950;
+            background: rgba(0, 0, 0, 0.94);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 16px;
+            overflow-y: auto;
+        }
+        .event-title {
+            font-family: 'Press Start 2P', monospace;
+            color: #fbbf24;
+            font-size: 1.3rem;
+            text-align: center;
+            line-height: 1.6;
+        }
+        .event-sub {
+            font-family: 'VT323', monospace;
+            font-size: 1.6rem;
+            color: #9ca3af;
+            text-align: center;
+        }
+        .event-choices {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+        .event-btn {
+            width: 15rem;
+            text-align: left;
+            padding: 12px;
+        }
+        .event-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+        .relic-bar {
+            position: fixed;
+            top: 150px;
+            left: 16px;
+            z-index: 999;
+            display: none;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+            max-width: 42vw;
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid #444;
+            padding: 4px 8px;
+            font-family: 'VT323', monospace;
+        }
+        .relic-stage {
+            color: #fbbf24;
+            font-size: 1.2rem;
+            margin-right: 6px;
+        }
+        .relic {
+            font-size: 1.3rem;
+            cursor: help;
+        }
+        .relic.cursed {
+            filter: hue-rotate(260deg) drop-shadow(0 0 3px #a0f);
+        }
+        .personality-warden {
+            background: #2a1f0a;
+            color: #ffcc66;
+            border: 1px solid #cc9933;
+        }
+
+        /* mobile */
+        @media (max-width: 640px) {
+            .w-80 { width: 92vw !important; max-width: 92vw; }
+            .w-64 { width: 80vw !important; }
+            .w-\[30rem\] { width: 92vw !important; }
+            #player-items-row { grid-template-columns: repeat(3, 1fr) !important; }
+            #player-items-row > * { font-size: 1rem !important; padding: 6px !important; }
+            .card { transform: scale(0.88); transform-origin: center; }
+            .menu-title { font-size: 2.6rem !important; }
+            .mod-chip { top: 64px; right: 8px; font-size: 1rem; }
+            .relic-bar { top: 150px; left: 8px; max-width: 58vw; }
+            .event-btn { width: 92vw; }
+            .event-title { font-size: 1rem; }
+            #log-area { font-size: 1.2rem !important; }
+        }
     </style>
 </head>
 <body class="flex flex-col items-center justify-between p-4 screen-flicker">
@@ -1393,8 +1484,8 @@
             <button id="btn-lang-toggle" class="btn-retro" onclick="toggleLanguage()">LANG: ID</button>
         </div>
 
-        <h1 class="menu-title glitch text-6xl mb-2 text-red-600" data-text="DEAD MAN'S HAND">DEAD MAN'S<br>HAND</h1>
-        <div id="version-label" class="text-2xl text-gray-600 mb-6 tracking-widest">v7.0 &middot; THE LAST TABLE</div>
+        <h1 class="menu-title glitch text-6xl mb-2 text-red-600" data-text="MALICEX">MALICEX</h1>
+        <div id="version-label" class="text-2xl text-gray-600 mb-6 tracking-widest">v8.1 &middot; BALANCE UPDATE</div>
         <div id="story-mode-indicator" class="text-xl tracking-widest mb-6 text-green-800 uppercase"></div>
 
         <button id="btn-daily-login" class="btn-retro w-80 mb-6 border-yellow-600 text-yellow-500 hidden" onclick="claimDailyReward()">
@@ -1405,14 +1496,18 @@
             <button id="menu-btn-normal" class="btn-retro text-sm py-2" onclick="selectDifficulty('NORMAL')">NORMAL <span class='text-xs text-gray-500 block'>Gratis | Standard Horror</span></button>
             <button id="menu-btn-hard" class="btn-retro btn-danger text-sm py-2" onclick="selectDifficulty('HARD')">HARDCORE <span class='text-xs text-gray-500 block'>$200 | AI Pintar</span></button>
 
+            <button id="menu-btn-gauntlet" class="btn-retro text-sm py-2 border-amber-700 text-amber-500" onclick="selectDifficulty('GAUNTLET')">GAUNTLET <span id="gauntlet-sub" class='text-xs text-gray-500 block'>$500 | 4 Dealers</span></button>
+            <button id="menu-btn-daily" class="btn-retro text-sm py-2 border-cyan-700 text-cyan-400" onclick="selectDifficulty('DAILY')">DAILY SEED <span id="daily-sub" class='text-xs text-gray-500 block'>Free</span></button>
+            <button id="menu-btn-asc" class="btn-retro text-xs py-1 border-red-900 text-red-500" onclick="cycleAscension()">ASCENSION 0 / 0</button>
+
             <div class="h-px bg-gray-800 my-0.5"></div>
 
             <button class="btn-retro text-purple-400 border-purple-600 text-sm py-2" onclick="toggleAdvancedModes()">ADVANCED MODES</button>
             <div id="advanced-modes" class="hidden grid grid-cols-1 gap-0.5">
-                <button id="menu-btn-merc" class="btn-retro border-purple-500 text-purple-400 text-sm py-1.5" onclick="selectDifficulty('MERCENARY')">THE MERCENARY <span class='text-xs text-gray-500 block'>$5,000 | Elite Guard</span></button>
-                <button id="menu-btn-boss" class="btn-retro border-red-800 text-red-600 animate-pulse hidden text-sm py-1.5" onclick="selectDifficulty('BOSS')">THE DEVIL <span class='text-xs text-gray-500 block'>$10,000 | Final Boss</span></button>
-                <button id="menu-btn-ancient" class="btn-retro border-amber-600 text-amber-500 hidden text-sm py-1.5" onclick="selectDifficulty('ANCIENT')">THE ANCIENT <span class='text-xs text-gray-500 block'>$15,000 | Elder Horror</span></button>
-                <button id="menu-btn-endless" class="btn-retro border-white text-gray-200 hidden text-sm py-1.5" onclick="selectDifficulty('ENDLESS')">ENDLESS NIGHTMARE <span class='text-xs text-gray-500 block'>$1,000 | Survival</span></button>
+                <button id="menu-btn-merc" class="btn-retro border-purple-500 text-purple-400 text-sm py-1.5" onclick="selectDifficulty('MERCENARY')">THE MERCENARY <span class='text-xs text-gray-500 block'>$2,000 | Elite Guard</span></button>
+                <button id="menu-btn-boss" class="btn-retro border-red-800 text-red-600 animate-pulse hidden text-sm py-1.5" onclick="selectDifficulty('BOSS')">THE DEVIL <span class='text-xs text-gray-500 block'>$5,000 | Final Boss</span></button>
+                <button id="menu-btn-ancient" class="btn-retro border-amber-600 text-amber-500 hidden text-sm py-1.5" onclick="selectDifficulty('ANCIENT')">THE ANCIENT <span class='text-xs text-gray-500 block'>$8,000 | Elder Horror</span></button>
+                <button id="menu-btn-endless" class="btn-retro border-white text-gray-200 hidden text-sm py-1.5" onclick="selectDifficulty('ENDLESS')">ENDLESS NIGHTMARE <span class='text-xs text-gray-500 block'>$500 | Survival</span></button>
             </div>
 
             <button class="btn-retro text-green-400 border-green-600 text-sm py-2" onclick="toggleMinigames()">MINIGAMES</button>
@@ -1646,9 +1741,8 @@
 
             <!-- CHEAT SKILLS -->
             <div id="cheat-skills" class="flex gap-2 mb-4 hidden">
-                <button class="cheat-button" onclick="useCheatSkill('CARD_PALM')" id="cheat-palm">🤲 PALM [-30 SANITY]</button>
-                <button class="cheat-button" onclick="useCheatSkill('SHELL_GAME')" id="cheat-shell">🎲 SHUFFLE [-40 SANITY]</button>
-                <button class="cheat-button" onclick="useCheatSkill('PSYCH_OUT')" id="cheat-psych">👁️ PSYCH OUT [-25 SANITY]</button>
+                <button class="cheat-button" onclick="useCheatSkill('COLD_READ')" id="cheat-read">🔎 COLD READ [-20 SANITY] [V]</button>
+                <button class="cheat-button" onclick="useCheatSkill('PSYCH_OUT')" id="cheat-psych">👁️ PSYCH OUT [-20 SANITY] [O]</button>
             </div>
 
             <!-- GUN UI -->
@@ -1689,6 +1783,8 @@
                     <button id="btn-reveal" class="btn-retro col-span-2 hidden py-3 text-lg" onclick="resolvePokerPhase()">REVEAL CARDS <span class="text-sm opacity-50 ml-2">[SPACE]</span></button>
                     <button id="btn-cheat" class="btn-retro col-span-2 hidden py-3 text-lg border-purple-500 text-purple-500 hover:bg-purple-900 hover:text-white" onclick="cheatPoker()">USE ACE SLEEVE <span class="text-sm opacity-50 ml-2">[C]</span></button>
                     <button id="btn-raise" class="btn-retro col-span-2 hidden py-2 text-lg border-yellow-600 text-yellow-500" onclick="raisePoker()">RAISE: -10 SANITY, 2X STAKES <span class="text-sm opacity-50 ml-2">[B]</span></button>
+                    <button id="btn-redraw" class="btn-retro hidden py-2 text-lg border-blue-700 text-blue-400" onclick="redrawPoker()">REDRAW -8 <span class="text-sm opacity-50 ml-2">[D]</span></button>
+                    <button id="btn-fold" class="btn-retro hidden py-2 text-lg border-gray-600 text-gray-400" onclick="foldPoker()">FOLD <span class="text-sm opacity-50 ml-2">[F]</span></button>
                     <button id="btn-shoot-dealer" class="btn-retro hidden hover:bg-red-900 hover:text-white group py-3 text-lg border-red-800 text-red-500" onclick="playerShoot('dealer')"><span class="key-hint bg-black border-red-900 text-red-500">1</span> <span id="lbl-shoot-d">SHOOT ENEMY</span></button>
                     <button id="btn-shoot-self" class="btn-retro hidden hover:bg-green-900 hover:text-white group py-3 text-lg border-green-800 text-green-500" onclick="playerShoot('self')"><span class="key-hint bg-black border-green-900 text-green-500">2</span> <span id="lbl-shoot-s">SHOOT SELF</span></button>
                 </div>
@@ -1700,6 +1796,41 @@
     <script>
         (function() {
             "use strict";
+
+                        // ---------- SEEDED RNG (v8) ----------
+            let rngFn = Math.random;
+            function rnd() { return rngFn(); }
+            function hashSeed(str) {
+                let h = 1779033703 ^ str.length;
+                for (let i = 0; i < str.length; i++) {
+                    h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+                    h = (h << 13) | (h >>> 19);
+                }
+                return (h ^ (h >>> 16)) >>> 0;
+            }
+            function mulberry32(a) {
+                return function() {
+                    a |= 0;
+                    a = a + 0x6D2B79F5 | 0;
+                    let t = Math.imul(a ^ a >>> 15, 1 | a);
+                    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+                };
+            }
+            function seedRng(seedStr) {
+                rngFn = (seedStr == null) ? Math.random : mulberry32(hashSeed(String(seedStr)));
+            }
+            function shuffle(arr) {
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(rnd() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+            function dailySeed() {
+                const d = new Date();
+                return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+            }
 
             const VERSION = 'dmh_save_v7.0_last_table';
             const LEGACY_VERSION = 'dmh_save_v6.5_ultimate_fusion';
@@ -1713,13 +1844,10 @@
                 weakDealer: false,
                 startInverter: false,
                 aceSleeve: false,
-                unlockCardPalm: false,
-                unlockShellGame: false,
+                unlockColdRead: false,
                 unlockPsychOut: false,
                 ironMind: false,
-                luckyFoot: false,
-                startShield: false,
-                extraTime: false
+                startShield: false
             };
             let nextRunItems = [];
             let activeGame = 'STARTUP';
@@ -1961,8 +2089,8 @@
                 KNIFE: { id: { n: "Gergaji", d: "Tembakan berikutnya 2x Damage." }, en: { n: "Saw",
                         d: "Next shot deals 2x Damage." }, color: "text-red-500", border: "border-red-900",
                     icon: "🔪", sanityCost: 0, sanityGain: 0 },
-                BEER: { id: { n: "Bir", d: "Keluarkan 1 peluru & skip giliran." }, en: { n: "Beer",
-                        d: "Eject 1 shell & skip turn." }, color: "text-yellow-600", border: "border-yellow-900",
+                BEER: { id: { n: "Bir", d: "Keluarkan peluru berikutnya dan lihat isinya." }, en: { n: "Beer",
+                        d: "Eject the next shell and see what it was." }, color: "text-yellow-600", border: "border-yellow-900",
                     icon: "🍺", sanityCost: 0, sanityGain: 2 },
                 CIGARETTES: { id: { n: "Rokok", d: "+1 HP. Relaksasi." }, en: { n: "Cigarettes", d: "+1 HP. Relax." },
                     color: "text-teal-400", border: "border-teal-900", icon: "🚬", sanityCost: 0, sanityGain: 5 },
@@ -1975,12 +2103,6 @@
                 SEDATIVE: { id: { n: "Sedatif", d: "+25 Sanity. Tenangkan pikiran." }, en: { n: "Sedative",
                         d: "+25 Sanity. Calm mind." }, color: "text-blue-300", border: "border-blue-700",
                     icon: "💊", sanityCost: 0, sanityGain: 25 },
-                MIRROR: { id: { n: "Cermin Retak", d: "Lihat kartu Dealer (50% Sanity loss)" }, en: { n: "Cracked Mirror",
-                        d: "Peek Dealer's cards (50% Sanity cost)" }, color: "text-gray-300",
-                    border: "border-gray-600", icon: "🪞", sanityCost: 50, sanityGain: 0 },
-                ADRENALINE: { id: { n: "Adrenaline", d: "Skip dealer turn, -15 Sanity" }, en: { n: "Adrenaline",
-                        d: "Skip dealer turn, -15 Sanity" }, color: "text-red-300", border: "border-red-700",
-                    icon: "💉", sanityCost: 15, sanityGain: 0 },
                 LUCKY_CHARM: { id: { n: "Jimat", d: "Auto-win next poker (1 use)" }, en: { n: "Lucky Charm",
                         d: "Auto-win next poker (1 use)" }, color: "text-yellow-300", border: "border-yellow-600",
                     icon: "🍀", sanityCost: 0, sanityGain: 0 },
@@ -1998,54 +2120,48 @@
                     color: "text-lime-400", border: "border-lime-900", icon: "📞", sanityCost: 5, sanityGain: 0 },
                 VOODOO: { id: { n: "Boneka Voodoo", d: "Dealer -1 HP, tembus perisai. (-10 Sanity)" }, en: {
                         n: "Voodoo Doll", d: "Dealer -1 HP, pierces shields. (-10 Sanity)" },
-                    color: "text-fuchsia-400", border: "border-fuchsia-900", icon: "🪆", sanityCost: 10, sanityGain: 0 }
+                    color: "text-fuchsia-400", border: "border-fuchsia-900", icon: "🪆", sanityCost: 10, sanityGain: 0 },
+                PHANTOM: { id: { n: "Bayangan", d: "Sesuatu yang tidak ada." }, en: { n: "Phantom", d: "Something that was never there." },
+                    color: "text-gray-400", border: "border-gray-700", icon: "👻", sanityCost: 0, sanityGain: 0 }
             };
 
             // ---------- SHOP CATALOG ----------
             const SHOP_CATALOG = [
                 { id: 'crate', price: 100, isCrate: true, color: 'text-green-500', icon: '📦', id_n: "MYSTERY CRATE",
                     id_d: "1 Item Acak", en_n: "MYSTERY CRATE", en_d: "1 Random Item" },
-                { id: 'aceSleeve', price: 750, color: 'text-purple-400', icon: '🃏', id_n: "ACE SLEEVE",
-                    id_d: "Curang saat Poker (Hati-hati)", en_n: "ACE SLEEVE", en_d: "Cheat at Poker (Risky)" },
-                { id: 'extraHp', price: 2500, color: 'text-green-400', icon: '🦴', id_n: "TITANIUM RIBS",
+                { id: 'aceSleeve', price: 1000, color: 'text-purple-400', icon: '🃏', id_n: "ACE SLEEVE",
+                    id_d: "Tukar kartu jadi As (20% ketahuan: -1 HP)", en_n: "ACE SLEEVE", en_d: "Swap in an Ace (20% caught: -1 HP)" },
+                { id: 'extraHp', price: 3500, color: 'text-green-400', icon: '🦴', id_n: "TITANIUM RIBS",
                     id_d: "+1 MAX HP (Permanen)", en_n: "TITANIUM RIBS", en_d: "+1 MAX HP (Permanent)" },
-                { id: 'startCigs', price: 3000, color: 'text-teal-400', icon: '🚬', id_n: "LUNGS IMPLANT",
+                { id: 'startCigs', price: 2000, color: 'text-teal-400', icon: '🚬', id_n: "LUNGS IMPLANT",
                     id_d: "Start dengan ROKOK", en_n: "LUNGS IMPLANT", en_d: "Start with CIGS" },
-                { id: 'startKnife', price: 4000, color: 'text-red-500', icon: '🔪', id_n: "ARM BLADE",
+                { id: 'startKnife', price: 3000, color: 'text-red-500', icon: '🔪', id_n: "ARM BLADE",
                     id_d: "Start dengan PISAU", en_n: "ARM BLADE", en_d: "Start with KNIFE" },
-                { id: 'autoGlass', price: 5000, color: 'text-blue-500', icon: '👁️', id_n: "CYBER EYE",
+                { id: 'autoGlass', price: 7000, color: 'text-blue-500', icon: '👁️', id_n: "CYBER EYE",
                     id_d: "Auto KACA tiap ronde", en_n: "CYBER EYE", en_d: "Auto GLASS per round" },
-                { id: 'startInverter', price: 6000, color: 'text-purple-500', icon: '⚡', id_n: "VOLTAGE MOD",
+                { id: 'startInverter', price: 2500, color: 'text-purple-500', icon: '⚡', id_n: "VOLTAGE MOD",
                     id_d: "Start dengan INVERTER", en_n: "VOLTAGE MOD", en_d: "Start with INVERTER" },
                 { id: 'weakDealer', price: 8000, color: 'text-purple-600', icon: '☠️', id_n: "NEUROTOXIN",
                     id_d: "-1 MAX HP Dealer", en_n: "NEUROTOXIN", en_d: "-1 MAX HP Dealer" },
                 { id: 'sedativePack', price: 300, color: 'text-blue-300', icon: '💊', id_n: "SEDATIVE PACK",
                     id_d: "3x Sedative untuk sanity", en_n: "SEDATIVE PACK", en_d: "3x Sedative" },
-                { id: 'unlockCardPalm', price: 1500, color: 'text-purple-400', icon: '🤲', id_n: "CARD PALM TECH",
-                    id_d: "Beli skill curang Card Palm", en_n: "CARD PALM TECH", en_d: "Unlock Card Palm" },
-                { id: 'unlockShellGame', price: 2400, color: 'text-orange-400', icon: '🎲', id_n: "SHELL GAME",
-                    id_d: "Beli skill acak chamber", en_n: "SHELL GAME", en_d: "Unlock Shell Game" },
-                { id: 'unlockPsychOut', price: 3000, color: 'text-pink-400', icon: '👁️', id_n: "PSYCH OUT",
+                { id: 'unlockColdRead', price: 2000, color: 'text-cyan-400', icon: '🔎', id_n: "COLD READ",
+                    id_d: "Skill: lihat kartu dealer (-20 Sanity)", en_n: "COLD READ", en_d: "Skill: see the dealer's hole cards (-20 Sanity)" },
+                { id: 'unlockPsychOut', price: 2500, color: 'text-pink-400', icon: '👁️', id_n: "PSYCH OUT",
                     id_d: "Beli skill psych out dealer", en_n: "PSYCH OUT", en_d: "Unlock Psych Out" },
                 { id: 'tarotDeck', price: 500, color: 'text-purple-400', icon: '🃏', id_n: "TAROT DECK",
                     id_d: "Kartu Tarot terkutuk. Gunakan dengan risiko.", en_n: "TAROT DECK",
                     en_d: "Cursed tarot cards. Use at your own risk." },
-                { id: 'shieldPack', price: 400, grant: ['SHIELD', 'SHIELD'], color: 'text-cyan-400', icon: '🛡️',
+                { id: 'shieldPack', price: 500, grant: ['SHIELD', 'SHIELD'], color: 'text-cyan-400', icon: '🛡️',
                     id_n: "SHIELD PACK", id_d: "2x Perisai untuk run berikutnya", en_n: "SHIELD PACK",
                     en_d: "2x Shield for next run" },
-                { id: 'voodooDoll', price: 600, grant: ['VOODOO'], color: 'text-fuchsia-400', icon: '🪆',
+                { id: 'voodooDoll', price: 700, grant: ['VOODOO'], color: 'text-fuchsia-400', icon: '🪆',
                     id_n: "VOODOO DOLL", id_d: "1x Boneka Voodoo untuk run berikutnya", en_n: "VOODOO DOLL",
                     en_d: "1x Voodoo Doll for next run" },
-                { id: 'ironMind', price: 3500, color: 'text-blue-300', icon: '🧠', id_n: "IRON MIND",
+                { id: 'ironMind', price: 3000, color: 'text-blue-300', icon: '🧠', id_n: "IRON MIND",
                     id_d: "Kehilangan Sanity -25%", en_n: "IRON MIND", en_d: "Sanity losses reduced by 25%" },
-                { id: 'startShield', price: 3500, color: 'text-cyan-400', icon: '🛡️', id_n: "KEVLAR SKIN",
+                { id: 'startShield', price: 3000, color: 'text-cyan-400', icon: '🛡️', id_n: "KEVLAR SKIN",
                     id_d: "Mulai dengan PERISAI", en_n: "KEVLAR SKIN", en_d: "Start with a SHIELD" },
-                { id: 'extraTime', price: 2000, color: 'text-yellow-400', icon: '⏳', id_n: "POCKET WATCH",
-                    id_d: "+5 detik per giliran (mode timer)", en_n: "POCKET WATCH",
-                    en_d: "+5 seconds per turn (timer modes)" },
-                { id: 'luckyFoot', price: 4500, color: 'text-green-300', icon: '🐇', id_n: "RABBIT'S FOOT",
-                    id_d: "20% item ekstra saat menang poker", en_n: "RABBIT'S FOOT",
-                    en_d: "20% bonus item on poker wins" }
             ];
 
             // ---------- EXPANDED TAROT EFFECTS (v6.0 + v5.4 merged) ----------
@@ -2063,7 +2179,7 @@
                         .damageMultiplier = 3;
                         document.getElementById('dmg-indicator')?.classList.remove('hidden'); } },
                 { name: "THE HIEROPHANT", desc: "Tradition. Gain a random item.", effect: () => { const items = Object
-                        .keys(ITEMS).filter(k => k !== 'TAROT'); const randomItem = items[Math.floor(Math.random() *
+                        .keys(ITEMS).filter(k => k !== 'TAROT'); const randomItem = items[Math.floor(rnd() *
                             items.length)];
                         state.playerItems.push(randomItem);
                         log(`Received: ${ITEMS[randomItem].icon} ${currentLang==='id'?ITEMS[randomItem].id.n:ITEMS[randomItem].en.n}`,
@@ -2086,7 +2202,7 @@
                 { name: "THE DEVIL", desc: "Temptation. Gain 2 live shells to the chamber, lose 15 sanity.",
                 effect: () => { state.liveCount += 2;
                     state.chamber.push(true, true);
-                    state.chamber = state.chamber.sort(() => Math.random() - 0.5);
+                    state.chamber = state.chamber.sort(() => rnd() - 0.5);
                     renderAmmo();
                     updateSanity(-15); } },
                 { name: "JUDGEMENT", desc: "Absolution. Balances the scales of health.", effect: () => { const mid =
@@ -2115,7 +2231,7 @@
                 'GAMBLER': { title: 'HIGH ROLLER', desc: 'Mainkan 50 minigames.', reward: 400 },
                 'INSANE': { title: 'INSANE', desc: 'Reach 0 Sanity and survive.', reward: 777 },
                 'SANITY_KEEPER': { title: 'SANITY KEEPER', desc: 'Finish a game with 100 Sanity.', reward: 300 },
-                'CHEAT_MASTER': { title: 'CHEAT MASTER', desc: 'Use all cheat skills in one game.', reward: 500 },
+                'CHEAT_MASTER': { title: 'CHEAT MASTER', desc: 'Use both cheat skills in the same round.', reward: 500 },
                 'TAROT_INITIATE': { title: 'TAROT INITIATE', desc: 'Use the Tarot Deck for the first time.',
                 reward: 200 },
                 'FIRST_WIN': { title: 'FIRST WIN', desc: 'Win a full match.', reward: 250 },
@@ -2127,7 +2243,11 @@
                 'HIGH_HAND': { title: 'HIGH HAND', desc: 'Win poker with a Flush or better.', reward: 400 },
                 'RAISE_WIN': { title: 'ALL OR NOTHING', desc: 'Win a raised poker hand.', reward: 300 },
                 'SHIELD_WALL': { title: 'SHIELD WALL', desc: 'Absorb a shot with a Shield.', reward: 200 },
-                'HI_LO_5': { title: 'COLD STREAK', desc: 'Reach a 5-streak in Hi-Lo.', reward: 500 }
+                'HI_LO_5': { title: 'COLD STREAK', desc: 'Reach a 5-streak in Hi-Lo.', reward: 500 },
+                'GAUNTLET_CLEAR': { title: 'FOUR TABLES', desc: 'Clear the Gauntlet.', reward: 1500 },
+                'DAILY_DONE': { title: 'SAME TABLE, SAME GHOSTS', desc: 'Clear a Daily Seed run.', reward: 400 },
+                'ASCENDED': { title: 'ASCENDED', desc: 'Win a final run at Ascension 3 or higher.', reward: 1000 },
+                'ENDING_ALL': { title: 'EVERY CHAIR', desc: 'Discover all four endings.', reward: 2500 }
             };
 
             // ---------- LORE ----------
@@ -2149,10 +2269,9 @@
                 SADISTIC: {
                     name: "The Sadist",
                     taunts: ["Does it hurt?", "I love that sound", "More blood please", "Scream for me"],
-                    onPlayerHit: () => { updateSanity(-5); if (Math.random() < 0.3) showDisturbingOverlay(
+                    onPlayerHit: () => { updateSanity(-5); if (rnd() < 0.3) showDisturbingOverlay(
                             "HURTS DOESN'T IT"); },
-                    aiBehavior: function(knowsShell) { if (knowsShell && state.chamber[0] === false) return 'self'; return Math
-                            .random() < 0.7 ? 'player' : 'self'; },
+                    aiBehavior: function(knowsShell) { if (knowsShell && state.chamber[0] === false) return 'self'; return rnd() < 0.7 ? 'player' : 'self'; },
                     itemPriority: function(items, state) {
                         if (items.includes('KNIFE') && state.damageMultiplier === 1) return 'KNIFE';
                         if (items.includes('HANDCUFFS') && !state.handcuffed && state.turn === 'player') return 'HANDCUFFS';
@@ -2186,14 +2305,14 @@
                 UNPREDICTABLE: {
                     name: "The Madman",
                     taunts: ["HAHAHAHA!", "WHO KNOWS?!", "RUSSIAN ROULETTE!", "CHAOS!"],
-                    onPlayerHit: () => { if (Math.random() < 0.5) { const r = Math.random(); if (r < 0.3) state
+                    onPlayerHit: () => { if (rnd() < 0.5) { const r = rnd(); if (r < 0.3) state
                                 .damageMultiplier = 2;
                             else if (r < 0.6) state.playerHp += 1;
                             else state.dealerHp -= 1;
                             log("MADNESS!", 'text-pink-500'); } },
-                    aiBehavior: () => Math.random() < 0.5 ? 'self' : 'player',
+                    aiBehavior: () => rnd() < 0.5 ? 'self' : 'player',
                     itemPriority: function(items, state) {
-                        const r = Math.random();
+                        const r = rnd();
                         if (r < 0.25 && items.includes('BEER')) return 'BEER';
                         if (r < 0.5 && items.includes('GLASS')) return 'GLASS';
                         if (r < 0.75 && items.includes('KNIFE')) return 'KNIFE';
@@ -2208,8 +2327,7 @@
                     ],
                     onPlayerHit: () => { updateSanity(-10);
                         showDisturbingOverlay("TIME UNRAVELS"); },
-                    aiBehavior: function(knowsShell) { if (knowsShell) return state.chamber[0] ? 'player' : 'self'; return Math
-                            .random() < 0.8 ? 'player' : 'self'; },
+                    aiBehavior: function(knowsShell) { if (knowsShell) return state.chamber[0] ? 'player' : 'self'; return rnd() < 0.8 ? 'player' : 'self'; },
                     itemPriority: function(items, state) {
                         if (items.includes('KNIFE')) return 'KNIFE';
                         if (items.includes('GLASS')) return 'GLASS';
@@ -2224,44 +2342,22 @@
 
             // ---------- CHEAT SKILLS ----------
             const CHEAT_SKILLS = {
-                CARD_PALM: {
-                    name: "Card Palm",
-                    cost: 30,
-                    effect: "Swap one card from community",
-                    icon: "🤲",
+                COLD_READ: {
+                    name: "Cold Read",
+                    cost: 20,
+                    effect: "See the dealer's hole cards until showdown",
+                    icon: "🔎",
                     execute: () => {
-                        if (state.communityCards.length > 0 && Math.random() < 0.7) {
-                            const newCard = createDeck()[0];
-                            state.communityCards[Math.floor(Math.random() * state.communityCards.length)] =
-                            newCard;
-                            log("CHEAT: Card palmed!", 'text-purple-500');
-                            SFX.flip();
-                            renderCards(false);
-                        } else {
-                            dealerSpeak('caught');
-                            state.playerHp -= 1;
-                            log("CAUGHT! Dealer noticed!", 'text-red-600');
-                            state.damageTaken++;
-                            renderHP();
-                            if (state.playerHp <= 0) setTimeout(handleGameEnd, 800);
-                        }
-                    }
-                },
-                SHELL_GAME: {
-                    name: "Shell Game",
-                    cost: 40,
-                    effect: "Rearrange chamber order",
-                    icon: "🎲",
-                    execute: () => {
-                        state.chamber = state.chamber.sort(() => Math.random() - 0.5);
-                        log("SHELLS SHUFFLED!", 'text-orange-500');
-                        renderAmmo();
+                        state.coldRead = true;
+                        renderCards(false);
+                        log(tr('PEMBACAAN DINGIN: kartu dealer terlihat.', "COLD READ: you see the dealer's hole cards."), 'text-cyan-400');
+                        SFX.flip();
                     }
                 },
                 PSYCH_OUT: {
                     name: "Psych Out",
-                    cost: 25,
-                    effect: "Make dealer hesitate (skip AI turn)",
+                    cost: 20,
+                    effect: "Dealer hesitates on his next turn",
                     icon: "👁️",
                     execute: () => {
                         state.bluffTurns = Math.max(state.bluffTurns || 0, 1);
@@ -2382,7 +2478,7 @@
                         // ==================================================================
             // ========== v7.0 CORE ADDITIONS (THE LAST TABLE) ==================
             // ==================================================================
-            let meta = { wins: 0, bestHiLo: 0, runs: 0 };
+            let meta = { wins: 0, bestHiLo: 0, runs: 0, ascension: 0, ascSel: 0, gauntletWins: 0, gauntletBest: 0, endings: [], dailyBest: { date: '', score: 0 }, dailyPaid: '' };
 
             function tr(idText, enText) { return currentLang === 'id' ? idText : enText; }
 
@@ -2404,13 +2500,29 @@
                     damageTaken: 0,
                     runItems: 0,
                     raised: false,
-                    enraged: false
+                    enraged: false,
+                    lastBreathUsed: false,
+                    eyeNext: false,
+                    shellMods: [],
+                    pokerStage: 0,
+                    communityAll: [],
+                    pokerRaise: 0,
+                    dealerRaise: 0,
+                    redrawn: false,
+                    folded: false,
+                    gauntlet: null,
+                    pact: null,
+                    phantomDisguise: null,
+                    gauntletBusy: false,
+                    ended: false,
+                    cheatNextPoker: false,
+                    coldRead: false
                 };
             }
 
             function randomItemKey() {
-                const keys = Object.keys(ITEMS).filter(k => k !== 'TAROT');
-                return keys[Math.floor(Math.random() * keys.length)];
+                const keys = Object.keys(ITEMS).filter(k => k !== 'TAROT' && k !== 'PHANTOM');
+                return keys[Math.floor(rnd() * keys.length)];
             }
 
             // Player holds 5 items max, dealer 6. Anything beyond is lost (and says so).
@@ -2428,7 +2540,7 @@
             // ---------- DAMAGE (shields + enrage live here) ----------
             function dealDamage(who, dmg, opts) {
                 opts = opts || {};
-                if (!opts.noBonus) dmg += (state.roundDmgBonus || 0);
+                if (!opts.noBonus) { dmg += (state.roundDmgBonus || 0); if (hasRelic('GLASS_CANNON')) dmg += 1; }
                 const key = who === 'player' ? 'shieldPlayer' : 'shieldDealer';
                 if (!opts.pierce && state[key]) {
                     state[key] = false;
@@ -2442,6 +2554,12 @@
                 if (who === 'player') {
                     state.playerHp -= dmg;
                     state.damageTaken++;
+                    if (state.playerHp <= 0 && hasRelic('LAST_BREATH') && !state.lastBreathUsed) {
+                        state.lastBreathUsed = true;
+                        state.playerHp = 1;
+                        log(tr('NAPAS TERAKHIR! Kamu bertahan di 1 HP.', 'LAST BREATH! You cling to 1 HP.'), 'text-red-400');
+                        flashScreen('red');
+                    }
                 } else {
                     state.dealerHp -= dmg;
                     checkEnrage();
@@ -2528,6 +2646,7 @@
             }
 
             function hideModChip() {
+                const rb = document.getElementById('relic-bar'); if (rb) rb.style.display = 'none';
                 const c = document.getElementById('mod-chip');
                 if (c) c.style.display = 'none';
             }
@@ -2543,8 +2662,8 @@
                 state.shellLie = false;
                 if (state.dealerHp >= state.maxDealerHp) state.enraged = false;
                 let mod = null;
-                if (state.round >= 2 && Math.random() < 0.4) {
-                    mod = ROUND_MODIFIERS[Math.floor(Math.random() * ROUND_MODIFIERS.length)];
+                if (state.round >= 2 && rnd() < 0.4) {
+                    mod = ROUND_MODIFIERS[Math.floor(rnd() * ROUND_MODIFIERS.length)];
                     state.modifier = mod.id;
                     mod.apply();
                 }
@@ -2559,7 +2678,7 @@
             }
 
             function applyLoadModifiers() {
-                if (state.mercy) {
+                if (state.mercy || hasRelic('RUSTY')) {
                     const i = state.chamber.indexOf(false);
                     if (i > 0) {
                         const t = state.chamber[0];
@@ -2570,56 +2689,10 @@
             }
 
             // ---------- POKER: RAISE + REWARDS ----------
-            function showRaiseButton() {
-                const b = document.getElementById('btn-raise');
-                if (!b) return;
-                b.classList.remove('hidden');
-                b.disabled = sanity <= 20;
-            }
 
-            function hideRaise() {
-                const b = document.getElementById('btn-raise');
-                if (b) b.classList.add('hidden');
-            }
 
-            function raisePoker() {
-                if (state.raised || state.isProcessing || activeGame !== 'MAIN') return;
-                const rv = document.getElementById('btn-reveal');
-                if (!rv || rv.classList.contains('hidden')) return;
-                if (sanity <= 20) { SFX.empty(); return; }
-                state.raised = true;
-                updateSanity(-10);
-                hideRaise();
-                SFX.glitch();
-                log(tr('TARUHAN DINAIKKAN! Menang = hadiah 2x. Kalah = dealer 2x.',
-                    'RAISED! Win = double reward. Lose = dealer gets double.'), 'text-yellow-400');
-            }
 
-            function payPokerWin(p) {
-                giveItem('player', p.rew);
-                if (p.cat >= 5) { giveItem('player', randomItemKey());
-                    unlockAchievement('HIGH_HAND'); }
-                if (state.raised) {
-                    giveItem('player', p.rew);
-                    globalMoney += 100;
-                    totalStats.moneyEarned += 100;
-                    updateMoneyDisplay(true);
-                    unlockAchievement('RAISE_WIN');
-                }
-                if (state.pokerBonus) giveItem('player', randomItemKey());
-                if (upgrades.luckyFoot && Math.random() < 0.2) {
-                    giveItem('player', randomItemKey());
-                    log(tr('Kaki kelinci membawa untung!', "Rabbit's foot pays off!"), 'text-yellow-300');
-                }
-            }
 
-            function payPokerLoss(d) {
-                giveItem('dealer', d.rew);
-                if (state.raised) {
-                    giveItem('dealer', d.rew);
-                    updateSanity(-10);
-                }
-            }
 
             // ---------- RUN SUMMARY + WIN ACHIEVEMENTS ----------
             function checkWinAchievements() {
@@ -2643,7 +2716,7 @@
             // ---------- HI-LO MINIGAME ----------
             let hiloState = { bet: 0, streak: 0, card: null, deck: [], active: false };
 
-            function hiloMult(streak) { return 1 + 0.6 * streak; }
+            function hiloMult(streak) { const t = [1, 1.2, 1.6, 2.2, 3, 4]; return streak < t.length ? t[streak] : t[5] * Math.pow(1.35, streak - 5); }
 
             function openHiLo() {
                 document.getElementById('main-menu').classList.add('hidden');
@@ -2754,12 +2827,12 @@
                 taunts: ["Monkey see...", "I learn from you", "Your move. My move.", "Is that your face?"],
                 onPlayerHit: () => {
                     updateSanity(-4);
-                    if (Math.random() < 0.25) showDisturbingOverlay(tr('KAU MELIHAT DIRIMU', 'YOU SEE YOURSELF'));
+                    if (rnd() < 0.25) showDisturbingOverlay(tr('KAU MELIHAT DIRIMU', 'YOU SEE YOURSELF'));
                 },
                 aiBehavior: function(knowsShell) {
                     if (knowsShell) return state.chamber[0] ? 'player' : 'self';
                     const p = state.liveCount / Math.max(1, state.liveCount + state.blankCount);
-                    return Math.random() < (0.35 + p * 0.5) ? 'player' : 'self';
+                    return rnd() < (0.35 + p * 0.5) ? 'player' : 'self';
                 },
                 itemPriority: function(items, st) {
                     const copy = st.lastPlayerItem;
@@ -2781,7 +2854,7 @@
             document.addEventListener('keydown', (e) => {
                 if (e.ctrlKey) return;
                 const k = (e.key || '').toUpperCase();
-                if (activeGame === 'MAIN' && k === 'B') raisePoker();
+                if (activeGame === 'MAIN') { if (k === 'B') raisePoker(); else if (k === 'F') foldPoker(); else if (k === 'D') redrawPoker(); }
                 else if (activeGame === 'HILO') {
                     if (k === 'ESCAPE') closeHiLo();
                     else if (k === 'ARROWUP' || k === 'U') hiloGuess('hi');
@@ -2802,6 +2875,897 @@
             }, 1000);
 
             // ==================== END v7.0 CORE ====================
+
+            // ==================================================================
+            // ========== v8.0 ADDITIONS (THE GAUNTLET UPDATE) ==================
+            // ==================================================================
+            let isDaily = false;
+            let pendingPact = null;
+
+            function ascLevel() { return isDaily ? 2 : (meta.ascSel || 0); }
+            function hasRelic(id) { return !!(state.gauntlet && state.gauntlet.relics.includes(id)); }
+            function rewardMult() { return (1 + 0.2 * ascLevel()) * (state.pact === 'THIN_ICE' ? 1.5 : 1); }
+
+            // ---------- RELICS ----------
+            const RELICS = {
+                IRON_LUNG: { icon: '🫁', id_n: 'Paru Besi', en_n: 'Iron Lung',
+                    id_d: '+1 HP maksimum dan sembuh 1.', en_d: '+1 max HP and heal 1.',
+                    onPick: () => { state.maxPlayerHp++;
+                        state.playerHp = Math.min(state.maxPlayerHp, state.playerHp + 1);
+                        renderHP(); } },
+                RUSTY: { icon: '🔩', id_n: 'Laras Berkarat', en_n: 'Rusty Barrel',
+                    id_d: 'Peluru pertama tiap ronde selalu BLANK.', en_d: 'The first shell each round is always BLANK.' },
+                SCAVENGER: { icon: '🎒', id_n: 'Pemulung', en_n: 'Scavenger',
+                    id_d: 'Mulai tiap ronde dengan 1 item acak.', en_d: 'Start every round with a random item.' },
+                LAST_BREATH: { icon: '🫀', id_n: 'Napas Terakhir', en_n: 'Last Breath',
+                    id_d: 'Sekali per duel, pukulan mematikan menyisakan 1 HP.', en_d: 'Once per fight, a lethal hit leaves you at 1 HP.' },
+                WIDOW_EYE: { icon: '👁️', id_n: 'Mata Janda', en_n: "Widow's Eye",
+                    id_d: 'Setelah memakai Kaca, peluru berikutnya ikut terungkap.', en_d: 'After using Glass, the following shell is revealed too.' },
+                POKER_HEART: { icon: '♥️', id_n: 'Hati Poker', en_n: 'Poker Heart',
+                    id_d: 'Menang poker memulihkan 1 HP.', en_d: 'Winning poker heals 1 HP.' },
+                MIDAS: { icon: '🪙', id_n: 'Sentuhan Midas', en_n: 'Midas Touch',
+                    id_d: 'Setiap ronde selesai memberi +$75.', en_d: 'Every cleared round pays +$75.' },
+                BLOOD_PACT: { cursed: true, icon: '🩸', id_n: 'Janji Darah', en_n: 'Blood Pact',
+                    id_d: 'Pisau memberi 3x damage, tapi -10 Sanity.', en_d: 'Knife deals 3x damage, but costs 10 Sanity.' },
+                GREED: { cursed: true, icon: '💰', id_n: 'Keserakahan', en_n: 'Greed',
+                    id_d: 'Hadiah poker 2x, tapi seri dimenangkan dealer.', en_d: 'Poker rewards doubled, but ties go to the dealer.' },
+                GLASS_CANNON: { cursed: true, icon: '💥', id_n: 'Meriam Kaca', en_n: 'Glass Cannon',
+                    id_d: 'Semua damage +1, untukmu dan untuk dealer.', en_d: 'All damage +1, for you and the dealer.' }
+            };
+            const NORMAL_RELICS = Object.keys(RELICS).filter(k => !RELICS[k].cursed);
+            const CURSED_RELICS = Object.keys(RELICS).filter(k => RELICS[k].cursed);
+
+            function relicName(id) { return tr(RELICS[id].id_n, RELICS[id].en_n); }
+            function relicDesc(id) { return tr(RELICS[id].id_d, RELICS[id].en_d); }
+            function pickRelics(n, pool) { return shuffle(pool.filter(id => !hasRelic(id))).slice(0, n); }
+
+            function addRelic(id) {
+                if (!state.gauntlet || hasRelic(id)) return;
+                state.gauntlet.relics.push(id);
+                if (RELICS[id].onPick) RELICS[id].onPick();
+                log(`${RELICS[id].icon} ${relicName(id)}`, RELICS[id].cursed ? 'text-purple-400' : 'text-yellow-400');
+                renderRelicBar();
+            }
+
+            function renderRelicBar() {
+                let bar = document.getElementById('relic-bar');
+                if (!bar) {
+                    bar = document.createElement('div');
+                    bar.id = 'relic-bar';
+                    bar.className = 'relic-bar';
+                    document.body.appendChild(bar);
+                }
+                const g = state.gauntlet;
+                if (!g || activeGame !== 'MAIN') { bar.style.display = 'none'; return; }
+                bar.style.display = 'flex';
+                bar.innerHTML = `<span class="relic-stage">${isDaily ? 'DAILY · ' : ''}${tr('TAHAP', 'STAGE')} ${Math.min(g.stage + 1, g.total)}/${g.total}</span>` +
+                    g.relics.map(id => `<span class="relic ${RELICS[id].cursed ? 'cursed' : ''}" title="${relicName(id)}: ${relicDesc(id)}">${RELICS[id].icon}</span>`).join('');
+            }
+
+            // ---------- EVENT / CHOICE SCREEN ----------
+            function showEventScreen(title, sub, choices) {
+                let el = document.getElementById('event-screen');
+                if (!el) {
+                    el = document.createElement('div');
+                    el.id = 'event-screen';
+                    el.className = 'event-screen';
+                    document.body.appendChild(el);
+                }
+                el.innerHTML = '';
+                const h = document.createElement('div');
+                h.className = 'event-title';
+                h.textContent = title;
+                el.appendChild(h);
+                if (sub) {
+                    const s = document.createElement('div');
+                    s.className = 'event-sub';
+                    s.textContent = sub;
+                    el.appendChild(s);
+                }
+                const box = document.createElement('div');
+                box.className = 'event-choices';
+                choices.forEach(c => {
+                    const b = document.createElement('button');
+                    b.className = 'btn-retro event-btn ' + (c.cls || '');
+                    b.disabled = !!c.disabled;
+                    b.innerHTML = `<div class="text-xl">${c.icon || ''} ${c.label}</div><div class="text-sm text-gray-500 mt-1">${c.desc || ''}</div>`;
+                    b.onclick = () => { SFX.click();
+                        c.cb(); };
+                    box.appendChild(b);
+                });
+                el.appendChild(box);
+                el.style.display = 'flex';
+            }
+
+            function hideEventScreen() {
+                const el = document.getElementById('event-screen');
+                if (el) el.style.display = 'none';
+            }
+
+            function eventResult(title, text) {
+                showEventScreen(title, text, [{ icon: '▶', label: tr('LANJUT', 'CONTINUE'), desc: '', cb: beginNextFight }]);
+            }
+
+            // ---------- RUN PACTS (optional curses) ----------
+            const PACTS = {
+                BLOOD_MONEY: { icon: '🩸', id_n: 'UANG DARAH', en_n: 'BLOOD MONEY',
+                    id_d: '-1 HP maksimum. Terima $500 sekarang.', en_d: '-1 max HP. Receive $500 now.' },
+                HOLLOW_MIND: { icon: '🕳️', id_n: 'PIKIRAN KOSONG', en_n: 'HOLLOW MIND',
+                    id_d: 'Mulai dengan Sanity 50, tapi dapat bonus awal (relik / 2 item).', en_d: 'Start at 50 Sanity, but gain a starting bonus (relic / 2 items).' },
+                THIN_ICE: { icon: '🧊', id_n: 'ES TIPIS', en_n: 'THIN ICE',
+                    id_d: 'Dealer +1 HP, semua hadiah uang x1.5.', en_d: 'Dealers +1 HP, all money rewards x1.5.' }
+            };
+
+            function openPactScreen(cb) {
+                const choices = Object.keys(PACTS).map(k => ({
+                    icon: PACTS[k].icon, label: tr(PACTS[k].id_n, PACTS[k].en_n), desc: tr(PACTS[k].id_d, PACTS[k].en_d),
+                    cls: 'border-red-800 text-red-400',
+                    cb: () => { pendingPact = k;
+                        hideEventScreen();
+                        cb(); }
+                }));
+                choices.unshift({ icon: '✖', label: tr('TANPA PAKTA', 'NO PACT'), desc: tr('Main normal.', 'Play it straight.'),
+                    cb: () => { pendingPact = null;
+                        hideEventScreen();
+                        cb(); } });
+                showEventScreen(tr('SEBUAH PAKTA?', 'A PACT?'), tr('Hadiah punya harga.', 'Every gift has a price.'), choices);
+            }
+
+            // ---------- GAUNTLET ----------
+            const GAUNTLET_HP = [2, 4, 5, 6];
+            const GAUNTLET_ITEMS = [
+                [],
+                ['CIGARETTES'],
+                ['CIGARETTES', 'SHIELD'],
+                ['KNIFE', 'CIGARETTES', 'SHIELD']
+            ];
+
+            function buildGauntlet() {
+                const pool = shuffle(Object.keys(DEALER_PERSONALITIES).filter(p => p !== 'ANCIENT'));
+                const lineup = pool.slice(0, 3).concat(['ANCIENT']);
+                state.gauntlet = { stage: 0, total: lineup.length, lineup, relics: [], cleared: 0 };
+            }
+
+            function setupFight(personality, hp, items) {
+                const asc = ascLevel();
+                if (asc >= 1) hp += 1;
+                if (state.pact === 'THIN_ICE') hp += 1;
+                currentDealerPersonality = personality;
+                state.maxDealerHp = hp;
+                state.dealerHp = hp;
+                state.dealerItems = [...items];
+                if (asc >= 2) state.dealerItems.push('SHIELD');
+                if (personality === 'WARDEN') state.dealerItems.push('HANDCUFFS', 'SHIELD');
+                state.shieldPlayer = false;
+                state.shieldDealer = false;
+                state.enraged = false;
+                state.lastBreathUsed = false;
+                state.eyeNext = false;
+                state.round = 1;
+                state.bluffTurns = 0;
+                state.handcuffed = false;
+                state.damageMultiplier = 1;
+                state.chamber = [];
+                state.shellMods = [];
+                state.liveCount = 0;
+                state.blankCount = 0;
+                state.phoneMark = null;
+                state.isProcessing = false;
+                state.turn = null;
+                const dealer = DEALER_PERSONALITIES[personality];
+                const nameEl = document.getElementById('dealer-name-label');
+                nameEl.innerText = dealer.name;
+                nameEl.setAttribute('data-text', dealer.name);
+                const indicator = document.getElementById('personality-indicator');
+                indicator.className = `personality-indicator personality-${personality.toLowerCase()}`;
+                indicator.innerText = dealer.name.toUpperCase();
+                indicator.classList.remove('hidden');
+                renderAmmo();
+                renderHP();
+            }
+
+            function beginNextFight() {
+                hideEventScreen();
+                const g = state.gauntlet;
+                const s = g.stage;
+                state.gauntletBusy = false;
+                state.ended = false;
+                const idx = Math.min(s, GAUNTLET_HP.length - 1);
+                setupFight(g.lineup[s], GAUNTLET_HP[idx], GAUNTLET_ITEMS[idx]);
+                log(`${tr('TAHAP', 'STAGE')} ${s + 1}: ${DEALER_PERSONALITIES[g.lineup[s]].name}`, 'text-red-400');
+                dealerSpeak('normal');
+                renderRelicBar();
+                startRound();
+            }
+
+            function gauntletFightWon() {
+                const g = state.gauntlet;
+                if (state.gauntletBusy) return;
+                state.gauntletBusy = true;
+                state.isProcessing = true;
+                stopTurnTimer();
+                toggleGunControls(false);
+                g.cleared++;
+                g.stage++;
+                if (g.cleared > (meta.gauntletBest || 0)) meta.gauntletBest = g.cleared;
+                const bonus = Math.floor(120 * g.cleared * rewardMult());
+                globalMoney += bonus;
+                totalStats.moneyEarned += bonus;
+                totalStats.kills++;
+                updateMoneyDisplay(true);
+                updateSanity(10);
+                dealerSpeak('lose');
+                SFX.win();
+                flashScreen('green');
+                state.playerHp = Math.min(state.maxPlayerHp, state.playerHp + 1);
+                renderHP();
+                log(tr(`DEALER TUMBANG! +$${bonus}`, `DEALER DOWN! +$${bonus}`), 'text-green-500');
+                saveGame();
+                setTimeout(offerRelicChoice, 1600);
+            }
+
+            function offerRelicChoice() {
+                const g = state.gauntlet;
+                const offers = pickRelics(3, NORMAL_RELICS);
+                if (!offers.length) { offerEvent(); return; }
+                showEventScreen(tr(`TAHAP ${g.cleared} SELESAI`, `STAGE ${g.cleared} CLEARED`),
+                    tr('Pilih sebuah relik.', 'Choose a relic.'),
+                    offers.map(id => ({ icon: RELICS[id].icon, label: relicName(id), desc: relicDesc(id),
+                        cb: () => { addRelic(id);
+                            offerEvent(); } })));
+            }
+
+            function offerEvent() {
+                const types = shuffle(['REST', 'SHOP', 'GAMBLE', 'CURSE']).slice(0, 3);
+                const defs = {
+                    REST: { icon: '🛏️', label: tr('ISTIRAHAT', 'REST'), desc: tr('Sembuhkan 2 HP, +20 Sanity.', 'Heal 2 HP, +20 Sanity.'),
+                        cb: () => { state.playerHp = Math.min(state.maxPlayerHp, state.playerHp + 2);
+                            updateSanity(20);
+                            renderHP();
+                            beginNextFight(); } },
+                    SHOP: { icon: '🕯️', label: tr('PASAR GELAP', 'BLACK MARKET'), desc: tr('Belanja dengan uangmu.', 'Spend your money.'),
+                        cb: () => openBlackMarket() },
+                    GAMBLE: { icon: '🎲', label: tr('JUDI NASIB', 'GAMBLE'), desc: tr('50%: relik gratis. 50%: -1 HP & -15 Sanity.', '50%: free relic. 50%: -1 HP & -15 Sanity.'),
+                        cb: () => {
+                            if (rnd() < 0.5) {
+                                const r = pickRelics(1, NORMAL_RELICS);
+                                if (r.length) {
+                                    addRelic(r[0]);
+                                    eventResult(tr('BERUNTUNG', 'LUCKY'), `${RELICS[r[0]].icon} ${relicName(r[0])}`);
+                                } else {
+                                    updateSanity(15);
+                                    eventResult(tr('BERUNTUNG', 'LUCKY'), tr('+15 Sanity.', '+15 Sanity.'));
+                                }
+                            } else {
+                                state.playerHp = Math.max(1, state.playerHp - 1);
+                                updateSanity(-15);
+                                renderHP();
+                                flashScreen('red');
+                                SFX.lose();
+                                eventResult(tr('SIAL', 'UNLUCKY'), tr('Kamu kehilangan 1 HP dan 15 Sanity.', 'You lose 1 HP and 15 Sanity.'));
+                            }
+                        } },
+                    CURSE: { icon: '☠️', label: tr('RELIK TERKUTUK', 'CURSED RELIC'), desc: tr('Kekuatan besar, harga besar. +$300.', 'Great power, great price. +$300.'),
+                        cb: () => openCurseChoice() }
+                };
+                showEventScreen(tr('SEBELUM MEJA BERIKUTNYA', 'BEFORE THE NEXT TABLE'), tr('Pilih satu jalan.', 'Choose one path.'),
+                    types.map(t => defs[t]));
+            }
+
+            function openCurseChoice() {
+                const offers = pickRelics(2, CURSED_RELICS);
+                const choices = offers.map(id => ({
+                    icon: RELICS[id].icon, label: relicName(id), desc: `${relicDesc(id)} (+$300)`, cls: 'border-purple-700 text-purple-300',
+                    cb: () => { addRelic(id);
+                        globalMoney += 300;
+                        totalStats.moneyEarned += 300;
+                        updateMoneyDisplay(true);
+                        saveGame();
+                        beginNextFight(); }
+                }));
+                choices.push({ icon: '✋', label: tr('TOLAK', 'REFUSE'), desc: '', cb: beginNextFight });
+                showEventScreen(tr('BISIKAN DARI KEGELAPAN', 'A WHISPER FROM THE DARK'),
+                    offers.length ? tr('Ambil, atau pergi.', 'Take it, or walk away.') : tr('Tidak ada yang tersisa.', 'Nothing is left to offer.'), choices);
+            }
+
+            function openBlackMarket() {
+                const offers = [
+                    { icon: '🎁', label: tr('Item acak', 'Random item'), price: 60, needsSlot: true, desc: tr('Dapatkan 1 item acak.', 'Get 1 random item.'),
+                        cb: () => giveItem('player', randomItemKey()) },
+                    { icon: '🩹', label: tr('Perban', 'Bandage'), price: 100, desc: tr('Sembuhkan 2 HP.', 'Heal 2 HP.'),
+                        cb: () => { state.playerHp = Math.min(state.maxPlayerHp, state.playerHp + 2);
+                            renderHP(); } },
+                    { icon: '🛡️', label: tr('Perisai', 'Shield'), price: 90, needsSlot: true, desc: tr('Dapatkan 1 Perisai.', 'Get 1 Shield.'),
+                        cb: () => giveItem('player', 'SHIELD') }
+                ];
+                const choices = offers.map(o => ({
+                    icon: o.icon, label: `${o.label} - $${o.price}`, desc: o.desc,
+                    disabled: globalMoney < o.price || (o.needsSlot && state.playerItems.length >= 5),
+                    cb: () => {
+                        if (globalMoney < o.price) return;
+                        globalMoney -= o.price;
+                        updateMoneyDisplay(true);
+                        saveGame();
+                        o.cb();
+                        openBlackMarket();
+                    }
+                }));
+                choices.push({ icon: '🚪', label: tr('PERGI', 'LEAVE'), desc: `$${globalMoney}`, cb: beginNextFight });
+                showEventScreen(tr('PASAR GELAP', 'BLACK MARKET'), `$${globalMoney}`, choices);
+            }
+
+            // ---------- RUN START ----------
+            function selectDifficulty(diff) {
+                let cost = 0;
+                if (diff === 'HARD') cost = 200;
+                else if (diff === 'MERCENARY') cost = 2000;
+                else if (diff === 'BOSS') cost = 5000;
+                else if (diff === 'ANCIENT') cost = 8000;
+                else if (diff === 'ENDLESS') cost = 500;
+                else if (diff === 'GAUNTLET') cost = 500;
+                if (globalMoney < cost) { shakeElement(document.getElementById('money-display'));
+                    SFX.empty(); return; }
+                globalMoney -= cost;
+                saveGame();
+                updateMoneyDisplay(true);
+                isDaily = (diff === 'DAILY');
+                currentDifficulty = isDaily ? 'GAUNTLET' : diff;
+                SFX.click();
+                if (meta.wins >= 1 && !isDaily && currentDifficulty !== 'ENDLESS') openPactScreen(beginRun);
+                else { pendingPact = null;
+                    beginRun(); }
+            }
+
+            function beginRun() {
+                hideEventScreen();
+                const q = new URLSearchParams(location.search).get('seed');
+                if (isDaily) seedRng('daily-' + dailySeed());
+                else if (q) seedRng(q);
+                else seedRng(null);
+                activeGame = 'MAIN';
+                SFX.click();
+                document.getElementById('main-menu').classList.add('hidden');
+                document.getElementById('game-ui').classList.remove('hidden');
+                document.getElementById('sanity-hud').classList.remove('hidden');
+                if (currentDifficulty === 'ENDLESS') {
+                    state.endlessScore = 0;
+                    document.getElementById('endless-round').innerText = 1;
+                    document.getElementById('endless-hiscore').innerText = endlessHighScore;
+                    document.getElementById('endless-hud').classList.remove('hidden');
+                } else document.getElementById('endless-hud').classList.add('hidden');
+                startGame();
+                renderRelicBar();
+            }
+
+            function startGame() {
+                const asc = ascLevel();
+                sanity = Math.max(60, Math.min(100, sanity));
+                if (asc >= 3) sanity = Math.max(30, sanity - 10);
+                isInsane = false;
+                stopTurnTimer();
+                state = {
+                    ...state,
+                    round: 1,
+                    isProcessing: false,
+                    playerItems: [...nextRunItems],
+                    dealerItems: [],
+                    usedCheatSkills: [],
+                    bluffTurns: 0
+                };
+                nextRunItems = [];
+                Object.assign(state, runDefaults());
+                meta.runs++;
+                const bi = document.getElementById('bluff-indicator');
+                if (bi) bi.style.display = 'none';
+
+                state.pact = pendingPact;
+                pendingPact = null;
+                state.maxPlayerHp = (upgrades.extraHp ? 5 : 4) - (asc >= 5 ? 1 : 0);
+                if (state.pact === 'BLOOD_MONEY') {
+                    state.maxPlayerHp = Math.max(1, state.maxPlayerHp - 1);
+                    globalMoney += 500;
+                    totalStats.moneyEarned += 500;
+                    updateMoneyDisplay(true);
+                }
+                if (state.pact === 'HOLLOW_MIND') sanity = Math.min(sanity, 50);
+                updateSanityUI();
+                state.playerHp = state.maxPlayerHp;
+
+                if (upgrades.startCigs) state.playerItems.push('CIGARETTES');
+                if (upgrades.startKnife) state.playerItems.push('KNIFE');
+                if (upgrades.startInverter) state.playerItems.push('INVERTER');
+                if (upgrades.startShield) state.playerItems.push('SHIELD');
+
+                let hp = 3, items = [], pers;
+                if (currentDifficulty === 'GAUNTLET') {
+                    buildGauntlet();
+                    hp = GAUNTLET_HP[0];
+                    items = GAUNTLET_ITEMS[0];
+                    pers = state.gauntlet.lineup[0];
+                    if (state.pact === 'HOLLOW_MIND') {
+                        const r = pickRelics(1, NORMAL_RELICS);
+                        if (r.length) addRelic(r[0]);
+                    }
+                } else {
+                    if (currentDifficulty === 'HARD') { hp = 4;
+                        items = ['CIGARETTES']; }
+                    else if (currentDifficulty === 'MERCENARY') { hp = 6;
+                        items = ['KNIFE', 'CIGARETTES']; }
+                    else if (currentDifficulty === 'BOSS') { hp = 7;
+                        items = ['KNIFE', 'HANDCUFFS', 'CIGARETTES', 'SHIELD']; }
+                    else if (currentDifficulty === 'ANCIENT') { hp = 9;
+                        items = ['KNIFE', 'GLASS', 'INVERTER', 'CIGARETTES', 'SHIELD']; }
+                    else if (currentDifficulty === 'ENDLESS') hp = 5;
+                    if (upgrades.weakDealer && hp >= 4 && !['BOSS', 'ANCIENT', 'ENDLESS'].includes(currentDifficulty)) hp -= 1;
+                    if (currentDifficulty === 'ANCIENT') pers = 'ANCIENT';
+                    else {
+                        const list = Object.keys(DEALER_PERSONALITIES).filter(p => p !== 'ANCIENT');
+                        pers = list[Math.floor(rnd() * list.length)];
+                    }
+                    if (state.pact === 'HOLLOW_MIND') { giveItem('player', randomItemKey());
+                        giveItem('player', randomItemKey()); }
+                }
+                setupFight(pers, hp, items);
+                log(`DEALER: ${DEALER_PERSONALITIES[pers].name} approaches...`, 'text-red-400');
+                dealerSpeak('normal');
+                playerSpeak('start');
+                startRound();
+            }
+
+            // ---------- SEEDED / ASCENSION MENU ----------
+            function cycleAscension() {
+                meta.ascSel = ((meta.ascSel || 0) + 1) % ((meta.ascension || 0) + 1);
+                SFX.click();
+                saveGame();
+                updateV8Menu();
+            }
+
+            function updateV8Menu() {
+                const a = document.getElementById('menu-btn-asc');
+                if (a) {
+                    a.innerText = `${tr('ASENSI', 'ASCENSION')} ${meta.ascSel || 0} / ${meta.ascension || 0}`;
+                    a.title = tr('Tiap level: hadiah +20%. 1: dealer +1 HP. 2: dealer punya Perisai. 3: Sanity -10. 4: +1 peluru live. 5: HP maks -1.',
+                        'Each level: +20% rewards. 1: dealers +1 HP. 2: dealers start with a Shield. 3: Sanity -10. 4: +1 live shell. 5: max HP -1.');
+                }
+                const g = document.getElementById('gauntlet-sub');
+                if (g) g.innerText = tr(`$500 | 4 Dealer · Relik · Rekor ${meta.gauntletBest || 0}`, `$500 | 4 Dealers · Relics · Best ${meta.gauntletBest || 0}`);
+                const d = document.getElementById('daily-sub');
+                if (d) {
+                    const best = (meta.dailyBest && meta.dailyBest.date === dailySeed()) ? meta.dailyBest.score : 0;
+                    d.innerText = tr(`Gratis | Meja sama untuk semua · Skor hari ini ${best}`, `Free | Same table for everyone · Today's best ${best}`);
+                }
+            }
+
+            // ---------- POKER: STAGES, RAISE, REDRAW, FOLD ----------
+            function stageLabel() {
+                return [tr('BUKA TURN', 'DEAL TURN'), tr('BUKA RIVER', 'DEAL RIVER'), 'SHOWDOWN'][Math.min(2, state.pokerStage)];
+            }
+
+            function pokerPhaseOpen() {
+                const rv = document.getElementById('btn-reveal');
+                return !!rv && !rv.classList.contains('hidden');
+            }
+
+            function updatePokerButtons() {
+                const rv = document.getElementById('btn-reveal');
+                if (rv) rv.innerHTML = `${stageLabel()} <span class="text-sm opacity-50 ml-2">[SPACE]</span>`;
+                const rb = document.getElementById('btn-raise');
+                if (rb) {
+                    rb.classList.toggle('hidden', state.pokerRaise >= 2 || state.isProcessing);
+                    rb.disabled = sanity <= 20;
+                    rb.innerHTML = `${tr('NAIKKAN', 'RAISE')} (${state.pokerRaise}/2): -10 SANITY <span class="text-sm opacity-50 ml-2">[B]</span>`;
+                }
+                const rd = document.getElementById('btn-redraw');
+                if (rd) {
+                    rd.classList.toggle('hidden', state.redrawn || state.pokerStage > 1 || state.isProcessing);
+                    rd.disabled = sanity <= 8;
+                    rd.innerHTML = `${tr('TUKAR KARTU', 'REDRAW')} -8 <span class="text-sm opacity-50 ml-2">[D]</span>`;
+                }
+                const fd = document.getElementById('btn-fold');
+                if (fd) {
+                    fd.classList.toggle('hidden', state.pokerStage < 1 || state.isProcessing);
+                    fd.innerHTML = `${tr('MENYERAH', 'FOLD')} <span class="text-sm opacity-50 ml-2">[F]</span>`;
+                }
+            }
+
+            function showRaiseButton() { updatePokerButtons(); }
+
+            function hideRaise() {
+                ['btn-raise', 'btn-redraw', 'btn-fold'].forEach(id => {
+                    const b = document.getElementById(id);
+                    if (b) b.classList.add('hidden');
+                });
+            }
+
+            function raisePoker() {
+                if (state.isProcessing || activeGame !== 'MAIN' || !pokerPhaseOpen()) return;
+                if (state.pokerRaise >= 2) return;
+                if (sanity <= 20) { SFX.empty(); return; }
+                state.pokerRaise++;
+                state.raised = true;
+                updateSanity(-10);
+                SFX.glitch();
+                log(tr(`TARUHAN DINAIKKAN (${state.pokerRaise}/2)! Menang = hadiah ekstra. Kalah = dealer ikut untung.`,
+                    `RAISED (${state.pokerRaise}/2)! Win = extra rewards. Lose = the dealer profits too.`), 'text-yellow-400');
+                updatePokerButtons();
+            }
+
+            function redrawPoker() {
+                if (state.redrawn || state.isProcessing || state.pokerStage > 1 || !pokerPhaseOpen() || sanity <= 8) return;
+                state.redrawn = true;
+                updateSanity(-8);
+                const idx = state.playerHand[0].val <= state.playerHand[1].val ? 0 : 1;
+                state.playerHand[idx] = state.deck.pop();
+                renderCards(false);
+                SFX.flip();
+                log(tr('Kamu menukar kartu terlemahmu.', 'You swap out your weaker card.'), 'text-blue-400');
+                updatePokerButtons();
+            }
+
+            function foldPoker() {
+                if (state.isProcessing || state.pokerStage < 1 || !pokerPhaseOpen()) return;
+                showdown(true);
+            }
+
+            function dealerBetting() {
+                const d = evalHand(state.dealerHand, state.communityCards);
+                const high = Math.max(...state.dealerHand.map(c => c.val));
+                const strong = d.cat >= 1 || high >= 13;
+                if (!state.dealerRaise && rnd() < (strong ? 0.55 : 0.18)) {
+                    state.dealerRaise = 1;
+                    log(tr('DEALER MENAIKKAN TARUHAN!', 'THE DEALER RAISES!'), 'text-red-400');
+                    dealerSpeak('taunt');
+                    SFX.glitch();
+                } else {
+                    let confident = d.cat >= 1;
+                    if (sanity <= 50 && rnd() < 0.4) confident = !confident;
+                    log(confident ? tr('Dealer terlihat percaya diri.', 'The dealer looks confident.') :
+                        tr('Dealer tampak gelisah...', 'The dealer fidgets...'), confident ? 'text-red-300' : 'text-blue-300');
+                }
+            }
+
+            function resolvePokerPhase() {
+                if (state.isProcessing) return;
+                if (state.pokerStage < 2) {
+                    state.pokerStage++;
+                    const want = 3 + state.pokerStage;
+                    while (state.communityCards.length < want) state.communityCards.push(state.communityAll[state.communityCards.length]);
+                    renderCards(false);
+                    SFX.flip();
+                    log(state.pokerStage === 1 ? tr('TURN dibuka.', 'TURN dealt.') : tr('RIVER dibuka.', 'RIVER dealt.'), 'text-blue-400');
+                    dealerBetting();
+                    updatePokerButtons();
+                    return;
+                }
+                showdown(false);
+            }
+
+            function showdown(fold) {
+                if (state.isProcessing) return;
+                while (state.communityCards.length < 5) state.communityCards.push(state.communityAll[state.communityCards.length]);
+                let charm = false;
+                if (state.cheatNextPoker && !fold) {
+                    state.playerHand[0] = { suit: '♠', rank: 'A', val: 14 };
+                    state.playerHand[1] = { suit: '♠', rank: 'K', val: 13 };
+                    log("LUCKY CHARM: The hand is yours!", 'text-yellow-500');
+                    state.cheatNextPoker = false;
+                    charm = true;
+                }
+                renderCards(true);
+                SFX.flip();
+                document.getElementById('btn-reveal').classList.add('hidden');
+                document.getElementById('btn-cheat').classList.add('hidden');
+                hideRaise();
+                const p = evalHand(state.playerHand, state.communityCards);
+                const d = evalHand(state.dealerHand, state.communityCards);
+                const playerWins = !fold && (charm || (hasRelic('GREED') ? p.score > d.score : p.score >= d.score));
+                if (fold) {
+                    log(tr('KAMU MENYERAH.', 'YOU FOLD.'), 'text-gray-400');
+                    updateSanity(-5);
+                }
+                if (playerWins) {
+                    state.turn = 'player';
+                    payPokerWin(p);
+                    log(`WIN: ${p.type}`, 'text-green-500');
+                    playerSpeak('winHand');
+                    updateSanity(5);
+                } else {
+                    state.turn = 'dealer';
+                    payPokerLoss(d, fold);
+                    if (!fold) {
+                        log(`LOSE: ${d.type}`, 'text-red-500');
+                        dealerSpeak('taunt');
+                        playerSpeak('loseHand');
+                        updateSanity(-10);
+                    }
+                }
+                renderUI();
+                state.isProcessing = true;
+                setTimeout(() => {
+                    state.isProcessing = false;
+                    loadShotgun();
+                }, 2000);
+            }
+
+            function payPokerWin(p) {
+                const copies = hasRelic('GREED') ? 2 : 1;
+                for (let i = 0; i < copies; i++) giveItem('player', p.rew);
+                if (p.cat >= 5) { giveItem('player', randomItemKey());
+                    unlockAchievement('HIGH_HAND'); }
+                for (let i = 0; i < state.pokerRaise; i++) {
+                    giveItem('player', p.rew);
+                    globalMoney += 100;
+                    totalStats.moneyEarned += 100;
+                }
+                if (state.pokerRaise > 0) { updateMoneyDisplay(true);
+                    unlockAchievement('RAISE_WIN'); }
+                if (state.dealerRaise) {
+                    giveItem('player', randomItemKey());
+                    log(tr('Taruhan dealer kamu terima: item bonus!', "You called the dealer's raise: bonus item!"), 'text-green-400');
+                }
+                if (state.pokerBonus) giveItem('player', randomItemKey());
+                if (hasRelic('POKER_HEART') && state.playerHp < state.maxPlayerHp) {
+                    state.playerHp++;
+                    renderHP();
+                    log(tr('Hati Poker memulihkan 1 HP.', 'Poker Heart heals 1 HP.'), 'text-red-300');
+                }
+            }
+
+            function payPokerLoss(d, fold) {
+                giveItem('dealer', d.rew);
+                if (fold) return;
+                for (let i = 0; i < state.pokerRaise; i++) {
+                    giveItem('dealer', d.rew);
+                    updateSanity(-10);
+                }
+                if (state.dealerRaise) giveItem('dealer', randomItemKey());
+            }
+
+            // ---------- SHELL TYPES ----------
+            function popShell() {
+                const live = state.chamber.shift();
+                const mod = (state.shellMods && state.shellMods.length) ? state.shellMods.shift() : null;
+                return { live, mod: live ? (mod || null) : null };
+            }
+
+            function shellModTag() {
+                const m = state.shellMods && state.shellMods[0];
+                return (state.chamber[0] && (m === 'HOLLOW' || m === 'GHOST')) ? ` (${m})` : '';
+            }
+
+            function assignShellMods() {
+                const mods = state.chamber.map(() => null);
+                state.shellMods = mods;
+                const tier = state.round + (state.gauntlet ? state.gauntlet.stage : 0) + ascLevel();
+                if (tier < 3) return;
+                const liveIdx = [];
+                state.chamber.forEach((l, i) => {
+                    if (!l) return;
+                    liveIdx.push(i);
+                    const r = rnd();
+                    if (r < 0.18) mods[i] = 'HOLLOW';
+                    else if (r < 0.28) mods[i] = 'GHOST';
+                    else if (r < 0.38) mods[i] = 'DUD';
+                });
+                if (liveIdx.length && liveIdx.every(i => mods[i] === 'DUD')) mods[liveIdx[0]] = null;
+                if (mods.some(Boolean)) setTimeout(() => log(tr('Ada peluru ANEH di dalam chamber...', 'Strange shells are loaded in the chamber...'), 'text-orange-400'), 700);
+            }
+
+            function shuffleChamber() {
+                const pairs = state.chamber.map((l, i) => ({ l, m: (state.shellMods || [])[i] || null }));
+                shuffle(pairs);
+                state.chamber = pairs.map(p => p.l);
+                state.shellMods = pairs.map(p => p.m);
+                state.shellRevealed = false;
+                state.shellLie = false;
+                state.phoneMark = null;
+                renderAmmo();
+            }
+
+            // ---------- SANITY EFFECTS + TURN HOOKS ----------
+            function sanityWhispers() {
+                if (state.chamber.length === 0) return;
+                const chance = sanity <= 0 ? 0.6 : (sanity <= 25 ? 0.3 : 0);
+                if (rnd() >= chance) return;
+                const truthful = rnd() < (sanity <= 0 ? 0.5 : 0.65);
+                const real = !!state.chamber[0];
+                const said = truthful ? real : !real;
+                log(tr(`SEBUAH SUARA: "yang berikutnya ${said ? 'LIVE' : 'BLANK'}"`, `A VOICE: "the next one is ${said ? 'LIVE' : 'BLANK'}"`), 'text-purple-400');
+                flashScreen('red');
+            }
+
+            function onPlayerTurnHooks() {
+                const p = DEALER_PERSONALITIES[currentDealerPersonality];
+                if (p && p.onPlayerTurn) p.onPlayerTurn();
+                sanityWhispers();
+            }
+
+            // ---------- DEALER UPGRADES + THE WARDEN ----------
+            DEALER_PERSONALITIES.CALCULATING.onPlayerTurn = function() {
+                const t = state.liveCount + state.blankCount;
+                if (!t) return;
+                let pct = Math.round(100 * state.liveCount / t);
+                if (rnd() < 0.3) pct = Math.max(5, Math.min(95, pct + (rnd() < 0.5 ? -1 : 1) * (15 + Math.floor(rnd() * 20))));
+                log(`CALCULATOR: "${pct}% live."`, 'text-blue-400');
+            };
+            DEALER_PERSONALITIES.UNPREDICTABLE.onDealerTurn = function() {
+                if (state.chamber.length > 1 && rnd() < 0.25) {
+                    log(tr('SI GILA MENGOCOK CHAMBER!', 'THE MADMAN SHAKES THE CHAMBER!'), 'text-pink-500');
+                    shuffleChamber();
+                    SFX.glitch();
+                }
+            };
+            DEALER_PERSONALITIES.UNPREDICTABLE.onPlayerHit = function() {
+                if (rnd() < 0.5) {
+                    const r = rnd();
+                    if (r < 0.3) state.damageMultiplier = 2;
+                    else if (r < 0.6) state.playerHp = Math.min(state.maxPlayerHp, state.playerHp + 1);
+                    else dealDamage('dealer', 1, { noBonus: true, pierce: true });
+                    renderHP();
+                    log("MADNESS!", 'text-pink-500');
+                }
+            };
+            DEALER_PERSONALITIES.WARDEN = {
+                name: "The Warden",
+                taunts: ["No one leaves.", "Count the bars.", "Rules are rules.", "Sit."],
+                onPlayerHit: () => { updateSanity(-4);
+                    log(tr('SIPIR: "Pintu sel menutup..."', 'WARDEN: "The cell door closes..."'), 'text-amber-400'); },
+                aiBehavior: function(knowsShell) {
+                    if (knowsShell) return state.chamber[0] ? 'player' : 'self';
+                    const p = state.liveCount / Math.max(1, state.liveCount + state.blankCount);
+                    return rnd() < (0.3 + p * 0.6) ? 'player' : 'self';
+                },
+                itemPriority: function(items, st) {
+                    if (items.includes('HANDCUFFS') && !st.handcuffed) return 'HANDCUFFS';
+                    if (items.includes('SHIELD') && !st.shieldDealer) return 'SHIELD';
+                    if (items.includes('KNIFE') && st.damageMultiplier === 1 && st.handcuffed) return 'KNIFE';
+                    if (items.includes('CIGARETTES') && st.dealerHp < st.maxDealerHp) return 'CIGARETTES';
+                    return null;
+                }
+            };
+
+            // ---------- ENDINGS ----------
+            const ENDINGS = {
+                MERCY: { id_t: 'JALAN KELUAR SUNYI', en_t: 'THE QUIET EXIT',
+                    id_d: 'Kamu tak pernah membidik. Dealer menurunkan topengnya lebih dulu, dan pintu terbuka tanpa suara.',
+                    en_d: 'You never aimed. He lowered his mask first, and the door opened without a sound.' },
+                MADNESS: { id_t: 'KURSI DEALER', en_t: "THE DEALER'S CHAIR",
+                    id_d: 'Topengnya pas. Pemain berikutnya duduk, dan tanganmu sudah tahu cara membagi.',
+                    en_d: 'The mask fits. The next player sits down, and your hands already know how to deal.' },
+                CLEAN: { id_t: 'TANGAN BERSIH', en_t: 'CLEAN HANDS',
+                    id_d: 'Tak satu pun peluru menyentuhmu. Itu justru membuatnya lebih menakutkan.',
+                    en_d: 'Not one shell touched you. Somehow that is the most frightening part.' },
+                DAYBREAK: { id_t: 'FAJAR', en_t: 'DAYBREAK',
+                    id_d: 'Kamu keluar berdarah tapi hidup. Matahari terasa asing di kulitmu.',
+                    en_d: 'You walk out bleeding but alive. The sun feels foreign on your skin.' }
+            };
+            const STORY_CLOSERS = {
+                THIEF: { id: 'Kamu datang untuk mencuri. Kamu pergi membawa sesuatu yang lebih berat dari emas.',
+                    en: 'You came here to steal. You leave carrying something heavier than gold.' },
+                PARRICIDE: { id: 'Kamu datang untuk menjawab darah. Rumah itu menyimpan rahasianya, begitu pula kamu.',
+                    en: 'You came to answer for blood. The house keeps its secrets, and so do you.' }
+            };
+
+            function pickEnding() {
+                if (state.shotsAtDealer === 0) return 'MERCY';
+                if (sanity <= 10) return 'MADNESS';
+                if (state.damageTaken === 0) return 'CLEAN';
+                return 'DAYBREAK';
+            }
+
+            function finalWinHooks(p) {
+                const final = ['BOSS', 'ANCIENT', 'GAUNTLET'].includes(currentDifficulty);
+                const m = document.getElementById('result-msg');
+                if (!final || !m) return;
+                let extra = '';
+                if (currentDifficulty === 'GAUNTLET') {
+                    meta.gauntletWins = (meta.gauntletWins || 0) + 1;
+                    if (state.gauntlet) {
+                        state.gauntlet.cleared = state.gauntlet.total;
+                        if (state.gauntlet.cleared > (meta.gauntletBest || 0)) meta.gauntletBest = state.gauntlet.cleared;
+                    }
+                    unlockAchievement('GAUNTLET_CLEAR');
+                    if (isDaily) unlockAchievement('DAILY_DONE');
+                }
+                if (ascLevel() >= 3) unlockAchievement('ASCENDED');
+                if (!isDaily && ascLevel() === (meta.ascension || 0) && meta.ascension < 5) {
+                    meta.ascension++;
+                    extra += `<div class="text-xl mt-4 text-red-400">${tr('ASENSI', 'ASCENSION')} ${meta.ascension} ${tr('TERBUKA', 'UNLOCKED')}</div>`;
+                }
+                const id = pickEnding();
+                const e = ENDINGS[id];
+                if (!meta.endings.includes(id)) {
+                    meta.endings.push(id);
+                    extra += `<div class="text-sm mt-2 text-yellow-400">${tr('AKHIR BARU DITEMUKAN', 'NEW ENDING FOUND')} (${meta.endings.length}/4)</div>`;
+                }
+                if (meta.endings.length >= 4) unlockAchievement('ENDING_ALL');
+                const closer = STORY_CLOSERS[storyMode] || STORY_CLOSERS.THIEF;
+                extra = `<div class="mt-6 text-3xl text-purple-300 tracking-widest">${tr(e.id_t, e.en_t)}</div>` +
+                    `<div class="text-xl mt-2 text-gray-400 max-w-xl mx-auto">${tr(e.id_d, e.en_d)}</div>` +
+                    `<div class="text-lg mt-2 text-gray-600 max-w-xl mx-auto italic">${tr(closer.id, closer.en)}</div>` + extra;
+                m.innerHTML += extra;
+            }
+
+            function recordRunEnd(el) {
+                if (!el) return;
+                if (state.gauntlet) {
+                    if (state.gauntlet.cleared > (meta.gauntletBest || 0)) meta.gauntletBest = state.gauntlet.cleared;
+                    if (isDaily) {
+                        const won = state.playerHp > 0;
+                        const score = state.gauntlet.cleared * 1000 + (won ? 2000 : 0) + Math.max(0, state.playerHp) * 150 + Math.max(0, sanity) * 5;
+                        const today = dailySeed();
+                        if (!meta.dailyBest || meta.dailyBest.date !== today || score > meta.dailyBest.score) meta.dailyBest = { date: today, score };
+                        el.innerHTML += `<div class="text-xl mt-4 text-cyan-400">DAILY ${today}: ${tr('SKOR', 'SCORE')} ${score} (${tr('TERBAIK', 'BEST')} ${meta.dailyBest.score})</div>`;
+                    }
+                }
+            }
+
+            // ---------- LORE TIED TO TROPHIES ----------
+            const LORE_BY_ACH = { PACIFIST: 11, DEVIL_SLAYER: 12, ANCIENT_SLAIN: 13, MIMIC_SLAYER: 14, GAUNTLET_CLEAR: 15, ENDING_ALL: 16 };
+            LORE_ENTRIES.push(
+                { id: 11, text: "\"I never lifted the barrel. He still bled. Mercy is only another way to lose.\"" },
+                { id: 12, text: "\"The Devil's chair was warm. Someone had sat there a very long time. Someone who looked like me.\"" },
+                { id: 13, text: "\"The Elder was not the last dealer. It was the first player.\"" },
+                { id: 14, text: "\"It copied my hands, my breath, my fear. It forgot to copy my doubt.\"" },
+                { id: 15, text: "\"Four tables. One door. The door was painted on.\"" },
+                { id: 16, text: "\"Every ending is the same room, seen from a different chair.\"" }
+            );
+
+            function unlockLoreFor(achId) {
+                const lid = LORE_BY_ACH[achId];
+                if (lid && !unlockedLore.includes(lid)) {
+                    unlockedLore.push(lid);
+                    log(tr('SERPIHAN LORE DITEMUKAN', 'LORE FRAGMENT FOUND'), 'text-purple-400');
+                }
+            }
+
+            // ---------- SELF TEST + DEBUG HANDLE ----------
+            function runSelfTests() {
+                const C = (r, su) => ({ rank: String(r), suit: su, val: r });
+                const t = (h, c) => evalHand(h, c);
+                const results = [];
+                const eq = (name, got, want) => results.push({ name, ok: got === want, got, want });
+                eq('royal flush', t([C(10, '♠'), C(11, '♠')], [C(12, '♠'), C(13, '♠'), C(14, '♠')]).type, 'Straight Flush');
+                eq('wheel straight', t([C(14, '♠'), C(2, '♥')], [C(3, '♦'), C(4, '♣'), C(5, '♠')]).type, 'Straight');
+                eq('full house', t([C(9, '♠'), C(9, '♥')], [C(9, '♦'), C(4, '♣'), C(4, '♠')]).type, 'Full House');
+                eq('four of a kind', t([C(9, '♠'), C(9, '♥')], [C(9, '♦'), C(9, '♣'), C(4, '♠')]).type, 'Four of a Kind');
+                eq('flush', t([C(2, '♠'), C(9, '♠')], [C(3, '♠'), C(7, '♠'), C(12, '♠')]).type, 'Flush');
+                eq('high card', t([C(2, '♠'), C(9, '♥')], [C(3, '♦'), C(7, '♣'), C(12, '♠')]).type, 'High Card');
+                eq('seven-card two pair', t([C(5, '♠'), C(5, '♥')], [C(9, '♦'), C(9, '♣'), C(12, '♠'), C(3, '♦'), C(2, '♣')]).type, 'Two Pair');
+                eq('kicker decides', t([C(9, '♠'), C(14, '♥')], [C(9, '♦'), C(4, '♣'), C(2, '♠')]).score > t([C(9, '♣'), C(13, '♥')], [C(9, '♥'), C(4, '♦'), C(2, '♣')]).score, true);
+                eq('flush beats straight', t([C(2, '♠'), C(9, '♠')], [C(3, '♠'), C(7, '♠'), C(12, '♠')]).score > t([C(5, '♠'), C(6, '♥')], [C(7, '♦'), C(8, '♣'), C(9, '♠')]).score, true);
+                const keep = rngFn;
+                seedRng('abc');
+                const a = [rnd(), rnd(), rnd()];
+                seedRng('abc');
+                const b = [rnd(), rnd(), rnd()];
+                eq('seed repeatable', JSON.stringify(a), JSON.stringify(b));
+                seedRng('abd');
+                eq('seed differs', rnd() === a[0], false);
+                rngFn = keep;
+                const fails = results.filter(r => !r.ok);
+                console.log(`[DMH self-test] ${results.length - fails.length}/${results.length} passed`, fails);
+                return { passed: results.length - fails.length, total: results.length, fails };
+            }
+            window.dmhTest = runSelfTests;
+            window.dmhDebug = {
+                get state() { return state; },
+                get meta() { return meta; },
+                setSanity: (n) => { sanity = n;
+                    updateSanityUI(); },
+                setMoney: (n) => { globalMoney = n;
+                    updateMoneyDisplay(); },
+                giveItem,
+                endFight: () => { state.dealerHp = 0;
+                    handleGameEnd(); },
+                seed: seedRng,
+                startRound, loadShotgun, onPlayerTurnHooks, sanityWhispers, shuffleChamber, useItem, DEALER_PERSONALITIES, assignShellMods,
+                setPersonality: (k) => { currentDealerPersonality = k; }, evalHand, hasRelic
+            };
+            if (/[?&]test\b/.test(location.search)) setTimeout(runSelfTests, 0);
+
+            // ==================== END v8.0 ====================
+
 
             // ---------- UTILITIES ----------
             function log(msg, className) {
@@ -2876,7 +3840,7 @@
                 }
 
                 timeLeft = (currentDifficulty === 'BOSS' || currentDifficulty === 'ANCIENT') ? 10 : 15;
-                if (upgrades.extraTime) timeLeft += 5;
+                
                 const wrap = document.getElementById('tension-wrap');
                 const display = document.getElementById('tension-timer');
                 wrap.classList.remove('hidden');
@@ -2992,6 +3956,17 @@
                     unlockedLore = d.unlockedLore || [];
                     sanity = d.sanity ?? 100;
                     meta = { ...meta, ...(d.meta || {}) };
+                    const REFUND = { unlockCardPalm: 1500, unlockShellGame: 2400, extraTime: 2000, luckyFoot: 4500 };
+                    let hadOldSkill = false;
+                    Object.keys(REFUND).forEach(k => {
+                        if (upgrades[k]) {
+                            globalMoney += REFUND[k];
+                            if (k === 'unlockCardPalm' || k === 'unlockShellGame') hadOldSkill = true;
+                        }
+                        delete upgrades[k];
+                    });
+                    if (hadOldSkill) upgrades.unlockColdRead = true;
+                    nextRunItems = nextRunItems.filter(k => ITEMS[k] && k !== 'PHANTOM');
                 } catch (e) {
                     console.error("Save corrupted");
                     localStorage.removeItem(VERSION);
@@ -3042,8 +4017,8 @@
                 if (globalMoney < 100) { shakeElement(document.getElementById('shop-money-display'));
                     SFX.empty(); return; }
                 globalMoney -= 100;
-                const keys = Object.keys(ITEMS);
-                nextRunItems.push(keys[Math.floor(Math.random() * keys.length)]);
+                const keys = Object.keys(ITEMS).filter(k => k !== 'PHANTOM');
+                nextRunItems.push(keys[Math.floor(rnd() * keys.length)]);
                 SFX.win();
                 updateMoneyDisplay(true);
                 renderShop();
@@ -3077,13 +4052,13 @@
                 const smd = document.getElementById('shop-money-display');
                 if (smd) smd.innerText = globalMoney;
                 const bossBtn = document.getElementById('menu-btn-boss');
-                if (bossBtn) bossBtn.classList.toggle('hidden', globalMoney < 10000);
+                if (bossBtn) bossBtn.classList.toggle('hidden', globalMoney < 5000);
                 const ancientBtn = document.getElementById('menu-btn-ancient');
-                if (ancientBtn) ancientBtn.classList.toggle('hidden', globalMoney < 15000);
+                if (ancientBtn) ancientBtn.classList.toggle('hidden', globalMoney < 8000);
                 const endlessBtn = document.getElementById('menu-btn-endless');
-                if (endlessBtn) endlessBtn.classList.toggle('hidden', globalMoney < 1000);
+                if (endlessBtn) endlessBtn.classList.toggle('hidden', globalMoney < 500);
                 const mercBtn = document.getElementById('menu-btn-merc');
-                if (mercBtn) mercBtn.disabled = globalMoney < 5000;
+                if (mercBtn) mercBtn.disabled = globalMoney < 2000;
                 const hardBtn = document.getElementById('menu-btn-hard');
                 if (hardBtn) hardBtn.disabled = globalMoney < 200;
                 if (globalMoney >= 5000) unlockAchievement('RICH_KID');
@@ -3133,20 +4108,20 @@
                         '$200 | Smart AI') + "</span>";
                 if (document.getElementById('menu-btn-merc')) document.getElementById('menu-btn-merc').innerHTML = T
                     .menu_merc +
-                    " <span class='text-xs text-gray-500 block'>" + (currentLang === 'id' ? '$5,000 | Penjaga Elite' :
-                        '$5,000 | Elite Guard') + "</span>";
+                    " <span class='text-xs text-gray-500 block'>" + (currentLang === 'id' ? '$2,000 | Penjaga Elite' :
+                        '$2,000 | Elite Guard') + "</span>";
                 if (document.getElementById('menu-btn-boss')) document.getElementById('menu-btn-boss').innerHTML = T
                     .menu_boss +
-                    " <span class='text-xs text-gray-500 block'>" + (currentLang === 'id' ? '$10,000 | Boss Akhir' :
-                        '$10,000 | Final Boss') + "</span>";
+                    " <span class='text-xs text-gray-500 block'>" + (currentLang === 'id' ? '$5,000 | Boss Akhir' :
+                        '$5,000 | Final Boss') + "</span>";
                 if (document.getElementById('menu-btn-ancient')) document.getElementById('menu-btn-ancient').innerHTML = (
                         currentLang === 'id' ? 'YANG KUNO' : 'THE ANCIENT') +
                     " <span class='text-xs text-gray-500 block'>" + (currentLang === 'id' ?
-                        '$15,000 | Kengerian Tua' : '$15,000 | Elder Horror') + "</span>";
+                        '$8,000 | Kengerian Tua' : '$8,000 | Elder Horror') + "</span>";
                 if (document.getElementById('menu-btn-endless')) document.getElementById('menu-btn-endless').innerHTML = T
                     .menu_endless +
-                    " <span class='text-xs text-gray-500 block'>" + (currentLang === 'id' ? '$1,000 | Bertahan Hidup' :
-                        '$1,000 | Survival') + "</span>";
+                    " <span class='text-xs text-gray-500 block'>" + (currentLang === 'id' ? '$500 | Bertahan Hidup' :
+                        '$500 | Survival') + "</span>";
                 if (document.getElementById('menu-btn-shop')) document.getElementById('menu-btn-shop').innerText = T
                     .menu_shop;
                 if (document.getElementById('menu-btn-ach')) document.getElementById('menu-btn-ach').innerText = T
@@ -3243,6 +4218,7 @@
             }
 
             function showMenu() {
+                updateV8Menu();
                 updateTexts();
                 document.getElementById('intro-screen').classList.add('hidden');
                 document.getElementById('main-menu').classList.remove('hidden');
@@ -3292,6 +4268,7 @@
                 const ach = ACHIEVEMENTS[id];
                 if (!ach) return;
                 unlockedAchievements.push(id);
+                unlockLoreFor(id);
                 globalMoney += ach.reward;
                 totalStats.moneyEarned += ach.reward;
                 saveGame();
@@ -3367,6 +4344,9 @@
                             <div class="stat-row"><span>Minigames Played:</span> <span class="stat-val text-purple-400">${totalStats.minigamesPlayed}</span></div>
                             <div class="stat-row"><span>Sanity Lost:</span> <span class="stat-val text-pink-500">${totalStats.sanityLoss}</span></div>
                             <div class="stat-row"><span>Sanity Gained:</span> <span class="stat-val text-green-500">${totalStats.sanityGain}</span></div>
+                            <div class="stat-row"><span>Gauntlet Best:</span> <span class="stat-val text-amber-400">${meta.gauntletBest || 0}</span></div>
+                            <div class="stat-row"><span>Endings Found:</span> <span class="stat-val text-purple-400">${(meta.endings || []).length}/4</span></div>
+                            <div class="stat-row"><span>Ascension:</span> <span class="stat-val text-red-400">${meta.ascension || 0}/5</span></div>
                             <div class="stat-row"><span>Matches Won:</span> <span class="stat-val text-green-400">${meta.wins}</span></div>
                             <div class="stat-row"><span>Runs Started:</span> <span class="stat-val text-gray-300">${meta.runs}</span></div>
                             <div class="stat-row"><span>Best Hi-Lo Streak:</span> <span class="stat-val text-cyan-400">${meta.bestHiLo}</span></div>
@@ -3376,7 +4356,7 @@
                 const items = document.getElementById('item-list-ledger');
                 if (items) {
                     items.innerHTML = '';
-                    Object.keys(ITEMS).forEach(k => {
+                    Object.keys(ITEMS).filter(k => k !== 'PHANTOM').forEach(k => {
                         const item = ITEMS[k];
                         const name = (currentLang === 'id') ? item.id.n : item.en.n;
                         const desc = (currentLang === 'id') ? item.id.d : item.en.d;
@@ -3596,7 +4576,7 @@
                 reels.forEach(r => { if (r) r.classList.add('reel-spin'); });
                 const BASE_SYMBOLS = ['🍒', '🍋', '🔔', '💎', '7️⃣', '💀', '👹'];
                 let symbols = [...BASE_SYMBOLS];
-                if (slotState.bet < 100) symbols.pop();
+                
                 const res = [0, 1, 2].map(() => symbols[Math.floor(Math.random() * symbols.length)]);
                 setTimeout(() => { if (reels[0]) { reels[0].classList.remove('reel-spin');
                         reels[0].innerText = res[0]; } }, 500);
@@ -3615,15 +4595,15 @@
                 if (totalStats.minigamesPlayed >= 50) unlockAchievement('GAMBLER');
                 let mult = 0;
                 if (r[0] === r[1] && r[1] === r[2]) {
-                    if (r[0] === '👹') mult = 666;
-                    else if (r[0] === '7️⃣') mult = 100;
-                    else if (r[0] === '💎') mult = 50;
+                    if (r[0] === '👹') mult = 100;
+                    else if (r[0] === '7️⃣') mult = 50;
+                    else if (r[0] === '💎') mult = 25;
                     else if (r[0] === '💀') mult = 0;
-                    else mult = 20;
+                    else mult = 5;
                 } else if (r[0] === r[1] || r[1] === r[2] || r[0] === r[2]) {
-                    if (!r.includes('💀')) mult = 3;
+                    if (!r.includes('💀')) mult = 1.25;
                 }
-                const win = slotState.bet * mult;
+                const win = Math.floor(slotState.bet * mult);
                 if (win > 0) {
                     globalMoney += win;
                     totalStats.moneyEarned += win;
@@ -3793,94 +4773,7 @@
             }
 
             // ---------- MAIN GAME ----------
-            function selectDifficulty(diff) {
-                let cost = 0;
-                if (diff === 'HARD') cost = 200;
-                else if (diff === 'MERCENARY') cost = 5000;
-                else if (diff === 'BOSS') cost = 10000;
-                else if (diff === 'ANCIENT') cost = 15000;
-                else if (diff === 'ENDLESS') cost = 1000;
-                if (globalMoney < cost) { shakeElement(document.getElementById('money-display'));
-                    SFX.empty(); return; }
-                globalMoney -= cost;
-                saveGame();
-                updateMoneyDisplay(true);
-                currentDifficulty = diff;
-                activeGame = 'MAIN';
-                SFX.click();
-                document.getElementById('main-menu').classList.add('hidden');
-                document.getElementById('game-ui').classList.remove('hidden');
-                document.getElementById('sanity-hud').classList.remove('hidden');
-                if (diff === 'ENDLESS') {
-                    state.endlessScore = 0;
-                    document.getElementById('endless-round').innerText = 1;
-                    document.getElementById('endless-hiscore').innerText = endlessHighScore;
-                    document.getElementById('endless-hud').classList.remove('hidden');
-                } else document.getElementById('endless-hud').classList.add('hidden');
-                startGame();
-            }
 
-            function startGame() {
-                sanity = Math.max(60, Math.min(100, sanity));
-                isInsane = false;
-                updateSanityUI();
-                stopTurnTimer();
-                state = {
-                    ...state,
-                    round: 1,
-                    isProcessing: false,
-                    playerItems: [...nextRunItems],
-                    dealerItems: [],
-                    usedCheatSkills: [],
-                    bluffTurns: 0
-                };
-                nextRunItems = [];
-                Object.assign(state, runDefaults());
-                meta.runs++;
-                const bi = document.getElementById('bluff-indicator');
-                if (bi) bi.style.display = 'none';
-
-                state.maxPlayerHp = upgrades.extraHp ? 5 : 4;
-                if (currentDifficulty === 'HARD') state.maxDealerHp = 5;
-                else if (currentDifficulty === 'MERCENARY') state.maxDealerHp = 7;
-                else if (currentDifficulty === 'BOSS') state.maxDealerHp = 9;
-                else if (currentDifficulty === 'ANCIENT') state.maxDealerHp = 10;
-                else if (currentDifficulty === 'ENDLESS') state.maxDealerHp = 5;
-                else state.maxDealerHp = 4;
-                if (upgrades.weakDealer && !['BOSS', 'ANCIENT', 'ENDLESS'].includes(currentDifficulty))
-                    state.maxDealerHp = Math.max(1, state.maxDealerHp - 1);
-
-                state.playerHp = state.maxPlayerHp;
-                state.dealerHp = state.maxDealerHp;
-
-                if (currentDifficulty === 'HARD') state.dealerItems.push('CIGARETTES');
-                if (currentDifficulty === 'MERCENARY') state.dealerItems.push('KNIFE', 'CIGARETTES');
-                if (currentDifficulty === 'BOSS') state.dealerItems.push('KNIFE', 'HANDCUFFS', 'CIGARETTES', 'SHIELD');
-                if (currentDifficulty === 'ANCIENT') state.dealerItems.push('KNIFE', 'GLASS', 'INVERTER', 'CIGARETTES', 'SHIELD');
-
-                if (upgrades.startCigs) state.playerItems.push('CIGARETTES');
-                if (upgrades.startKnife) state.playerItems.push('KNIFE');
-                if (upgrades.startInverter) state.playerItems.push('INVERTER');
-                if (upgrades.startShield) state.playerItems.push('SHIELD');
-
-                if (currentDifficulty === 'ANCIENT') {
-                    currentDealerPersonality = 'ANCIENT';
-                } else {
-                    const list = Object.keys(DEALER_PERSONALITIES).filter(p => p !== 'ANCIENT');
-                    currentDealerPersonality = list[Math.floor(Math.random() * list.length)];
-                }
-                const dealer = DEALER_PERSONALITIES[currentDealerPersonality];
-                document.getElementById('dealer-name-label').innerText = dealer.name;
-                document.getElementById('dealer-name-label').setAttribute('data-text', dealer.name);
-                const indicator = document.getElementById('personality-indicator');
-                indicator.className = `personality-indicator personality-${currentDealerPersonality.toLowerCase()}`;
-                indicator.innerText = dealer.name.toUpperCase();
-                indicator.classList.remove('hidden');
-                log(`DEALER: ${dealer.name} approaches...`, 'text-red-400');
-                dealerSpeak('normal');
-                playerSpeak('start');
-                startRound();
-            }
 
             function startRound() {
                 if (state.playerHp <= 0 || state.dealerHp <= 0) return handleGameEnd();
@@ -3897,12 +4790,23 @@
                 state.deck = createDeck();
                 state.playerHand = [state.deck.pop(), state.deck.pop()];
                 state.dealerHand = [state.deck.pop(), state.deck.pop()];
-                state.communityCards = [state.deck.pop(), state.deck.pop(), state.deck.pop()];
+                state.communityAll = [state.deck.pop(), state.deck.pop(), state.deck.pop(), state.deck.pop(), state.deck.pop()];
+                state.communityCards = state.communityAll.slice(0, 3);
+                state.pokerStage = 0;
+                state.pokerRaise = 0;
+                state.dealerRaise = 0;
+                state.redrawn = false;
+                state.folded = false;
+                state.raised = false;
                 state.damageMultiplier = 1;
                 state.handcuffed = false;
                 state.isProcessing = false;
-                state.cheatNextPoker = false;
                 if (upgrades.autoGlass && !state.playerItems.includes('GLASS')) state.playerItems.push('GLASS');
+                if (hasRelic('SCAVENGER')) giveItem('player', randomItemKey());
+                if (sanity <= 25 && rnd() < 0.5 && !state.playerItems.includes('PHANTOM') && state.playerItems.length < 5) {
+                    state.phantomDisguise = randomItemKey();
+                    state.playerItems.push('PHANTOM');
+                }
                 rollRoundModifier();
                 renderUI();
                 renderCards(false);
@@ -3916,26 +4820,20 @@
                 else btnCheat.classList.add('hidden');
                 const cheatSkills = document.getElementById('cheat-skills');
                 cheatSkills.classList.add('hidden');
-                if (upgrades.unlockCardPalm || upgrades.unlockShellGame || upgrades.unlockPsychOut) {
+                state.usedCheatSkills = [];
+                state.coldRead = false;
+                if (upgrades.unlockColdRead || upgrades.unlockPsychOut) {
                     cheatSkills.classList.remove('hidden');
-                    const palmBtn = document.getElementById('cheat-palm');
-                    const shellBtn = document.getElementById('cheat-shell');
-                    const psychBtn = document.getElementById('cheat-psych');
-                    if (palmBtn) palmBtn.disabled = !upgrades.unlockCardPalm || sanity < 30 || state
-                        .usedCheatSkills.includes('CARD_PALM');
-                    if (shellBtn) shellBtn.disabled = !upgrades.unlockShellGame || sanity < 40 || state
-                        .usedCheatSkills.includes('SHELL_GAME');
-                    if (psychBtn) psychBtn.disabled = !upgrades.unlockPsychOut || sanity < 25 || state
-                        .usedCheatSkills.includes('PSYCH_OUT');
+                    refreshCheatButtons();
                 }
                 toggleGunControls(false);
             }
 
             function createDeck() {
-                let d = [];
-                for (let s of SUITS)
-                    for (let r of RANKS) d.push({ suit: s, rank: r, val: VALUES[r] });
-                return d.sort(() => Math.random() - 0.5);
+                const d = [];
+                for (let su of SUITS)
+                    for (let r of RANKS) d.push({ suit: su, rank: r, val: VALUES[r] });
+                return shuffle(d);
             }
 
             function evalHand(h, c) {
@@ -3964,23 +4862,27 @@
                 let cat, type, rew, tb = kick;
                 if (sfHigh) { cat = 8; type = "Straight Flush"; rew = "TAROT"; tb = sfHigh; }
                 else if (groups[0].n === 4) { cat = 7; type = "Four of a Kind"; rew = "VOODOO"; }
-                else if (groups[0].n === 3 && groups[1] && groups[1].n >= 2) { cat = 6; type = "Full House"; rew = "CIGARETTES"; }
+                else if (groups[0].n === 3 && groups[1] && groups[1].n >= 2) { cat = 6; type = "Full House"; rew = "KNIFE"; }
                 else if (flushVals) { cat = 5; type = "Flush"; rew = "SHIELD"; tb = flushVals.slice(0, 5).reduce((a, v) => a * 15 + v, 0); }
                 else if (stHigh) { cat = 4; type = "Straight"; rew = "INVERTER"; tb = stHigh; }
-                else if (groups[0].n === 3) { cat = 3; type = "Three of a Kind"; rew = "BEER"; }
-                else if (groups[0].n === 2 && groups[1] && groups[1].n === 2) { cat = 2; type = "Two Pair"; rew = "HANDCUFFS"; }
-                else if (groups[0].n === 2) { cat = 1; type = "Pair"; rew = "KNIFE"; }
+                else if (groups[0].n === 3) { cat = 3; type = "Three of a Kind"; rew = "HANDCUFFS"; }
+                else if (groups[0].n === 2 && groups[1] && groups[1].n === 2) { cat = 2; type = "Two Pair"; rew = "CIGARETTES"; }
+                else if (groups[0].n === 2) { cat = 1; type = "Pair"; rew = "BEER"; }
                 else { cat = 0; type = "High Card"; rew = "GLASS"; }
                 return { score: cat * 10000000 + tb, type, rew, cat };
             }
 
             function cheatPoker() {
-                if (Math.random() < 0.25) {
+                if (rnd() < 0.2) {
                     dealerSpeak('caught');
-                    state.playerHp = 0;
-                    setTimeout(handleGameEnd, 1500);
+                    log(tr('KETAHUAN! -1 HP, -15 Sanity.', 'CAUGHT! -1 HP, -15 Sanity.'), 'text-red-600');
+                    dealDamage('player', 1, { noBonus: true, pierce: true });
+                    renderHP();
+                    triggerBlood();
                     SFX.glitch();
-                    updateSanity(-20);
+                    updateSanity(-15);
+                    document.getElementById('btn-cheat').classList.add('hidden');
+                    if (state.playerHp <= 0) setTimeout(handleGameEnd, 800);
                 } else {
                     unlockAchievement('CHEATER');
                     state.playerHand[0] = { suit: '♠', rank: 'A', val: 14 };
@@ -3993,80 +4895,50 @@
                 }
             }
 
+            function refreshCheatButtons() {
+                const readBtn = document.getElementById('cheat-read');
+                const psychBtn = document.getElementById('cheat-psych');
+                if (readBtn) readBtn.disabled = !upgrades.unlockColdRead || sanity < CHEAT_SKILLS.COLD_READ.cost ||
+                    state.usedCheatSkills.includes('COLD_READ') || !pokerPhaseOpen();
+                if (psychBtn) psychBtn.disabled = !upgrades.unlockPsychOut || sanity < CHEAT_SKILLS.PSYCH_OUT.cost ||
+                    state.usedCheatSkills.includes('PSYCH_OUT');
+            }
+
             function useCheatSkill(skillId) {
-                if (state.isProcessing || sanity < CHEAT_SKILLS[skillId].cost) return;
+                const sk = CHEAT_SKILLS[skillId];
+                if (!sk || state.isProcessing || sanity < sk.cost) return;
+                if (skillId === 'COLD_READ' && !pokerPhaseOpen()) return;
                 if (state.usedCheatSkills.includes(skillId)) {
                     log("Skill already used this round!", 'text-red-500');
                     return;
                 }
-                updateSanity(-CHEAT_SKILLS[skillId].cost);
-                CHEAT_SKILLS[skillId].execute();
+                updateSanity(-sk.cost);
+                sk.execute();
                 state.usedCheatSkills.push(skillId);
-                const cheatSkills = document.getElementById('cheat-skills');
-                if (cheatSkills) {
-                    const palmBtn = document.getElementById('cheat-palm');
-                    const shellBtn = document.getElementById('cheat-shell');
-                    const psychBtn = document.getElementById('cheat-psych');
-                    if (palmBtn) palmBtn.disabled = !upgrades.unlockCardPalm || sanity < 30 || state
-                        .usedCheatSkills.includes('CARD_PALM');
-                    if (shellBtn) shellBtn.disabled = !upgrades.unlockShellGame || sanity < 40 || state
-                        .usedCheatSkills.includes('SHELL_GAME');
-                    if (psychBtn) psychBtn.disabled = !upgrades.unlockPsychOut || sanity < 25 || state
-                        .usedCheatSkills.includes('PSYCH_OUT');
-                }
-                if (state.usedCheatSkills.length >= 3) unlockAchievement('CHEAT_MASTER');
+                refreshCheatButtons();
+                if (state.usedCheatSkills.length >= 2) unlockAchievement('CHEAT_MASTER');
             }
 
-            function resolvePokerPhase() {
-                if (state.isProcessing) return;
-                if (state.cheatNextPoker) {
-                    state.playerHand[0] = { suit: '♠', rank: 'A', val: 14 };
-                    state.playerHand[1] = { suit: '♠', rank: 'K', val: 13 };
-                    log("LUCKY CHARM: Perfect hand!", 'text-yellow-500');
-                    state.cheatNextPoker = false;
-                }
-                renderCards(true);
-                SFX.flip();
-                document.getElementById('btn-reveal').classList.add('hidden');
-                document.getElementById('btn-cheat').classList.add('hidden');
-                hideRaise();
-                const p = evalHand(state.playerHand, state.communityCards);
-                const d = evalHand(state.dealerHand, state.communityCards);
-                if (p.score >= d.score) {
-                    state.turn = 'player';
-                    payPokerWin(p);
-                    log(`WIN: ${p.type}`, 'text-green-500');
-                    playerSpeak('winHand');
-                    updateSanity(5);
-                } else {
-                    state.turn = 'dealer';
-                    payPokerLoss(d);
-                    log(`LOSE: ${d.type}`, 'text-red-500');
-                    dealerSpeak('taunt');
-                    playerSpeak('loseHand');
-                    updateSanity(-10);
-                }
-                renderUI();
-                state.isProcessing = true;
-                setTimeout(() => {
-                    state.isProcessing = false;
-                    loadShotgun();
-                }, 2000);
-            }
 
             function loadShotgun() {
                 let max = 8;
                 let tot = Math.min(max, 2 + state.round);
                 let live = Math.max(1, Math.floor(tot / 2));
-                if (Math.random() > 0.5) live++;
+                if (rnd() > 0.5) live++;
                 if (state.heavyLoad) live++;
+                if (ascLevel() >= 4) live++;
                 if (live >= tot) live = tot - 1;
                 let blank = tot - live;
                 state.liveCount = live;
                 state.blankCount = blank;
-                state.chamber = Array(live).fill(true).concat(Array(blank).fill(false)).sort(() => Math.random() - 0.5);
+                state.chamber = shuffle(Array(live).fill(true).concat(Array(blank).fill(false)));
                 applyLoadModifiers();
+                assignShellMods();
                 state.shellRevealed = false; state.shellLie = false;
+                if (sanity >= 85) {
+                    state.shellRevealed = true;
+                    setTimeout(() => log(tr('JERNIH: peluru pertama terungkap sendiri.', 'CLARITY: the first shell reveals itself.'), 'text-cyan-300'), 900);
+                }
                 if (state.phoneMark) { state.phoneMark.i--; if (state.phoneMark.i < 0) state.phoneMark = null; }
                 log(TEXT[currentLang].msg_load, 'text-yellow-600');
                 renderAmmo();
@@ -4085,6 +4957,12 @@
             function startTurn() {
                 if (state.playerHp <= 0) { handleGameEnd(); return; }
                 if (currentDifficulty !== 'ENDLESS' && state.dealerHp <= 0) { handleGameEnd(); return; }
+                if (state.eyeNext && state.chamber.length > 0) {
+                    state.eyeNext = false;
+                    state.shellRevealed = true;
+                    state.shellLie = false;
+                    renderAmmo();
+                }
                 if (currentDifficulty === 'ENDLESS' && state.dealerHp <= 0) {
                     log("DEALER DEFEATED! NEXT ROUND...", 'text-purple-500');
                     state.dealerHp = state.maxDealerHp;
@@ -4115,6 +4993,7 @@
                         updateSanity(5);
                         setTimeout(startRound, 2000);
                     } else {
+                        bonus = Math.floor(bonus * rewardMult()) + (hasRelic('MIDAS') ? 75 : 0);
                         globalMoney += bonus;
                         totalStats.moneyEarned += bonus;
                         saveGame();
@@ -4123,10 +5002,10 @@
                         updateSanity(5);
                         setTimeout(startRound, 2000);
                     }
-                    if (Math.random() < 0.15 && unlockedLore.length < LORE_ENTRIES.length) {
+                    if (rnd() < 0.15 && unlockedLore.length < LORE_ENTRIES.length) {
                         const available = LORE_ENTRIES.filter(l => !unlockedLore.includes(l.id));
                         if (available.length > 0) {
-                            const newLore = available[Math.floor(Math.random() * available.length)];
+                            const newLore = available[Math.floor(rnd() * available.length)];
                             unlockedLore.push(newLore.id);
                             saveGame();
                             log("LORE FRAGMENT FOUND", "text-purple-400");
@@ -4138,6 +5017,7 @@
                 renderUI();
                 if (state.turn === 'player') {
                     log(TEXT[currentLang].msg_your_turn, 'text-green-500');
+                    onPlayerTurnHooks();
                     toggleGunControls(true);
                     startTurnTimer();
                 } else {
@@ -4167,6 +5047,7 @@
                 }
 
                 const dealer = DEALER_PERSONALITIES[currentDealerPersonality];
+                if (dealer.onDealerTurn) dealer.onDealerTurn();
                 const itemToUse = dealer.itemPriority(state.dealerItems, state) ||
                     ((state.dealerItems.includes('SHIELD') && !state.shieldDealer) ? 'SHIELD' : null) ||
                     (state.dealerItems.includes('VOODOO') ? 'VOODOO' : null);
@@ -4193,7 +5074,9 @@
             function processShot(shooter, target) {
                 state.isProcessing = true;
                 toggleGunControls(false);
-                const isLive = state.chamber.shift();
+                const _shell = popShell();
+                const isLive = _shell.live;
+                const shellMod = _shell.mod;
                 if (isLive) state.liveCount--;
                 else state.blankCount--;
                 state.shellRevealed = false; state.shellLie = false;
@@ -4201,7 +5084,7 @@
                 renderAmmo();
                 setTimeout(() => {
                     let next = (shooter === 'player') ? 'dealer' : 'player';
-                    if (isLive) {
+                    if (isLive && shellMod !== 'DUD') {
                         document.body.classList.add('flash-white');
                         document.getElementById('gun-ui-panel').classList.add('shake-hard');
                         SFX.shot();
@@ -4209,32 +5092,33 @@
                             document.body.classList.remove('flash-white');
                             document.getElementById('gun-ui-panel').classList.remove('shake-hard');
                         }, 200);
-                        let dmg = 1 * state.damageMultiplier;
+                        let dmg = 1 * state.damageMultiplier + (shellMod === 'HOLLOW' ? 1 : 0);
+                        const pierceShot = shellMod === 'GHOST';
                         if (target === 'self') {
-                            log(`BOOM! ${shooter} HIT`, 'text-red-600');
+                            log(`BOOM! ${shooter} HIT${shellMod ? ' [' + shellMod + ']' : ''}`, 'text-red-600');
                             triggerBlood();
                             if (shooter === 'player') {
-                                dealDamage('player', dmg);
+                                dealDamage('player', dmg, { pierce: pierceShot });
                                 playerSpeak('shootSelfHit');
                                 triggerMemory();
                                 
                                 updateSanity(-15);
                             } else {
-                                dealDamage('dealer', dmg);
+                                dealDamage('dealer', dmg, { pierce: pierceShot });
                                 totalStats.kills++;
                                 dealerSpeak('hit');
                                 const personality = DEALER_PERSONALITIES[currentDealerPersonality];
                                 if (personality.onPlayerHit) personality.onPlayerHit();
                             }
                         } else {
-                            log(`BOOM! ${target} HIT`, 'text-red-600');
+                            log(`BOOM! ${target} HIT${shellMod ? ' [' + shellMod + ']' : ''}`, 'text-red-600');
                             if (shooter === 'player') {
-                                dealDamage('dealer', dmg);
+                                dealDamage('dealer', dmg, { pierce: pierceShot });
                                 playerSpeak('shootHit');
                                 dealerSpeak('hit');
                                 updateSanity(5);
                             } else {
-                                dealDamage('player', dmg);
+                                dealDamage('player', dmg, { pierce: pierceShot });
                                 dealerSpeak('taunt');
                                 playerSpeak('getHit');
                                 triggerMemory();
@@ -4246,7 +5130,7 @@
                             next = shooter;
                             state.handcuffed = false; }
                     } else {
-                        log(TEXT[currentLang].msg_empty, 'text-gray-500');
+                        log(shellMod === 'DUD' ? tr('MACET! Peluru itu cacat.', 'DUD! The shell was defective.') : TEXT[currentLang].msg_empty, 'text-gray-500');
                         SFX.empty();
                         if (target === 'self') {
                             log("SAFE", 'text-blue-400');
@@ -4279,7 +5163,7 @@
 
             // ---------- USE ITEM ----------
             function useItem(who, key, idx) {
-                if (who === 'player' && (state.isProcessing || state.turn !== 'player')) return;
+                if (who === 'player' && (state.isProcessing || (state.turn !== 'player' && !(['LUCKY_CHARM', 'CIGARETTES', 'SEDATIVE', 'SHIELD'].includes(key) && pokerPhaseOpen())))) return;
                 if (who === 'player') {
                     stopTurnTimer();
                     state.isProcessing = true;
@@ -4300,20 +5184,23 @@
                     if (who === 'player' && item.sanityGain) updateSanity(item.sanityGain);
                     if (key === 'GLASS') {
                         state.shellRevealed = true;
-                        state.shellLie = (who === 'player' && sanity <= 25 && Math.random() < 0.35);
-                        log(who === 'player' ? `INTIP: ${(state.chamber[0] !== state.shellLie)?'LIVE':'BLANK'}` : "DEALER PEEK...",
+                        state.shellLie = (who === 'player' && sanity <= 25 && rnd() < 0.35);
+                        if (who === 'player' && hasRelic('WIDOW_EYE')) state.eyeNext = true;
+                        log(who === 'player' ? `INTIP: ${(state.chamber[0] !== state.shellLie)?'LIVE':'BLANK'}${shellModTag()}` : "DEALER PEEK...",
                             'text-blue-400');
                     } else if (key === 'KNIFE') {
-                        state.damageMultiplier = 2;
+                        state.damageMultiplier = (who === 'player' && hasRelic('BLOOD_PACT')) ? 3 : 2;
+                        if (who === 'player' && hasRelic('BLOOD_PACT')) updateSanity(-10);
                         log("SAWED OFF (2X DMG)", 'text-red-500');
                     } else if (key === 'BEER') {
-                        let s = state.chamber.shift();
+                        const _b = popShell();
+                        let s = _b.live;
                         if (s) state.liveCount--;
                         else state.blankCount--;
                         state.shellRevealed = false; state.shellLie = false;
                 if (state.phoneMark) { state.phoneMark.i--; if (state.phoneMark.i < 0) state.phoneMark = null; }
                         renderAmmo();
-                        log("BEER: EJECTED", 'text-yellow-600');
+                        log(`BEER: EJECTED (${s ? 'LIVE' : 'BLANK'})`, 'text-yellow-600');
                         if (state.chamber.length === 0) { setTimeout(startTurn, 1000); if (who === 'player') state
                                 .isProcessing = false; return; }
                     } else if (key === 'CIGARETTES') {
@@ -4325,8 +5212,12 @@
                         log("SMOKE (+1 HP)", 'text-green-500');
                         renderHP();
                     } else if (key === 'HANDCUFFS') {
-                        state.handcuffed = true;
-                        log("HANDCUFFED", 'text-orange-500');
+                        if (who === 'player' && state.enraged) {
+                            log(tr('Dealer yang mengamuk mematahkan borgolnya!', 'The enraged dealer snaps the cuffs!'), 'text-red-500');
+                        } else {
+                            state.handcuffed = true;
+                            log("HANDCUFFED", 'text-orange-500');
+                        }
                     } else if (key === 'INVERTER') {
                         let c = state.chamber[0];
                         state.chamber[0] = !c;
@@ -4339,39 +5230,25 @@
                     } else if (key === 'SEDATIVE') {
                         log("SEDATIVE: Mind calmed...", 'text-blue-300');
                         flashScreen('blue');
-                    } else if (key === 'MIRROR') {
-                        if (mirrorTimeout) clearTimeout(mirrorTimeout);
-                        if (Math.random() < 0.5) {
-                            renderCards(true);
-                            log("MIRROR: You see their hand...", 'text-blue-400');
-                            mirrorTimeout = setTimeout(() => renderCards(false), 2000);
-                        } else {
-                            log("MIRROR: The reflection lies!", 'text-red-400');
-                        }
-                    } else if (key === 'ADRENALINE') {
-                        if (state.turn === 'dealer') {
-                            state.turn = 'player';
-                            log("ADRENALINE: Heart racing! Your turn!", 'text-red-500');
-                            flashScreen('red');
-                            startTurn();
-                            if (who === 'player') state.isProcessing = false;
-                            return;
-                        }
                     } else if (key === 'LUCKY_CHARM') {
                         state.cheatNextPoker = true;
                         log("CHARM: Luck is on your side...", 'text-yellow-500');
                     } else if (key === 'TAROT') {
-                        const card = TAROT_EFFECTS[Math.floor(Math.random() * TAROT_EFFECTS.length)];
+                        const card = TAROT_EFFECTS[Math.floor(rnd() * TAROT_EFFECTS.length)];
                         log(`TAROT: ${card.name} – ${card.desc}`, 'text-purple-400');
                         card.effect();
                         unlockAchievement('TAROT_INITIATE');
+                    } else if (key === 'PHANTOM') {
+                        log(tr('Item itu tidak pernah ada...', 'It was never there...'), 'text-purple-400');
+                        updateSanity(-3);
+                        flashScreen('red');
                     } else if (key === 'SHIELD') {
                         if (who === 'player') state.shieldPlayer = true; else state.shieldDealer = true;
                         log(who === 'player' ? tr("PERISAI AKTIF", "SHIELD UP") : "DEALER SHIELDS UP", 'text-cyan-400');
                         renderAmmo();
                     } else if (key === 'PHONE') {
                         if (state.chamber.length > 0) {
-                            const pi = Math.floor(Math.random() * state.chamber.length);
+                            const pi = Math.floor(rnd() * state.chamber.length);
                             state.phoneMark = { i: pi, live: state.chamber[pi] };
                             log(tr(`TELEPON: peluru #${pi + 1} adalah ${state.chamber[pi] ? 'LIVE' : 'BLANK'}`,
                                 `PHONE: shell #${pi + 1} is ${state.chamber[pi] ? 'LIVE' : 'BLANK'}`), 'text-lime-400');
@@ -4406,6 +5283,12 @@
             }
 
             function handleGameEnd() {
+                if (state.gauntlet && state.playerHp > 0 && state.dealerHp <= 0 && state.gauntlet.stage < state.gauntlet.total - 1) {
+                    gauntletFightWon();
+                    return;
+                }
+                if (state.ended) return;
+                state.ended = true;
                 const s = document.getElementById('result-screen');
                 const t = document.getElementById('result-title');
                 const m = document.getElementById('result-msg');
@@ -4420,9 +5303,15 @@
                     } else {
                         let p = 500;
                         if (currentDifficulty === 'HARD') p = 1000;
-                        if (currentDifficulty === 'MERCENARY') p = 7500;
-                        if (currentDifficulty === 'BOSS') p = 5000;
-                        if (currentDifficulty === 'ANCIENT') p = 7500;
+                        if (currentDifficulty === 'MERCENARY') p = 4000;
+                        if (currentDifficulty === 'BOSS') p = 10000;
+                        if (currentDifficulty === 'ANCIENT') p = 18000;
+                        if (currentDifficulty === 'GAUNTLET') p = 2500 + 300 * (state.gauntlet ? state.gauntlet.relics.length : 0);
+                        p = Math.floor(p * rewardMult());
+                        if (isDaily) {
+                            if (meta.dailyPaid === dailySeed()) p = 0;
+                            else meta.dailyPaid = dailySeed();
+                        }
                         globalMoney += p;
                         totalStats.moneyEarned += p;
                         totalStats.kills++;
@@ -4432,6 +5321,7 @@
                         t.className = "text-6xl mb-4 text-green-500 font-bold glitch";
                         m.innerText = `${TEXT[currentLang].res_win_msg}${p}`;
                         dealerSpeak('win');
+                        finalWinHooks(p);
                         if (state.shotsAtDealer === 0) unlockAchievement('PACIFIST');
                         if (state.damageTaken === 0) unlockAchievement('FLAWLESS');
                         if (state.shotsAtDealer === 0 && state.selfShots >= 3) unlockAchievement('PSYCHOPATH');
@@ -4441,8 +5331,8 @@
                 } else {
                     deathCount++;
                     if (deathCount >= 10) unlockAchievement('DEAD_MAN');
-                    if (Math.random() < 0.20) {
-                        const pick = DISTURBING_WORDS[Math.floor(Math.random() * DISTURBING_WORDS.length)];
+                    if (rnd() < 0.20) {
+                        const pick = DISTURBING_WORDS[Math.floor(rnd() * DISTURBING_WORDS.length)];
                         showDisturbingOverlay(pick.toUpperCase());
                     }
                     t.innerText = TEXT[currentLang].res_die;
@@ -4451,9 +5341,19 @@
                     dealerSpeak('lose');
                     SFX.lose();
                     if (currentDifficulty === 'ENDLESS') {
+                        const eb = Math.floor(state.endlessScore * 150 * rewardMult());
+                        if (eb > 0) {
+                            globalMoney += eb;
+                            totalStats.moneyEarned += eb;
+                            setTimeout(() => {
+                                const mm = document.getElementById('result-msg');
+                                if (mm) mm.innerHTML += `<div class="text-xl mt-2 text-yellow-400">+$${eb}</div>`;
+                            }, 0);
+                        }
                         m.innerHTML = `SURVIVED: ${state.endlessScore} ROUNDS<br>HIGH SCORE: ${endlessHighScore}`;
                     }
                 }
+                recordRunEnd(m);
                 addRunSummary(m);
                 hideModChip();
                 s.classList.remove('hidden');
@@ -4462,6 +5362,7 @@
             }
 
             function returnToMenu() {
+                seedRng(null);
                 hideModChip();
                 document.getElementById('result-screen').classList.add('hidden');
                 document.getElementById('game-ui').classList.add('hidden');
@@ -4479,7 +5380,7 @@
                 for (let i = 0; i < 5; i++) {
                     const k = state.playerItems[i];
                     if (k) {
-                        const d = ITEMS[k];
+                        const d = ITEMS[k === 'PHANTOM' ? (state.phantomDisguise || 'GLASS') : k];
                         const iName = (currentLang === 'id') ? d.id.n : d.en.n;
                         const iDesc = (currentLang === 'id') ? d.id.d : d.en.d;
                         const b = document.createElement('button');
@@ -4552,7 +5453,7 @@
                     state.playerHand.forEach(c => ph.appendChild(createCardEl(c, false))); }
                 const dh = document.getElementById('dealer-hand');
                 if (dh) { dh.innerHTML = '';
-                    state.dealerHand.forEach(c => dh.appendChild(createCardEl(c, !rev))); }
+                    state.dealerHand.forEach(c => dh.appendChild(createCardEl(c, !(rev || state.coldRead)))); }
                 const ch = document.getElementById('community-cards');
                 if (ch) { ch.innerHTML = '';
                     state.communityCards.forEach(c => ch.appendChild(createCardEl(c, false))); }
@@ -4777,8 +5678,7 @@
                         const i = ['Q', 'W', 'E', 'R', 'T'];
                         let x = i.indexOf(k);
                         if (x > -1 && state.playerItems[x]) useItem('player', state.playerItems[x], x);
-                        if (k === 'P' && upgrades.unlockCardPalm) useCheatSkill('CARD_PALM');
-                        if (k === 'S' && upgrades.unlockShellGame) useCheatSkill('SHELL_GAME');
+                        if (k === 'V' && upgrades.unlockColdRead) useCheatSkill('COLD_READ');
                         if (k === 'O' && upgrades.unlockPsychOut) useCheatSkill('PSYCH_OUT');
                     }
                 } else if ((activeGame === 'CUTSCENE' || activeGame === 'INTRO') && k === ' ') endIntro();
@@ -4859,8 +5759,11 @@
             window.hiloGuess = hiloGuess;
             window.hiloCashOut = hiloCashOut;
             window.hiloReset = hiloReset;
+            window.cycleAscension = cycleAscension;
+            window.redrawPoker = redrawPoker;
+            window.foldPoker = foldPoker;
 
-            console.log("Dead Man's Hand v7.0 – The Last Table loaded.");
+            console.log("Malicex v8.1 loaded.");
         })();
     </script>
 </body>
