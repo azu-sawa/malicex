@@ -171,4 +171,5 @@ window.redrawPoker = redrawPoker;
 
 window.foldPoker = foldPoker;
 
-console.log("Malicex v8.1 loaded.");
+hudInit();
+console.log("Malicex v9.2 loaded.");

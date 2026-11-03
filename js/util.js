@@ -10,7 +10,12 @@ function rewardMult() { return (1 + 0.2 * ascLevel()) * (state.pact === 'THIN_IC
 // ---------- UTILITIES ----------
 function log(msg, className) {
     const el = document.getElementById('log-area');
-    if (el) el.innerHTML = `<span class="${className}">${msg}</span>`;
+    if (!el) return;
+    el.innerHTML = `<span class="${className}">${msg}</span>`;
+    // floating toast: restart the 2.5s fade every time a new line arrives
+    el.classList.remove('log-toast');
+    void el.offsetWidth;
+    el.classList.add('log-toast');
 }
 
 function shakeElement(e) { if (!e) return;

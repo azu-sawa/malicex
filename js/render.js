@@ -24,8 +24,8 @@ function renderUI() {
         } else {
             const emptySlot = document.createElement('div');
             emptySlot.className =
-                'relative border border-gray-600 bg-gray-900 px-3 py-2 text-lg flex items-center justify-center gap-2 font-vt323 opacity-50';
-            emptySlot.innerHTML = '<span class="text-gray-600">[EMPTY]</span>';
+                'item-empty';
+            emptySlot.innerHTML = '';
             r.appendChild(emptySlot);
         }
     }
@@ -59,16 +59,18 @@ function renderHP() {
 
 function renderAmmo() {
     const cd = document.getElementById('chamber-display');
-    if (cd) cd.innerHTML = state.chamber.map((l, i) => {
+    if (cd && !HUD.loading) cd.innerHTML = state.chamber.map((l, i) => {
         let c = 'unknown';
         if (i === 0 && state.shellRevealed) c = (l !== !!state.shellLie) ? 'live' : 'blank';
         else if (state.phoneMark && state.phoneMark.i === i) c = state.phoneMark.live ? 'live' : 'blank';
         return `<div class="shell ${c}"></div>`;
     }).join('');
-    const lt = document.getElementById('live-txt');
-    if (lt) lt.innerText = state.fog ? '?' : state.liveCount;
-    const bt = document.getElementById('blank-txt');
-    if (bt) bt.innerText = state.fog ? '?' : state.blankCount;
+    if (!HUD.loading) {
+        const lt = document.getElementById('live-txt');
+        if (lt) lt.innerText = state.fog ? '?' : state.liveCount;
+        const bt = document.getElementById('blank-txt');
+        if (bt) bt.innerText = state.fog ? '?' : state.blankCount;
+    }
     const dmg = document.getElementById('dmg-indicator');
     if (dmg) dmg.classList.toggle('hidden', state.damageMultiplier === 1);
     const cuff = document.getElementById('handcuff-indicator');
@@ -93,7 +95,7 @@ function renderCards(rev) {
 
 function createCardEl(c, h) {
     const d = document.createElement('div');
-    d.innerHTML = (h || !c) ? '' : `<span>${c.rank}</span><span class="text-3xl">${c.suit}</span>`;
+    d.innerHTML = (h || !c) ? '' : `<span>${c.rank}</span><span class="text-3xl">${suitPx(c.suit)}</span>`;
     d.className = `card ${h?'hidden-card':''} ${c&&['♥','♦'].includes(c.suit)?'red':''}`;
     return d;
 }

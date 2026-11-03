@@ -12,23 +12,23 @@ function pokerPhaseOpen() {
 
 function updatePokerButtons() {
     const rv = document.getElementById('btn-reveal');
-    if (rv) rv.innerHTML = `${stageLabel()} <span class="text-sm opacity-50 ml-2">[SPACE]</span>`;
+    if (rv) rv.innerHTML = `${stageLabel()} <span class="khint">[SPACE]</span>`;
     const rb = document.getElementById('btn-raise');
     if (rb) {
         rb.classList.toggle('hidden', state.pokerRaise >= 2 || state.isProcessing);
         rb.disabled = !canSpendSanity(10);
-        rb.innerHTML = `${'RAISE'} (${state.pokerRaise}/2): -10 SANITY <span class="text-sm opacity-50 ml-2">[B]</span>`;
+        rb.innerHTML = `RAISE ${state.pokerRaise}/2 <span class="btn-cost">-10 SAN</span> <span class="khint">[B]</span>`;
     }
     const rd = document.getElementById('btn-redraw');
     if (rd) {
         rd.classList.toggle('hidden', state.redrawn || state.pokerStage > 1 || state.isProcessing);
         rd.disabled = !canSpendSanity(8);
-        rd.innerHTML = `${'REDRAW'} -8 <span class="text-sm opacity-50 ml-2">[D]</span>`;
+        rd.innerHTML = `REDRAW <span class="btn-cost">-8 SAN</span> <span class="khint">[D]</span>`;
     }
     const fd = document.getElementById('btn-fold');
     if (fd) {
         fd.classList.toggle('hidden', state.pokerStage < 1 || state.isProcessing);
-        fd.innerHTML = `${'FOLD'} <span class="text-sm opacity-50 ml-2">[F]</span>`;
+        fd.innerHTML = `FOLD <span class="khint">[F]</span>`;
     }
 }
 

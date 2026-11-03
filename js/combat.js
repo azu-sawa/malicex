@@ -45,37 +45,37 @@ function checkEnrage() {
 
 // ---------- ROUND MODIFIERS ----------
 const ROUND_MODIFIERS = [{
-        id: 'BLOOD_MOON', icon: '🌑', color: '#ff3333',
+        id: 'BLOOD_MOON', icon: px('moon'), color: '#ff3333',
         en_n: 'BLOOD MOON',
         en_d: 'All live shots deal +1 damage.',
         apply: () => { state.roundDmgBonus = 1; }
     },
     {
-        id: 'FOG', icon: '🌫️', color: '#9ca3af',
+        id: 'FOG', icon: px('fog'), color: '#9ca3af',
         en_n: 'FOG',
         en_d: 'Live/blank counts are hidden.',
         apply: () => { state.fog = true; }
     },
     {
-        id: 'BLESSING', icon: '✨', color: '#facc15',
+        id: 'BLESSING', icon: px('sparkle'), color: '#facc15',
         en_n: 'BLESSING',
         en_d: 'You receive 1 free random item.',
         apply: () => { giveItem('player', randomItemKey()); }
     },
     {
-        id: 'HEAVY', icon: '⛓️', color: '#fb923c',
+        id: 'HEAVY', icon: px('chain'), color: '#fb923c',
         en_n: 'HEAVY LOAD',
         en_d: 'More live shells in the chamber.',
         apply: () => { state.heavyLoad = true; }
     },
     {
-        id: 'MERCY', icon: '🕊️', color: '#67e8f9',
+        id: 'MERCY', icon: px('dove'), color: '#67e8f9',
         en_n: 'MERCY',
         en_d: 'The first shell is guaranteed BLANK.',
         apply: () => { state.mercy = true; }
     },
     {
-        id: 'WHISPERS', icon: '👂', color: '#c084fc',
+        id: 'WHISPERS', icon: px('ear'), color: '#c084fc',
         en_n: 'WHISPERS',
         en_d: 'Sanity -10, but winning poker grants +1 item.',
         apply: () => { updateSanity(-10);
@@ -104,7 +104,7 @@ function updateModChip(mod) {
     chip.style.display = 'block';
     chip.style.borderColor = mod.color;
     chip.style.color = mod.color;
-    chip.innerText = `${mod.icon} ${mod.en_n}`;
+    chip.innerHTML = `${mod.icon} ${mod.en_n}`;
 }
 
 function hideModChip() {
@@ -425,13 +425,12 @@ function loadShotgun() {
     }
     if (state.phoneMark) { state.phoneMark.i--; if (state.phoneMark.i < 0) state.phoneMark = null; }
     log(TEXT.en.msg_load, 'text-yellow-600');
-    renderAmmo();
-    SFX.load();
     state.isProcessing = true;
+    const loadMs = hudPlayShellLoad();   // shells drop in one by one (hud.js)
     setTimeout(() => {
         state.isProcessing = false;
         startTurn();
-    }, 2000);
+    }, loadMs);
 }
 
 function startPhase() {

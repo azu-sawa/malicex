@@ -67,7 +67,7 @@ function updateTexts() {
     if (document.getElementById('bj-btn-exit')) document.getElementById('bj-btn-exit').innerText = T.bj_back;
     if (document.getElementById('bj-you-lbl')) document.getElementById('bj-you-lbl').innerText = T.bj_you;
     if (document.getElementById('cup-title')) document.getElementById('cup-title').innerText = T.cup_title;
-    if (document.getElementById('cup-subtitle')) document.getElementById('cup-subtitle').innerText = T
+    if (document.getElementById('cup-subtitle')) document.getElementById('cup-subtitle').innerHTML = T
         .cup_sub;
     if (document.getElementById('cup-msg')) document.getElementById('cup-msg').innerText = T.cup_msg;
     if (document.getElementById('cup-bet-lbl')) document.getElementById('cup-bet-lbl').innerText = T.bj_bet;

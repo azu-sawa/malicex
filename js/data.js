@@ -27,7 +27,7 @@ const TEXT = {
         bj_back: "BACK",
         bj_you: "YOU",
         cup_title: "SKULL GUESS",
-        cup_sub: "FIND THE EYE (👁️)",
+        cup_sub: "FIND THE EYE (" + px('eye') + ")",
         cup_msg: "PLACE BET TO START",
         hp_you: "YOUR LIFE",
         lbl_shoot_d: "SHOOT ENEMY",
@@ -73,69 +73,69 @@ const VALUES = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
 // ---------- ITEMS (with BLUFF from v6.0) ----------
 const ITEMS = {
     GLASS: { en: { n: "Glass", d: "Peek shell in chamber." },
-        color: "text-blue-400", border: "border-blue-900", icon: "👁️", sanityCost: 0, sanityGain: 0 },
+        color: "text-blue-400", border: "border-blue-900", icon: px('eye'), sanityCost: 0, sanityGain: 0 },
     KNIFE: { en: { n: "Saw",
             d: "Next shot deals 2x Damage." }, color: "text-red-500", border: "border-red-900",
-        icon: "🔪", sanityCost: 0, sanityGain: 0 },
+        icon: px('knife'), sanityCost: 0, sanityGain: 0 },
     BEER: { en: { n: "Beer",
             d: "Eject the next shell and see what it was." }, color: "text-yellow-600", border: "border-yellow-900",
-        icon: "🍺", sanityCost: 0, sanityGain: 2 },
+        icon: px('beer'), sanityCost: 0, sanityGain: 2 },
     CIGARETTES: { en: { n: "Cigarettes", d: "+1 HP. Relax." },
-        color: "text-teal-400", border: "border-teal-900", icon: "🚬", sanityCost: 0, sanityGain: 5 },
+        color: "text-teal-400", border: "border-teal-900", icon: px('cigarette'), sanityCost: 0, sanityGain: 5 },
     HANDCUFFS: { en: { n: "Handcuffs",
             d: "Dealer skips 1 turn." }, color: "text-orange-500", border: "border-orange-900",
-        icon: "🔗", sanityCost: 0, sanityGain: 0 },
+        icon: px('chain'), sanityCost: 0, sanityGain: 0 },
     INVERTER: { en: { n: "Inverter",
             d: "Flip Live/Blank status." }, color: "text-purple-500", border: "border-purple-900",
-        icon: "⚡", sanityCost: 0, sanityGain: 0 },
+        icon: px('bolt'), sanityCost: 0, sanityGain: 0 },
     SEDATIVE: { en: { n: "Sedative",
             d: "+25 Sanity. Calm mind." }, color: "text-blue-300", border: "border-blue-700",
-        icon: "💊", sanityCost: 0, sanityGain: 25 },
+        icon: px('pill'), sanityCost: 0, sanityGain: 25 },
     LUCKY_CHARM: { en: { n: "Lucky Charm",
             d: "Auto-win next poker (1 use)" }, color: "text-yellow-300", border: "border-yellow-600",
-        icon: "🍀", sanityCost: 0, sanityGain: 0 },
+        icon: px('clover'), sanityCost: 0, sanityGain: 0 },
     TAROT: { en: { n: "Tarot Deck",
             d: "Draw a random card with mystical effects." }, color: "text-purple-400",
-        border: "border-purple-800", icon: "🃏", sanityCost: 20, sanityGain: 0 },
+        border: "border-purple-800", icon: px('card'), sanityCost: 20, sanityGain: 0 },
     BLUFF: { en: { n: "Bluff",
             d: "Confuse dealer AI for 2 turns. (-10 Sanity)" }, color: "text-pink-400",
-        border: "border-pink-900", icon: "🎭", sanityCost: 10, sanityGain: 0 },
+        border: "border-pink-900", icon: px('mask'), sanityCost: 10, sanityGain: 0 },
     SHIELD: { en: { n: "Shield",
             d: "Block the next live hit." }, color: "text-cyan-400", border: "border-cyan-900",
-        icon: "🛡️", sanityCost: 0, sanityGain: 0 },
+        icon: px('shield'), sanityCost: 0, sanityGain: 0 },
     PHONE: { en: {
             n: "Dead Phone", d: "A voice whispers one random shell. (-5 Sanity)" },
-        color: "text-lime-400", border: "border-lime-900", icon: "📞", sanityCost: 5, sanityGain: 0 },
+        color: "text-lime-400", border: "border-lime-900", icon: px('phone'), sanityCost: 5, sanityGain: 0 },
     VOODOO: { en: {
             n: "Voodoo Doll", d: "Dealer -1 HP, pierces shields. (-10 Sanity)" },
-        color: "text-fuchsia-400", border: "border-fuchsia-900", icon: "🪆", sanityCost: 10, sanityGain: 0 },
+        color: "text-fuchsia-400", border: "border-fuchsia-900", icon: px('voodoo'), sanityCost: 10, sanityGain: 0 },
     PHANTOM: { en: { n: "Phantom", d: "Something that was never there." },
-        color: "text-gray-400", border: "border-gray-700", icon: "👻", sanityCost: 0, sanityGain: 0 }
+        color: "text-gray-400", border: "border-gray-700", icon: px('ghost'), sanityCost: 0, sanityGain: 0 }
 };
 
 // ---------- SHOP CATALOG ----------
 const SHOP_CATALOG = [
-    { id: 'crate', price: 100, isCrate: true, color: 'text-green-500', icon: '📦', en_n: "MYSTERY CRATE", en_d: "1 Random Item" },
-    { id: 'aceSleeve', price: 1000, color: 'text-purple-400', icon: '🃏', en_n: "ACE SLEEVE", en_d: "Swap in an Ace (20% caught: -1 HP)" },
-    { id: 'extraHp', price: 3500, color: 'text-green-400', icon: '🦴', en_n: "TITANIUM RIBS", en_d: "+1 MAX HP (Permanent)" },
-    { id: 'startCigs', price: 2000, color: 'text-teal-400', icon: '🚬', en_n: "LUNGS IMPLANT", en_d: "Start with CIGS" },
-    { id: 'startKnife', price: 3000, color: 'text-red-500', icon: '🔪', en_n: "ARM BLADE", en_d: "Start with KNIFE" },
-    { id: 'autoGlass', price: 7000, color: 'text-blue-500', icon: '👁️', en_n: "CYBER EYE", en_d: "Auto GLASS per round" },
-    { id: 'startInverter', price: 2500, color: 'text-purple-500', icon: '⚡', en_n: "VOLTAGE MOD", en_d: "Start with INVERTER" },
-    { id: 'weakDealer', price: 8000, color: 'text-purple-600', icon: '☠️', en_n: "NEUROTOXIN", en_d: "-1 MAX HP Dealer" },
-    { id: 'sedativePack', price: 300, color: 'text-blue-300', icon: '💊', en_n: "SEDATIVE PACK", en_d: "3x Sedative" },
-    { id: 'unlockColdRead', price: 2000, color: 'text-cyan-400', icon: '🔎', en_n: "COLD READ", en_d: "Skill: see the dealer's hole cards (-20 Sanity)" },
-    { id: 'unlockPsychOut', price: 2500, color: 'text-pink-400', icon: '👁️', en_n: "PSYCH OUT", en_d: "Unlock Psych Out" },
-    { id: 'tarotDeck', price: 500, color: 'text-purple-400', icon: '🃏', en_n: "TAROT DECK",
+    { id: 'crate', price: 100, isCrate: true, color: 'text-green-500', icon: px('crate'), en_n: "MYSTERY CRATE", en_d: "1 Random Item" },
+    { id: 'aceSleeve', price: 1000, color: 'text-purple-400', icon: px('card'), en_n: "ACE SLEEVE", en_d: "Swap in an Ace (20% caught: -1 HP)" },
+    { id: 'extraHp', price: 3500, color: 'text-green-400', icon: px('bone'), en_n: "TITANIUM RIBS", en_d: "+1 MAX HP (Permanent)" },
+    { id: 'startCigs', price: 2000, color: 'text-teal-400', icon: px('cigarette'), en_n: "LUNGS IMPLANT", en_d: "Start with CIGS" },
+    { id: 'startKnife', price: 3000, color: 'text-red-500', icon: px('knife'), en_n: "ARM BLADE", en_d: "Start with KNIFE" },
+    { id: 'autoGlass', price: 7000, color: 'text-blue-500', icon: px('eye'), en_n: "CYBER EYE", en_d: "Auto GLASS per round" },
+    { id: 'startInverter', price: 2500, color: 'text-purple-500', icon: px('bolt'), en_n: "VOLTAGE MOD", en_d: "Start with INVERTER" },
+    { id: 'weakDealer', price: 8000, color: 'text-purple-600', icon: px('skull'), en_n: "NEUROTOXIN", en_d: "-1 MAX HP Dealer" },
+    { id: 'sedativePack', price: 300, color: 'text-blue-300', icon: px('pill'), en_n: "SEDATIVE PACK", en_d: "3x Sedative" },
+    { id: 'unlockColdRead', price: 2000, color: 'text-cyan-400', icon: px('magnifier'), en_n: "COLD READ", en_d: "Skill: see the dealer's hole cards (-20 Sanity)" },
+    { id: 'unlockPsychOut', price: 2500, color: 'text-pink-400', icon: px('eye'), en_n: "PSYCH OUT", en_d: "Unlock Psych Out" },
+    { id: 'tarotDeck', price: 500, color: 'text-purple-400', icon: px('card'), en_n: "TAROT DECK",
         en_d: "Cursed tarot cards. Use at your own risk." },
-    { id: 'shieldPack', price: 500, grant: ['SHIELD', 'SHIELD'], color: 'text-cyan-400', icon: '🛡️',
+    { id: 'shieldPack', price: 500, grant: ['SHIELD', 'SHIELD'], color: 'text-cyan-400', icon: px('shield'),
         en_n: "SHIELD PACK",
         en_d: "2x Shield for next run" },
-    { id: 'voodooDoll', price: 700, grant: ['VOODOO'], color: 'text-fuchsia-400', icon: '🪆',
+    { id: 'voodooDoll', price: 700, grant: ['VOODOO'], color: 'text-fuchsia-400', icon: px('voodoo'),
         en_n: "VOODOO DOLL",
         en_d: "1x Voodoo Doll for next run" },
-    { id: 'ironMind', price: 3000, color: 'text-blue-300', icon: '🧠', en_n: "IRON MIND", en_d: "Sanity losses reduced by 25%" },
-    { id: 'startShield', price: 3000, color: 'text-cyan-400', icon: '🛡️', en_n: "KEVLAR SKIN", en_d: "Start with a SHIELD" },
+    { id: 'ironMind', price: 3000, color: 'text-blue-300', icon: px('brain'), en_n: "IRON MIND", en_d: "Sanity losses reduced by 25%" },
+    { id: 'startShield', price: 3000, color: 'text-cyan-400', icon: px('shield'), en_n: "KEVLAR SKIN", en_d: "Start with a SHIELD" },
 ];
 
 // ---------- EXPANDED TAROT EFFECTS (v6.0 + v5.4 merged) ----------
@@ -244,7 +244,7 @@ const CHEAT_SKILLS = {
         name: "Cold Read",
         cost: 20,
         effect: "See the dealer's hole cards until showdown",
-        icon: "🔎",
+        icon: px('magnifier'),
         execute: () => {
             state.coldRead = true;
             renderCards(false);
@@ -256,7 +256,7 @@ const CHEAT_SKILLS = {
         name: "Psych Out",
         cost: 20,
         effect: "Dealer hesitates on his next turn",
-        icon: "👁️",
+        icon: px('eye'),
         execute: () => {
             state.bluffTurns = Math.max(state.bluffTurns || 0, 1);
             const bi = document.getElementById('bluff-indicator');
@@ -313,7 +313,7 @@ function renderAchievements() {
         const div = document.createElement('div');
         div.className = `ach-item ${isUnlocked ? 'unlocked' : 'locked'}`;
         div.innerHTML = `
-                <div class="ach-item-icon">${isUnlocked ? '🏆' : '🔒'}</div>
+                <div class="ach-item-icon">${isUnlocked ? px('trophy') : px('lock')}</div>
                 <div class="ach-text">
                     <h4>${isUnlocked ? ach.title : '???'}</h4>
                     <p>${isUnlocked ? ach.desc : 'Terkunci'}</p>

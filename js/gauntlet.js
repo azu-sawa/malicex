@@ -2,28 +2,28 @@
 
 // ---------- RELICS ----------
 const RELICS = {
-    IRON_LUNG: { icon: '🫁', en_n: 'Iron Lung',
+    IRON_LUNG: { icon: px('lungs'), en_n: 'Iron Lung',
         en_d: '+1 max HP and heal 1.',
         onPick: () => { state.maxPlayerHp++;
             state.playerHp = Math.min(state.maxPlayerHp, state.playerHp + 1);
             renderHP(); } },
-    RUSTY: { icon: '🔩', en_n: 'Rusty Barrel',
+    RUSTY: { icon: px('nut'), en_n: 'Rusty Barrel',
         en_d: 'The first shell each round is always BLANK.' },
-    SCAVENGER: { icon: '🎒', en_n: 'Scavenger',
+    SCAVENGER: { icon: px('backpack'), en_n: 'Scavenger',
         en_d: 'Start every round with a random item.' },
-    LAST_BREATH: { icon: '🫀', en_n: 'Last Breath',
+    LAST_BREATH: { icon: px('heart'), en_n: 'Last Breath',
         en_d: 'Once per fight, a lethal hit leaves you at 1 HP.' },
-    WIDOW_EYE: { icon: '👁️', en_n: "Widow's Eye",
+    WIDOW_EYE: { icon: px('eye'), en_n: "Widow's Eye",
         en_d: 'After using Glass, the following shell is revealed too.' },
     POKER_HEART: { icon: '♥️', en_n: 'Poker Heart',
         en_d: 'Winning poker heals 1 HP.' },
-    MIDAS: { icon: '🪙', en_n: 'Midas Touch',
+    MIDAS: { icon: px('coin'), en_n: 'Midas Touch',
         en_d: 'Every cleared round pays +$75.' },
-    BLOOD_PACT: { cursed: true, icon: '🩸', en_n: 'Blood Pact',
+    BLOOD_PACT: { cursed: true, icon: px('drop'), en_n: 'Blood Pact',
         en_d: 'Knife deals 3x damage, but costs 10 Sanity.' },
-    GREED: { cursed: true, icon: '💰', en_n: 'Greed',
+    GREED: { cursed: true, icon: px('moneybag'), en_n: 'Greed',
         en_d: 'Poker rewards doubled, but ties go to the dealer.' },
-    GLASS_CANNON: { cursed: true, icon: '💥', en_n: 'Glass Cannon',
+    GLASS_CANNON: { cursed: true, icon: px('burst'), en_n: 'Glass Cannon',
         en_d: 'All damage +1, for you and the dealer.' }
 };
 
@@ -106,11 +106,11 @@ function eventResult(title, text) {
 
 // ---------- RUN PACTS (optional curses) ----------
 const PACTS = {
-    BLOOD_MONEY: { icon: '🩸', en_n: 'BLOOD MONEY',
+    BLOOD_MONEY: { icon: px('drop'), en_n: 'BLOOD MONEY',
         en_d: '-1 max HP. Receive $500 now.' },
-    HOLLOW_MIND: { icon: '🕳️', en_n: 'HOLLOW MIND',
+    HOLLOW_MIND: { icon: px('hole'), en_n: 'HOLLOW MIND',
         en_d: 'Start at 50 Sanity, but gain a starting bonus (relic / 2 items).' },
-    THIN_ICE: { icon: '🧊', en_n: 'THIN ICE',
+    THIN_ICE: { icon: px('ice'), en_n: 'THIN ICE',
         en_d: 'Dealers +1 HP, all money rewards x1.5.' }
 };
 
@@ -122,7 +122,7 @@ function openPactScreen(cb) {
             hideEventScreen();
             cb(); }
     }));
-    choices.unshift({ icon: '✖', label: 'NO PACT', desc: 'Play it straight.',
+    choices.unshift({ icon: px('cross'), label: 'NO PACT', desc: 'Play it straight.',
         cb: () => { pendingPact = null;
             hideEventScreen();
             cb(); } });
@@ -238,14 +238,14 @@ function offerRelicChoice() {
 function offerEvent() {
     const types = shuffle(['REST', 'SHOP', 'GAMBLE', 'CURSE']).slice(0, 3);
     const defs = {
-        REST: { icon: '🛏️', label: 'REST', desc: 'Heal 2 HP, +20 Sanity.',
+        REST: { icon: px('bed'), label: 'REST', desc: 'Heal 2 HP, +20 Sanity.',
             cb: () => { state.playerHp = Math.min(state.maxPlayerHp, state.playerHp + 2);
                 updateSanity(20);
                 renderHP();
                 beginNextFight(); } },
-        SHOP: { icon: '🕯️', label: 'BLACK MARKET', desc: 'Spend your money.',
+        SHOP: { icon: px('candle'), label: 'BLACK MARKET', desc: 'Spend your money.',
             cb: () => openBlackMarket() },
-        GAMBLE: { icon: '🎲', label: 'GAMBLE', desc: '50%: free relic. 50%: -1 HP & -15 Sanity.',
+        GAMBLE: { icon: px('dice'), label: 'GAMBLE', desc: '50%: free relic. 50%: -1 HP & -15 Sanity.',
             cb: () => {
                 if (rnd() < 0.5) {
                     const r = pickRelics(1, NORMAL_RELICS);
@@ -265,7 +265,7 @@ function offerEvent() {
                     eventResult('UNLUCKY', 'You lose 1 HP and 15 Sanity.');
                 }
             } },
-        CURSE: { icon: '☠️', label: 'CURSED RELIC', desc: 'Great power, great price. +$300.',
+        CURSE: { icon: px('skull'), label: 'CURSED RELIC', desc: 'Great power, great price. +$300.',
             cb: () => openCurseChoice() }
     };
     showEventScreen('BEFORE THE NEXT TABLE', 'Choose one path.',
@@ -283,19 +283,19 @@ function openCurseChoice() {
             saveGame();
             beginNextFight(); }
     }));
-    choices.push({ icon: '✋', label: 'REFUSE', desc: '', cb: beginNextFight });
+    choices.push({ icon: px('hand'), label: 'REFUSE', desc: '', cb: beginNextFight });
     showEventScreen('A WHISPER FROM THE DARK',
         offers.length ? 'Take it, or walk away.' : 'Nothing is left to offer.', choices);
 }
 
 function openBlackMarket() {
     const offers = [
-        { icon: '🎁', label: 'Random item', price: 60, needsSlot: true, desc: 'Get 1 random item.',
+        { icon: px('gift'), label: 'Random item', price: 60, needsSlot: true, desc: 'Get 1 random item.',
             cb: () => giveItem('player', randomItemKey()) },
-        { icon: '🩹', label: 'Bandage', price: 100, desc: 'Heal 2 HP.',
+        { icon: px('bandage'), label: 'Bandage', price: 100, desc: 'Heal 2 HP.',
             cb: () => { state.playerHp = Math.min(state.maxPlayerHp, state.playerHp + 2);
                 renderHP(); } },
-        { icon: '🛡️', label: 'Shield', price: 90, needsSlot: true, desc: 'Get 1 Shield.',
+        { icon: px('shield'), label: 'Shield', price: 90, needsSlot: true, desc: 'Get 1 Shield.',
             cb: () => giveItem('player', 'SHIELD') }
     ];
     const choices = offers.map(o => ({
@@ -310,7 +310,7 @@ function openBlackMarket() {
             openBlackMarket();
         }
     }));
-    choices.push({ icon: '🚪', label: 'LEAVE', desc: `$${globalMoney}`, cb: beginNextFight });
+    choices.push({ icon: px('door'), label: 'LEAVE', desc: `$${globalMoney}`, cb: beginNextFight });
     showEventScreen('BLACK MARKET', `$${globalMoney}`, choices);
 }
 

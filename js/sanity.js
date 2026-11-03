@@ -135,7 +135,7 @@ function triggerHallucination() {
                 p.className = 'card phantom-card';
                 p.style.left = `${Math.random()*90}%`;
                 p.style.top = `${Math.random()*90}%`;
-                p.innerHTML = '👁️';
+                p.innerHTML = px('eye');
                 document.getElementById('game-ui').appendChild(p);
                 setTimeout(() => p.remove(), 4000); } },
         () => { if (!isMuted) { playTone(300 + Math.random() * 200, 'sine', 1, 0.1);
@@ -174,7 +174,7 @@ function checkSanityEffects() {
                     p.className = 'card phantom-card';
                     p.style.left = `${Math.random()*90}%`;
                     p.style.top = `${Math.random()*90}%`;
-                    p.innerHTML = '👁️';
+                    p.innerHTML = px('eye');
                     document.getElementById('game-ui').appendChild(p);
                     setTimeout(() => p.remove(), 4000); } }
         ];

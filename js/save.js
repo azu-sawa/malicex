@@ -2,6 +2,7 @@
 
 // ---------- SAVE / LOAD ----------
 function saveGame() {
+    try { flashSaveIndicator(); } catch (e) {}
     localStorage.setItem(VERSION, JSON.stringify({
         money: globalMoney,
         upgrades,

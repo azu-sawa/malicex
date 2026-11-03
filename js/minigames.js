@@ -30,7 +30,7 @@ function hiloReset() {
 function hiloRender() {
     const c = hiloState.card;
     const el = document.getElementById('hilo-card');
-    el.innerHTML = `<span>${c.rank}</span><span class="text-3xl">${c.suit}</span>`;
+    el.innerHTML = `<span>${c.rank}</span><span class="text-3xl">${suitPx(c.suit)}</span>`;
     el.className = `card ${['♥', '♦'].includes(c.suit) ? 'red' : ''}`;
     const next = Math.floor(hiloState.bet * hiloMult(hiloState.streak));
     document.getElementById('hilo-info').innerText =
@@ -216,7 +216,7 @@ function getBjScore(h) {
 
 function renderBjHands(rev) {
     const cHtml = (c) =>
-        `<div class="card ${c&&['♥','♦'].includes(c.suit)?'red':''}">${c.rank}${c.suit}</div>`;
+        `<div class="card ${c&&['♥','♦'].includes(c.suit)?'red':''}">${c.rank}${suitPx(c.suit)}</div>`;
     const pHandEl = document.getElementById('bj-p-hand');
     const dHandEl = document.getElementById('bj-d-hand');
     if (pHandEl) pHandEl.innerHTML = bjState.playerHand.map(cHtml).join('');
@@ -284,7 +284,7 @@ function updateSlotBtns() {
     const active = slotState.bet === 10 ? 'low' : slotState.bet === 50 ? 'mid' : 'high';
     const ael = document.getElementById(`btn-slot-${active}`);
     if (ael) ael.classList.add('bg-gray-800');
-    document.getElementById('slot-msg').innerText = `TARUHAN: $${slotState.bet}`;
+    document.getElementById('slot-msg').innerText = `BET: $${slotState.bet}`;
 }
 
 function spinSlots() {
@@ -300,17 +300,17 @@ function spinSlots() {
     SFX.flip();
     const reels = [1, 2, 3].map(i => document.getElementById(`reel-${i}`));
     reels.forEach(r => { if (r) r.classList.add('reel-spin'); });
-    const BASE_SYMBOLS = ['🍒', '🍋', '🔔', '💎', '7️⃣', '💀', '👹'];
+    const BASE_SYMBOLS = [px('cherry'), px('lemon'), px('bell'), px('gem'), px('seven'), px('skull'), px('demon')];
     let symbols = [...BASE_SYMBOLS];
     
     const res = [0, 1, 2].map(() => symbols[Math.floor(Math.random() * symbols.length)]);
     setTimeout(() => { if (reels[0]) { reels[0].classList.remove('reel-spin');
-            reels[0].innerText = res[0]; } }, 500);
+            reels[0].innerHTML = res[0]; } }, 500);
     setTimeout(() => { if (reels[1]) { reels[1].classList.remove('reel-spin');
-            reels[1].innerText = res[1]; } }, 1000);
+            reels[1].innerHTML = res[1]; } }, 1000);
     setTimeout(() => {
         if (reels[2]) { reels[2].classList.remove('reel-spin');
-            reels[2].innerText = res[2]; }
+            reels[2].innerHTML = res[2]; }
         slotState.isSpinning = false;
         calcSlotWin(res);
     }, 1500);
@@ -321,13 +321,13 @@ function calcSlotWin(r) {
     if (totalStats.minigamesPlayed >= 50) unlockAchievement('GAMBLER');
     let mult = 0;
     if (r[0] === r[1] && r[1] === r[2]) {
-        if (r[0] === '👹') mult = 100;
-        else if (r[0] === '7️⃣') mult = 50;
-        else if (r[0] === '💎') mult = 25;
-        else if (r[0] === '💀') mult = 0;
+        if (r[0] === px('demon')) mult = 100;
+        else if (r[0] === px('seven')) mult = 50;
+        else if (r[0] === px('gem')) mult = 25;
+        else if (r[0] === px('skull')) mult = 0;
         else mult = 5;
     } else if (r[0] === r[1] || r[1] === r[2] || r[0] === r[2]) {
-        if (!r.includes('💀')) mult = 1.25;
+        if (!r.includes(px('skull'))) mult = 1.25;
     }
     const win = Math.floor(slotState.bet * mult);
     if (win > 0) {
@@ -378,8 +378,8 @@ function startCups() {
     updateMoneyDisplay(true);
     saveGame();
     cupState.isPlaying = true;
-    [0, 1, 2].forEach(i => { const el = document.getElementById(`skull-${i}`); if (el) { el.innerText =
-            '💀';
+    [0, 1, 2].forEach(i => { const el = document.getElementById(`skull-${i}`); if (el) { el.innerHTML =
+            px('skull');
             el.classList.add('skull-shuffle'); } });
     cupState.ballIndex = Math.floor(Math.random() * 3);
     SFX.flip();
@@ -396,7 +396,7 @@ function pickCup(idx) {
     if (totalStats.minigamesPlayed >= 50) unlockAchievement('GAMBLER');
     const el = document.getElementById(`skull-${idx}`);
     if (idx === cupState.ballIndex) {
-        if (el) el.innerText = '👁️';
+        if (el) el.innerHTML = px('eye');
         const win = cupState.bet * 2;
         globalMoney += win;
         totalStats.moneyEarned += win;
@@ -407,9 +407,9 @@ function pickCup(idx) {
         document.getElementById('cup-msg').innerText = `WIN! +$${win}`;
         updateSanity(5);
     } else {
-        if (el) el.innerText = '❌';
+        if (el) el.innerHTML = px('cross');
         const reveal = document.getElementById(`skull-${cupState.ballIndex}`);
-        if (reveal) reveal.innerText = '👁️';
+        if (reveal) reveal.innerHTML = px('eye');
         flashScreen('red');
         SFX.lose();
         document.getElementById('cup-msg').innerText = "WRONG.";

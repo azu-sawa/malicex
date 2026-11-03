@@ -82,7 +82,7 @@ function refreshAudioButtons() {
     const m = document.getElementById('btn-music');
     if (m) m.innerText = musicOn ? 'MUSIC: ON' : 'MUSIC: OFF';
     const f = document.getElementById('audio-fab');
-    if (f) f.innerText = isMuted ? '🔇' : (musicOn ? '🔊' : '🔉');
+    if (f) f.innerHTML = isMuted ? px('speakerOff') : (musicOn ? px('speaker') : px('speakerLow'));
     const v = document.getElementById('music-vol');
     if (v && Number(v.value) !== Math.round(musicVol * 100)) v.value = Math.round(musicVol * 100);
 }
