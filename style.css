@@ -1,6 +1,6 @@
 /* ========== LOCAL FONTS (no CDN) ========== */
-@font-face { font-family: 'Press Start 2P'; src: url('PressStart2P.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: 'VT323'; src: url('VT323.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Press Start 2P'; src: url('../fonts/PressStart2P.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'VT323'; src: url('../fonts/VT323.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
 
         /* ========== INTEGRATED STYLESHEET v6.5 ========== */
         :root {
@@ -1506,3 +1506,6 @@ h1, h2, h3, .menu-title, .panel-title, .hp-label, #sanity-tier, .btn-retro, #liv
     #community-cards { margin-bottom: 6px !important; }
     #player-items-row { margin-bottom: 6px !important; }
 }
+
+/* safety net: keep hidden screens hidden even if css/tailwind.css fails to load */
+.hidden { display: none !important; }
