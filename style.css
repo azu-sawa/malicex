@@ -1,6 +1,6 @@
 /* ========== LOCAL FONTS (no CDN) ========== */
-@font-face { font-family: 'Press Start 2P'; src: url(PressStart2P.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
-@font-face { font-family: 'VT323'; src: url(VT323.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Press Start 2P'; src: url('PressStart2P.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'VT323'; src: url('VT323.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; }
 
         /* ========== INTEGRATED STYLESHEET v6.5 ========== */
         :root {
