@@ -1,3 +1,6 @@
+# Malicex (flat layout)
+Every file lives in ONE folder - upload them all to the root of the GitHub repo. No subfolders needed.
+
 # Malicex
 
 A browser horror card game: poker decides who holds the advantage, a shotgun decides who lives.
