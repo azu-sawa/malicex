@@ -1,0 +1,10 @@
+{
+  "name": "malicex",
+  "version": "9.2.0",
+  "private": true,
+  "description": "Malicex - retro CRT horror card game. No runtime dependencies; Tailwind is only used to build css/tailwind.css.",
+  "scripts": {
+    "build:css": "tailwindcss -c tailwind.config.js -i src/tailwind.css -o css/tailwind.css --minify"
+  },
+  "devDependencies": { "tailwindcss": "3.4.17" }
+}

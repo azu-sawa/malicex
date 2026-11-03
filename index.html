@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Malicex</title>
-    <script src="https://cdn.tailwindcss.com">
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/tailwind.css">
+    <meta name="theme-color" content="#090a0f">
 </head>
 <body class="flex flex-col items-center justify-between p-4 screen-flicker">
 
-    <button id="audio-fab" onclick="toggleAudio()" title="Mute / unmute">🔊</button>
+    <div id="save-indicator" aria-hidden="true"><i class="px px-disk"></i><span>SAVED</span></div>
+    <button id="audio-fab" onclick="toggleAudio()" title="Mute / unmute"><i class="px px-speaker"></i></button>
 
     <!-- ========== FX OVERLAYS ========== -->
     <div class="crt-overlay"></div>
@@ -27,7 +27,7 @@
     <div id="dead-silence"></div>
 
     <!-- SANITY HUD (in-game) -->
-    <div id="sanity-hud" class="fixed top-24 left-4 z-[999] border border-purple-800 bg-black/80 px-3 py-1 hidden">
+    <div id="sanity-hud" class="fixed top-[6.2rem] right-4 z-[999] border border-purple-800 bg-black/80 px-3 py-1 hidden">
         <div class="text-xs text-purple-400">SANITY<span id="sanity-tier"></span></div>
         <div class="flex gap-1 items-center">
             <div class="sanity-bar" style="width:100px;height:8px;background:#222;">
@@ -39,7 +39,7 @@
 
     <!-- ACHIEVEMENT POPUP -->
     <div id="achievement-popup" class="achievement-popup">
-        <div class="ach-icon">🏆</div>
+        <div class="ach-icon"><i class="px px-trophy"></i></div>
         <div class="ach-text">
             <h4 id="ach-title">TITLE UNLOCKED</h4>
             <p id="ach-desc">Description here</p>
@@ -95,7 +95,7 @@
 
         <!-- LOBBY SANITY METER -->
         <div id="sanity-hud-lobby" class="sanity-hud-lobby">
-            <span class="text-purple-400 text-xs">🧠 SANITY<span id="lobby-sanity-tier"></span></span>
+            <span class="text-purple-400 text-xs"><i class="px px-brain"></i> SANITY<span id="lobby-sanity-tier"></span></span>
             <div style="width:150px;height:12px;background:#1a1a1a;border:1px solid #333;">
                 <div id="lobby-sanity-fill" class="sanity-fill-lobby" style="width:100%;"></div>
             </div>
@@ -249,9 +249,9 @@
             <button class="btn-retro w-32 border-red-800 text-red-700 hover:text-red-400" id="btn-slot-high" onclick="setSlotBet(100)">HIGH<br>$100</button>
         </div>
         <div class="slot-machine mb-8 border-purple-900 shadow-[0_0_20px_rgba(128,0,128,0.2)] flex gap-2">
-            <div id="reel-1" class="slot-reel">🍒</div>
-            <div id="reel-2" class="slot-reel">🍒</div>
-            <div id="reel-3" class="slot-reel">🍒</div>
+            <div id="reel-1" class="slot-reel"><i class="px px-cherry"></i></div>
+            <div id="reel-2" class="slot-reel"><i class="px px-cherry"></i></div>
+            <div id="reel-3" class="slot-reel"><i class="px px-cherry"></i></div>
         </div>
         <div id="slot-msg" class="text-3xl h-10 mb-4 text-center text-yellow-500">PLACE BET TO START</div>
         <div class="flex gap-4">
@@ -263,7 +263,7 @@
     <!-- ========== CUPS ========== -->
     <div id="cups-screen" class="main-menu hidden bg-black z-[900]">
         <h1 class="text-5xl text-orange-600 mb-2 glitch" data-text="TEBAK TENGKORAK" id="cup-title">SKULL GUESS</h1>
-        <div class="text-xl text-gray-500 mb-8" id="cup-subtitle">FIND THE EYE (👁️)</div>
+        <div class="text-xl text-gray-500 mb-8" id="cup-subtitle">FIND THE EYE (<i class="px px-eye"></i>)</div>
         <div id="cup-bet-ui" class="mb-8 flex gap-4">
             <button class="btn-retro w-32 border-gray-700 text-gray-500" onclick="setCupBet(50)">$50</button>
             <button class="btn-retro w-32 border-gray-700 text-gray-500" onclick="setCupBet(200)">$200</button>
@@ -271,9 +271,9 @@
         </div>
         <div class="text-xl text-yellow-600 mb-8"><span id="cup-bet-lbl">BET:</span> $<span id="cup-bet-display">0</span></div>
         <div class="flex gap-8 mb-12 h-32 items-center justify-center relative w-full max-w-2xl" id="cup-container">
-            <div class="skull-cup text-gray-400" id="skull-0" onclick="pickCup(0)">💀</div>
-            <div class="skull-cup text-gray-400" id="skull-1" onclick="pickCup(1)">💀</div>
-            <div class="skull-cup text-gray-400" id="skull-2" onclick="pickCup(2)">💀</div>
+            <div class="skull-cup text-gray-400" id="skull-0" onclick="pickCup(0)"><i class="px px-skull"></i></div>
+            <div class="skull-cup text-gray-400" id="skull-1" onclick="pickCup(1)"><i class="px px-skull"></i></div>
+            <div class="skull-cup text-gray-400" id="skull-2" onclick="pickCup(2)"><i class="px px-skull"></i></div>
         </div>
         <div id="cup-msg" class="text-2xl h-8 mb-8 text-orange-500">PLACE BET TO START</div>
         <button class="btn-retro w-64 border-red-900 text-red-900" onclick="closeCups()" id="cup-btn-exit">BACK</button>
@@ -322,7 +322,8 @@
                 </div>
                 <div id="dealer-dialogue" class="dealer-box text-sm"></div>
             </div>
-            <div class="flex flex-col items-center justify-start pt-1">
+            <div class="flex flex-col items-center justify-start pt-1 relative">
+                <div id="dealer-badges" class="badge-stack badge-dealer"></div>
                 <div class="flex gap-1 mb-1 mt-1" id="dealer-hand">
                     <div class="card hidden-card"></div>
                     <div class="card hidden-card"></div>
@@ -335,7 +336,7 @@
         </div>
 
         <div class="flex-1 w-full max-w-4xl flex flex-col items-center justify-center relative">
-            <div id="log-area" class="text-center text-2xl mb-4 h-10 flex items-center justify-center w-full text-green-500 drop-shadow-[0_0_5px_rgba(0,255,0,0.5)] tracking-widest font-bold">...</div>
+            <div id="log-area" class="log-float" aria-live="polite"></div>
             <div class="flex gap-2 mb-4 p-4 border border-gray-900 bg-black/80 rounded-lg shadow-[0_0_20px_rgba(0,0,0,0.8)]" id="community-cards">
                 <div class="card hidden-card opacity-50"></div>
                 <div class="card hidden-card opacity-50"></div>
@@ -344,22 +345,17 @@
 
             <!-- CHEAT SKILLS -->
             <div id="cheat-skills" class="flex gap-2 mb-4 hidden">
-                <button class="cheat-button" onclick="useCheatSkill('COLD_READ')" id="cheat-read">🔎 COLD READ [-20 SANITY] [V]</button>
-                <button class="cheat-button" onclick="useCheatSkill('PSYCH_OUT')" id="cheat-psych">👁️ PSYCH OUT [-20 SANITY] [O]</button>
+                <button class="cheat-button" onclick="useCheatSkill('COLD_READ')" id="cheat-read"><i class="px px-magnifier"></i> COLD READ <span class="btn-cost">-20 SAN</span> <span class="khint">[V]</span></button>
+                <button class="cheat-button" onclick="useCheatSkill('PSYCH_OUT')" id="cheat-psych"><i class="px px-eye"></i> PSYCH OUT <span class="btn-cost">-20 SAN</span> <span class="khint">[O]</span></button>
             </div>
 
             <!-- GUN UI -->
             <div class="relative w-full max-w-sm bg-gray-900 border-2 border-gray-800 p-4 rounded shadow-2xl flex flex-col items-center justify-center" id="gun-ui-panel">
-                <div class="absolute -top-2 bg-black px-3 border border-gray-800 text-gray-600 tracking-widest text-xs font-bold">MOSSBERG 500</div>
-                <div id="chamber-display" class="flex gap-1 h-12 items-center justify-center mb-1 w-full bg-black/40 p-1 border border-gray-800 shadow-inner"></div>
+                                <div id="chamber-display" class="flex gap-1 h-12 items-center justify-center mb-1 w-full bg-black/40 p-1 border border-gray-800 shadow-inner"></div>
                 <div id="ammo-text-container" class="flex gap-8 text-2xl font-bold mt-1">
                     <span class="text-red-600 drop-shadow-[0_0_8px_red]"><span id="live-txt">0</span> LIVE</span>
                     <span class="text-gray-500"><span id="blank-txt">0</span> BLANK</span>
                 </div>
-                <div id="dmg-indicator" class="absolute right-1 top-1 text-red-500 font-bold hidden animate-pulse border border-red-500 px-0.5 bg-black text-xs">2X DMG</div>
-                <div id="shield-indicator" class="shield-ind hidden" style="left:4px;bottom:4px">SHIELD</div>
-                <div id="dshield-indicator" class="shield-ind hidden" style="right:4px;bottom:4px">ENEMY SHIELD</div>
-                <div id="handcuff-indicator" class="absolute left-1 top-1 text-orange-500 font-bold hidden border border-orange-500 px-0.5 bg-black text-xs">CUFFED</div>
                 <div id="bluff-indicator">BLUFF ON</div>
             </div>
         </div>
@@ -373,21 +369,24 @@
                     <span class="hp-label text-green-500 font-bold text-sm" id="hp-label-player">YOUR LIFE</span>
                     <div id="player-hp" class="hp-container text-green-600"></div>
                 </div>
-                <div class="flex gap-1" id="player-hand">
-                    <div class="card hidden-card"></div>
-                    <div class="card hidden-card"></div>
+                <div class="relative">
+                    <div id="player-badges" class="badge-stack badge-player"></div>
+                    <div class="flex gap-1" id="player-hand">
+                        <div class="card hidden-card"></div>
+                        <div class="card hidden-card"></div>
+                    </div>
                 </div>
             </div>
             <div class="border-t border-gray-800 pt-2 px-2 bg-gray-900/30 pb-2 controls-panel" id="controls-panel">
                 <div id="player-items-row" class="grid grid-cols-5 gap-1 mb-2 min-h-[40px]"></div>
                 <div id="controls" class="grid grid-cols-2 gap-2 relative">
-                    <div class="tension-wrap hidden" id="tension-wrap">⏱ <span id="tension-timer">--</span>s</div>
-                    <button id="btn-start" class="btn-retro col-span-2 py-3 text-lg hidden" onclick="startPhase()">NEXT <span class="text-sm opacity-50 ml-2">[SPACE]</span></button>
-                    <button id="btn-reveal" class="btn-retro col-span-2 hidden py-3 text-lg" onclick="resolvePokerPhase()">REVEAL CARDS <span class="text-sm opacity-50 ml-2">[SPACE]</span></button>
-                    <button id="btn-cheat" class="btn-retro col-span-2 hidden py-3 text-lg border-purple-500 text-purple-500 hover:bg-purple-900 hover:text-white" onclick="cheatPoker()">USE ACE SLEEVE <span class="text-sm opacity-50 ml-2">[C]</span></button>
-                    <button id="btn-raise" class="btn-retro col-span-2 hidden py-2 text-lg border-yellow-600 text-yellow-500" onclick="raisePoker()">RAISE: -10 SANITY, 2X STAKES <span class="text-sm opacity-50 ml-2">[B]</span></button>
-                    <button id="btn-redraw" class="btn-retro hidden py-2 text-lg border-blue-700 text-blue-400" onclick="redrawPoker()">REDRAW -8 <span class="text-sm opacity-50 ml-2">[D]</span></button>
-                    <button id="btn-fold" class="btn-retro hidden py-2 text-lg border-gray-600 text-gray-400" onclick="foldPoker()">FOLD <span class="text-sm opacity-50 ml-2">[F]</span></button>
+                    <div class="tension-wrap hidden" id="tension-wrap"><i class="px px-timer"></i> <span id="tension-timer">--</span>s</div>
+                    <button id="btn-start" class="btn-retro col-span-2 py-3 text-lg hidden" onclick="startPhase()">NEXT <span class="khint">[SPACE]</span></button>
+                    <button id="btn-reveal" class="btn-retro col-span-2 hidden py-3 text-lg" onclick="resolvePokerPhase()">REVEAL CARDS <span class="khint">[SPACE]</span></button>
+                    <button id="btn-cheat" class="btn-retro col-span-2 hidden py-3 text-lg border-purple-500 text-purple-500 hover:bg-purple-900 hover:text-white" onclick="cheatPoker()">USE ACE SLEEVE <span class="khint">[C]</span></button>
+                    <button id="btn-raise" class="btn-retro col-span-2 hidden py-2 text-lg border-yellow-600 text-yellow-500" onclick="raisePoker()">RAISE: -10 SANITY, 2X STAKES <span class="khint">[B]</span></button>
+                    <button id="btn-redraw" class="btn-retro hidden py-2 text-lg border-blue-700 text-blue-400" onclick="redrawPoker()">REDRAW -8 <span class="khint">[D]</span></button>
+                    <button id="btn-fold" class="btn-retro hidden py-2 text-lg border-gray-600 text-gray-400" onclick="foldPoker()">FOLD <span class="khint">[F]</span></button>
                     <button id="btn-shoot-dealer" class="btn-retro hidden hover:bg-red-900 hover:text-white group py-3 text-lg border-red-800 text-red-500" onclick="playerShoot('dealer')"><span class="key-hint bg-black border-red-900 text-red-500">1</span> <span id="lbl-shoot-d">SHOOT ENEMY</span></button>
                     <button id="btn-shoot-self" class="btn-retro hidden hover:bg-green-900 hover:text-white group py-3 text-lg border-green-800 text-green-500" onclick="playerShoot('self')"><span class="key-hint bg-black border-green-900 text-green-500">2</span> <span id="lbl-shoot-s">SHOOT SELF</span></button>
                 </div>
@@ -402,6 +401,7 @@
     <script src="js/audio.js"></script>
     <script src="js/sanity.js"></script>
     <script src="js/util.js"></script>
+    <script src="js/pixel.js"></script>
     <script src="js/data.js"></script>
     <script src="js/dialogue.js"></script>
     <script src="js/dealers.js"></script>
@@ -410,6 +410,7 @@
     <script src="js/items.js"></script>
     <script src="js/ai.js"></script>
     <script src="js/render.js"></script>
+    <script src="js/hud.js"></script>
     <script src="js/effects.js"></script>
     <script src="js/run.js"></script>
     <script src="js/gauntlet.js"></script>
