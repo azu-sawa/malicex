@@ -203,12 +203,14 @@ function startTurnTimer() {
     clearInterval(turnTimer);
 
     const urgentModes = ['HARD', 'MERCENARY', 'BOSS', 'ANCIENT', 'ENDLESS', 'FINALE'];
-    if (!urgentModes.includes(currentDifficulty)) {
+    const clockTerm = hasTerm('CLOCK');
+    if (!urgentModes.includes(currentDifficulty) && !clockTerm) {
         document.getElementById('tension-wrap').classList.add('hidden');
         return;
     }
 
-    timeLeft = (currentDifficulty === 'BOSS' || currentDifficulty === 'ANCIENT' || currentDifficulty === 'FINALE') ? 10 : 15;
+    timeLeft = clockTerm ? 8 : ((currentDifficulty === 'BOSS' || currentDifficulty === 'ANCIENT' || currentDifficulty === 'FINALE') ? 10 : 15);
+    timeLeft += perkTimerBonus();
     
     const wrap = document.getElementById('tension-wrap');
     const display = document.getElementById('tension-timer');

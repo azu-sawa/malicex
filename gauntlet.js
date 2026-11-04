@@ -140,7 +140,7 @@ const GAUNTLET_ITEMS = [
 ];
 
 function buildGauntlet() {
-    const pool = shuffle(Object.keys(DEALER_PERSONALITIES).filter(p => p !== 'ANCIENT' && p !== 'FIRST'));
+    const pool = shuffle(dealerPool());
     const lineup = pool.slice(0, 3).concat(['ANCIENT']);
     state.gauntlet = { stage: 0, total: lineup.length, lineup, relics: [], cleared: 0 };
 }

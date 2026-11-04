@@ -150,7 +150,7 @@ function showdown(fold) {
     setTimeout(() => {
         state.isProcessing = false;
         loadShotgun();
-    }, 2000);
+    }, dly(2000));
 }
 
 function payPokerWin(p) {

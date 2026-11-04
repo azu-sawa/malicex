@@ -127,7 +127,7 @@ function buildEyes() {
     const f = document.getElementById('dealer-face');
     if (!f || f.dataset.built) return;
     f.dataset.built = '1';
-    f.innerHTML = '<div class="eye"><div class="pupil"></div></div><div class="eye"><div class="pupil"></div></div>';
+    f.innerHTML = '<div class="eye"><div class="pupil"></div></div><div class="eye"><div class="pupil"></div></div><div class="mouth"></div>';
     PSY.eyes = [...f.querySelectorAll('.pupil')];
 }
 

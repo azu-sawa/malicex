@@ -53,12 +53,35 @@ function runSelfTests() {
     eq('mode multipliers cover finale', MODE_MULT.FINALE > 1, true);
     eq('name fill', psychFill('{name}|{runs}').split('|').length, 2);
     eq('import rejects junk', (() => { const b = document.getElementById('save-io'); const o = b.value; b.value = 'nope'; importSave(); b.value = o; return true; })(), true);
+    // ---- Mu-delta checks ----
+    eq('sin endings registered', SIN_ENDINGS.every(k => ENDINGS[k] && ENDINGS[k].en_t), true);
+    eq('every cutscene script has art that exists', Object.values(CINE_SCRIPTS).every(sc => sc.shots.every(s => ART[s.art] && s.text.length)), true);
+    eq('every listed cutscene exists', CINE_LIST.every(c => CINE_SCRIPTS[c[0]]), true);
+    eq('new dealers have the full interface', NEW_DEALERS.concat(['HOST']).every(k => { const d = DEALER_PERSONALITIES[k]; return d && d.name && d.aiBehavior && d.itemPriority && d.taunts.length; }), true);
+    eq('pool hides boss dealers', dealerPool().some(k => NOT_IN_POOL.includes(k)), false);
+    eq('weekly seed format', /^\d{4}-W\d{2}$/.test(weeklySeed()), true);
+    eq('perk requirements exist', Object.values(PERKS).every(p => p.req.every(r => PERKS[r])), true);
+    eq('term multipliers positive', Object.values(TERMS).every(t => t.m > 0), true);
+    const savedSan = sanity, savedRuns = meta.runs;
+    sanity = 5; meta.runs = 10;
+    const st0 = state.liveCount, bt0 = state.blankCount;
+    shownAmmo(); itemLie('GLASS');
+    eq('lies never change real counts', state.liveCount === st0 && state.blankCount === bt0, true);
+    sanity = savedSan; meta.runs = savedRuns;
+    eq('habit profile needs data', (() => { const o = meta.habits; meta.habits = { shots: 3, selfEma: 0.9, itemsEma: 2, foldEma: 0, raiseEma: 0, hands: 0 }; const r = habitProfile(); meta.habits = o; return r; })(), null);
+    eq('every new trophy has a hint', Object.keys(ACHIEVEMENTS).every(k => ACHIEVEMENTS[k].hint || ACH_HINTS[k]), true);
+    eq('settings carry terms', Array.isArray(SETTINGS_DEFAULT.terms), true);
+    eq('share card text builds', typeof shareResult, 'function');
     const fails = results.filter(r => !r.ok);
     console.log(`[DMH self-test] ${results.length - fails.length}/${results.length} passed`, fails);
     return { passed: results.length - fails.length, total: results.length, fails };
 }
 
 window.dmhTest = runSelfTests;
+function runUiSelfTest() {
+    const r = runSelfTests();
+    setSysMsg(r.fails.length ? ('Self-test: ' + r.fails.length + ' failed: ' + r.fails.map(f => f.name).join(', ')) : ('Self-test passed: ' + r.passed + '/' + r.total));
+}
 
 window.dmhDebug = {
     get state() { return state; },

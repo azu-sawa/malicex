@@ -28,7 +28,12 @@ const TUT_PAGES = [
         'The bar in the corner is your mind. Raising, a few items and live hits cost it.',
         'Low Sanity makes the house lie: wrong tells, items that are not there, voices.',
         'Steady means safe. Sedatives, Cigarettes and safe blanks bring it back.',
+        'At low Sanity item descriptions and the LIVE/BLANK numbers can lie. The shell icons never lie: count them.',
         'At zero you are not dead, but you will not trust your own eyes.'] },
+    { i: 'knife', t: 'YOUR SIN', b: [
+        'You came here for a reason. Pick it in the lobby: THIEF or PARRICIDE.',
+        'The Thief lifts items off the dealer. The Parricide turns pain into Wrath.',
+        'Each has a secret ending. Read the goal on the lobby card.'] },
     { i: 'trophy', t: 'KEEP PLAYING', b: [
         'Win in a row to build a streak: +10% cash per win, up to +50%.',
         'Three contracts every day pay extra. Trophies have hints even when locked.',
@@ -145,9 +150,11 @@ function showItemInfo(key, selected) {
             : 'No items. Win poker hands to earn some.';
         return;
     }
-    const d = ITEMS[key === 'PHANTOM' ? (state.phantomDisguise || 'GLASS') : key];
+    const shownKey = (typeof itemLie === 'function') ? itemLie(key) : key;
+    const lying = shownKey !== key && sanityTier().id !== 'BROKEN';
+    const d = ITEMS[shownKey === 'PHANTOM' ? (state.phantomDisguise || 'GLASS') : shownKey];
     const cost = d.sanityCost ? ` <span class="ii-cost">-${d.sanityCost} Sanity</span>` : (d.sanityGain ? ` <span class="ii-gain">+${d.sanityGain} Sanity</span>` : '');
-    el.className = 'item-info' + (selected ? ' picked' : '');
+    el.className = 'item-info' + (selected ? ' picked' : '') + (lying ? ' ii-lie' : '');
     el.innerHTML = `<b class="${d.color}">${d.en.n}</b>${cost}<span class="ii-desc">${d.en.d}</span>` +
         (selected && coarsePointer() ? '<span class="ii-use">Tap again to use</span>' : '');
 }

@@ -273,6 +273,7 @@ function unlockAchievement(id) {
     const ach = ACHIEVEMENTS[id];
     if (!ach) return;
     unlockedAchievements.push(id);
+    if (typeof addMarks === 'function') addMarks(1);
     unlockLoreFor(id);
     globalMoney += ach.reward;
     totalStats.moneyEarned += ach.reward;

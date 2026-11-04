@@ -157,8 +157,9 @@ function handleGameEnd() {
             const streakNow = Math.min(5, meta.winStreak || 0);
             p = Math.floor(p * (1 + 0.1 * streakNow));
             if (isDaily) {
-                if (meta.dailyPaid === dailySeed()) p = 0;
-                else meta.dailyPaid = dailySeed();
+                const pk = isWeekly ? 'weeklyPaid' : 'dailyPaid', pv = isWeekly ? weeklySeed() : dailySeed();
+                if (meta[pk] === pv) p = 0;
+                else meta[pk] = pv;
             }
             globalMoney += p;
             totalStats.moneyEarned += p;
@@ -219,8 +220,15 @@ function handleGameEnd() {
     hideModChip();
     meta.inRun = false;
     saveGame();
-    if (currentDifficulty === 'FINALE' && state.playerHp > 0) playTrueEnding(() => s.classList.remove('hidden'));
-    else s.classList.remove('hidden');
+    const showResult = () => { s.classList.remove('hidden'); if (typeof afterResultHooks === 'function') afterResultHooks(state.playerHp > 0); };
+    if (currentDifficulty === 'FINALE' && state.playerHp > 0) playTrueEnding(showResult);
+    else if (state.playerHp > 0) {
+        const cid = winCineId();
+        if (cid) cineOnce(cid, showResult, { restore: 'win' }); else showResult();
+    } else {
+        const first = !(meta.cineSeen || {}).first_death;
+        deathSequence(() => { if (first) cineOnce('first_death', showResult, { restore: 'death' }); else showResult(); });
+    }
     updateMoneyDisplay(true);
 }
 

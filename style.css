@@ -1725,3 +1725,93 @@ textarea, input[type=text] { user-select: text; -webkit-user-select: text; font-
 .codex-new { font-size: .75rem; color: #f59e0b; letter-spacing: .06em; margin-left: 6px; }
 .ledger-section { min-width: 0; }
 @media (max-width: 760px) { .ledger-grid { grid-template-columns: 1fr !important; } }
+
+/* ===================== Mu-delta ===================== */
+/* sin card */
+.sin-card { border: 1px solid #1e3a5f; background: rgba(8,16,30,.7); padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; }
+.sin-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.sin-label { color: #64748b; letter-spacing: .15em; font-size: 1rem; }
+.sin-toggle { display: flex; gap: 6px; }
+.sin-btn { min-height: 40px; padding: 4px 12px; background: transparent; border: 1px solid #334155; color: #94a3b8; font-size: 1.1rem; letter-spacing: .08em; }
+.sin-btn.on { border-color: #38bdf8; color: #bae6fd; background: rgba(56,189,248,.12); }
+.sin-buffs { list-style: square; padding-left: 18px; margin: 0; color: #cbd5e1; font-size: 1.05rem; line-height: 1.25; }
+.sin-goal { color: #fbbf24; font-size: 1.05rem; }
+.sin-goal.done { color: #64748b; text-decoration: line-through; }
+/* terms, marks, collection */
+.terms-bonus { float: right; color: #fbbf24; font-size: .95rem; }
+.terms-grid, .perk-list { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.term, .perk { text-align: left; display: flex; flex-direction: column; gap: 2px; padding: 8px; min-height: 76px; background: rgba(9,10,15,.8); border: 1px solid #263248; color: #94a3b8; position: relative; }
+.term b, .perk b { color: #e2e8f0; font-size: 1.05rem; letter-spacing: .05em; }
+.term span, .perk span { font-size: .95rem; line-height: 1.1; }
+.term i, .perk i { font-style: normal; color: #fbbf24; font-size: .95rem; margin-top: auto; }
+.term.on { border-color: #fbbf24; background: rgba(251,191,36,.08); }
+.perk.own { border-color: #38bdf8; }
+.perk.can { border-color: #fbbf24; }
+.coll-row { display: flex; justify-content: space-between; color: #94a3b8; font-size: 1.05rem; border-bottom: 1px dotted #1e293b; padding: 2px 0; }
+.coll-row b { color: #e2e8f0; font-weight: normal; }
+.coll-dealers { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0 8px; }
+.coll-dealers span { padding: 1px 6px; border: 1px solid #1e293b; color: #475569; font-size: .95rem; }
+.coll-dealers span.got { border-color: #38bdf8; color: #bae6fd; }
+.habit-read { color: #fbbf24; font-size: 1.1rem; margin-bottom: 4px; }
+.habit-bars { display: flex; align-items: center; gap: 8px; color: #64748b; font-size: .95rem; margin-top: 6px; }
+.habit-bars i { flex: 1; height: 6px; background: #1e293b; }
+.habit-bars u { display: block; height: 100%; background: #38bdf8; }
+.cine-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.cine-item { text-align: left; padding: 6px 8px; background: rgba(9,10,15,.8); border: 1px solid #263248; color: #94a3b8; display: flex; flex-direction: column; font-size: .95rem; }
+.cine-item b { color: #e2e8f0; font-weight: normal; letter-spacing: .05em; }
+.cine-item.locked { opacity: .5; }
+/* item lies get a faint shimmer */
+.item-info.ii-lie .ii-desc { animation: iiLie 2.4s steps(2) infinite; }
+@keyframes iiLie { 0%, 92% { opacity: 1; } 96% { opacity: .55; transform: translateX(1px); } }
+/* dealer face mood */
+.dealer-face { display: grid; grid-template-columns: auto auto; width: max-content; }
+.dealer-face .mouth { grid-column: 1 / 3; height: 3px; background: #475569; margin: 3px 3px 0; transition: all .15s; }
+.dealer-face.mood-grin .mouth { height: 6px; background: #ef4444; border-radius: 0 0 8px 8px; }
+.dealer-face.mood-hurt .mouth { width: 8px; margin: 3px auto 0; height: 4px; background: #94a3b8; }
+.dealer-face.mood-hurt .eye { height: 4px; }
+/* cinema */
+#cine-screen { position: fixed; inset: 0; z-index: 1200; background: #000; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 0 0 16px; cursor: pointer; }
+.cine-stage { position: relative; width: min(100vw, 150vh * 1.7778 * .55); width: min(100vw, 960px); aspect-ratio: 16 / 9; background: #000; overflow: hidden; margin-top: max(0px, env(safe-area-inset-top)); transition: opacity .24s; }
+.cine-stage.cut { opacity: 0; }
+#cine-canvas { width: 100%; height: 100%; image-rendering: pixelated; display: block; animation: cineDrift 14s linear infinite alternate; }
+@keyframes cineDrift { from { transform: scale(1.02) translateX(-4px); } to { transform: scale(1.07) translateX(4px); } }
+.cine-scan { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgba(0,0,0,.18) 0 1px, transparent 1px 3px); box-shadow: inset 0 0 90px rgba(0,0,0,.85); pointer-events: none; }
+.cine-text { width: min(94vw, 760px); flex: 1; padding: 18px 6px 0; color: #dbe5f1; font-size: 1.7rem; line-height: 1.25; letter-spacing: .02em; overflow-y: auto; }
+.cine-line { margin: 0 0 10px; }
+.cine-foot { width: min(94vw, 760px); display: flex; justify-content: space-between; color: #475569; font-size: 1rem; letter-spacing: .12em; }
+.cine-hint { animation: cineBlink 1.6s steps(2) infinite; }
+@keyframes cineBlink { 50% { opacity: .25; } }
+.cine-skip { position: absolute; top: calc(8px + env(safe-area-inset-top)); right: 10px; min-height: 40px; padding: 2px 12px; background: rgba(0,0,0,.6); color: #94a3b8; border: 1px solid #334155; letter-spacing: .12em; z-index: 2; }
+.lowfx #cine-canvas { animation: none; }
+/* fight card, flash, crt-off, wipe */
+#fight-card { position: fixed; inset: 0; z-index: 1100; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(5,7,11,.92); pointer-events: auto; opacity: 0; }
+#fight-card.in { opacity: 1; animation: fcIn .25s ease-out; }
+#fight-card.out { opacity: 0; transition: opacity .3s; }
+#fc-title { color: #64748b; letter-spacing: .3em; font-size: 1.3rem; }
+#fc-sub { color: #ef4444; font-family: 'Press Start 2P', monospace; font-size: clamp(1rem, 4.5vw, 2rem); margin-top: 10px; text-align: center; padding: 0 12px; }
+@keyframes fcIn { from { transform: scale(1.06); opacity: 0; } to { transform: none; opacity: 1; } }
+#flash-screen { position: fixed; inset: 0; z-index: 1150; background: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; animation: fcIn .3s; }
+#flash-text { max-width: 30rem; padding: 0 20px; text-align: center; color: #cbd5e1; font-size: 1.7rem; line-height: 1.3; }
+#flash-text p { margin: 0 0 14px; animation: fcIn .6s; }
+#crt-off { position: fixed; inset: 0; z-index: 1250; background: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+#crt-off .off-line { position: absolute; left: 0; right: 0; top: 0; bottom: 0; background: #dbeafe; opacity: 0; }
+#crt-off.run .off-line { animation: crtOff 1.3s ease-in forwards; }
+@keyframes crtOff { 0% { opacity: .9; top: 0; bottom: 0; left: 0; right: 0; } 45% { opacity: 1; top: 49.5%; bottom: 49.5%; left: 0; right: 0; } 80% { opacity: 1; top: 49.8%; bottom: 49.8%; left: 47%; right: 47%; } 100% { opacity: 0; top: 49.8%; bottom: 49.8%; left: 50%; right: 50%; } }
+#crt-off-text { position: relative; color: #94a3b8; font-size: 1.9rem; letter-spacing: .08em; text-align: center; padding: 0 16px; }
+#wipe { position: fixed; inset: 0; z-index: 1300; background: #000; opacity: 0; pointer-events: none; }
+@media (max-width: 640px) {
+    .term, .perk { padding: 6px; min-height: 0; }
+    .term span, .perk span { font-size: .85rem; }
+    .cine-text { font-size: 1.45rem; }
+    .cine-stage { width: 100vw; }
+}
+#btn-lift { letter-spacing: .1em; }
+/* accessibility: larger text and shell letters */
+html.bigtext { font-size: 118%; }
+html.shellletters .shell.live::after { content: 'L'; color: #fff; font-size: 11px; position: absolute; inset: 0; text-align: center; line-height: 1; }
+html.shellletters .shell.blank::after { content: 'B'; color: #0b1220; font-size: 11px; position: absolute; inset: 0; text-align: center; line-height: 1; }
+#btn-lift { grid-column: 1 / -1; }
+/* compact lobby header (Mu-delta) */
+.lobby-head { display: flex; flex-wrap: wrap; gap: 6px; }
+.lobby-head .sanity-hud-lobby { flex: 1 1 100%; }
+.lobby-head .lobby-chip { flex: 1 1 0; min-width: 0; padding: 4px 6px; font-size: .9rem; white-space: nowrap; justify-content: center; }

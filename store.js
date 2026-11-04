@@ -27,7 +27,11 @@ const SETTINGS_DEFAULT = {
     name: '',            // what the house calls you
     lobbyTab: 'play',
     lastMode: '',        // for "one more hand"
-    seenHints: {}
+    seenHints: {},
+    bigtext: false,      // larger interface text
+    shellletters: false, // L / B letters on revealed shells (colour-blind friendly)
+    fast: false,         // shorter pauses between actions
+    terms: []            // run terms picked in the lobby
 };
 let settings = { ...SETTINGS_DEFAULT };
 
@@ -45,6 +49,11 @@ function applySettings() {
     if (q('set-cursor')) q('set-cursor').textContent = 'CRT POINTER: ' + (settings.cursor ? 'ON' : 'OFF');
     if (q('set-haptics')) q('set-haptics').textContent = 'VIBRATION: ' + (settings.haptics ? 'ON' : 'OFF');
     if (q('set-lowfx')) q('set-lowfx').textContent = 'LOW EFFECTS: ' + (settings.lowfx ? 'ON' : 'OFF');
+    document.documentElement.classList.toggle('bigtext', !!settings.bigtext);
+    document.documentElement.classList.toggle('shellletters', !!settings.shellletters);
+    if (q('set-bigtext')) q('set-bigtext').textContent = 'LARGE TEXT: ' + (settings.bigtext ? 'ON' : 'OFF');
+    if (q('set-letters')) q('set-letters').textContent = 'SHELL LETTERS: ' + (settings.shellletters ? 'ON' : 'OFF');
+    if (q('set-fast')) q('set-fast').textContent = 'FAST HANDS: ' + (settings.fast ? 'ON' : 'OFF');
 }
 
 function toggleSetting(key) { settings[key] = !settings[key]; saveSettings(); applySettings(); SFX.click(); if (key === 'haptics') buzz(30); }

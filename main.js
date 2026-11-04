@@ -75,6 +75,9 @@ window.onload = function() {
     setInterval(triggerHallucination, 5000);
     setInterval(checkSanityEffects, 2000);
     setInterval(spawnWhisper, 3000);
+    if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol) && !/[?&]test\b/.test(location.search)) {
+        navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
 };
 
 // Expose
@@ -174,4 +177,4 @@ window.redrawPoker = redrawPoker;
 window.foldPoker = foldPoker;
 
 hudInit();
-console.log("Malicex M1 loaded.");
+console.log("Malicex \u039c\u03b4 loaded.");

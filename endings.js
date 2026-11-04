@@ -46,8 +46,17 @@ function finalWinHooks(p) {
     }
     if (currentDifficulty === 'FINALE') { m.innerHTML += `<div class="mt-6 text-2xl text-cyan-300 tracking-widest">THE LAST TABLE IS EMPTY</div>`; return; }
     const id = pickEnding();
+    state.endingId = id;
     const e = ENDINGS[id];
-    if (!meta.endings.includes(id)) {
+    const special = typeof SIN_ENDINGS !== 'undefined' && SIN_ENDINGS.includes(id);
+    if (special) {
+        meta.sinEndings = meta.sinEndings || [];
+        if (!meta.sinEndings.includes(id)) {
+            meta.sinEndings.push(id);
+            extra += `<div class="text-sm mt-2 text-yellow-400">SECRET ENDING FOUND (${meta.sinEndings.length}/2)</div>`;
+        }
+        unlockAchievement(id === 'HEIST' ? 'HEIST_END' : 'INHERIT_END');
+    } else if (!meta.endings.includes(id)) {
         meta.endings.push(id);
         extra += `<div class="text-sm mt-2 text-yellow-400">${'NEW ENDING FOUND'} (${meta.endings.length}/4)</div>`;
     }
@@ -63,7 +72,7 @@ function recordRunEnd(el) {
     if (!el) return;
     if (state.gauntlet) {
         if (state.gauntlet.cleared > (meta.gauntletBest || 0)) meta.gauntletBest = state.gauntlet.cleared;
-        if (isDaily) {
+        if (isDaily && !isWeekly) {
             const won = state.playerHp > 0;
             const score = state.gauntlet.cleared * 1000 + (won ? 2000 : 0) + Math.max(0, state.playerHp) * 150 + Math.max(0, sanity) * 5;
             const today = dailySeed();

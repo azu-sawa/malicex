@@ -29,7 +29,7 @@ function aiTurn() {
             return;
         }
     }
-    let knows = state.shellRevealed || state.dealerItems.includes('GLASS');
+    let knows = state.shellRevealed || state.dealerItems.includes('GLASS') || hasTerm('SEEN');
     let target = dealer.aiBehavior(knows);
     processShot('dealer', target);
 }
@@ -112,6 +112,7 @@ function processShot(shooter, target) {
                     state.blankStreak = (state.blankStreak || 0) + 1;
                     if (state.blankStreak >= 3) unlockAchievement('ROULETTE');
                     playerSpeak('shootSelfSafe');
+                    { const dp = DEALER_PERSONALITIES[currentDealerPersonality]; if (dp && dp.onPlayerSelfSafe) dp.onPlayerSelfSafe(); }
                     updateSanity(3);
                 }
                 next = shooter;
@@ -127,8 +128,8 @@ function processShot(shooter, target) {
             state.turn = next;
             state.isProcessing = false;
             startTurn();
-        }, 1500);
-    }, 400);
+        }, dly(1500));
+    }, dly(400));
 }
 
 function triggerBlood() {

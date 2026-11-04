@@ -31,3 +31,6 @@ function flashScreen(color) {
     document.body.classList.add(color === 'red' ? 'flash-red' : 'flash-green');
     setTimeout(() => document.body.classList.remove('flash-red', 'flash-green'), 300);
 }
+
+// shorter pauses when FAST HANDS is on
+function dly(ms) { return (typeof settings !== 'undefined' && settings.fast) ? Math.round(ms * 0.55) : ms; }

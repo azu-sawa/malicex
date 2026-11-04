@@ -74,9 +74,10 @@ function renderAmmo() {
     }).join('');
     if (!HUD.loading) {
         const lt = document.getElementById('live-txt');
-        if (lt) lt.innerText = state.fog ? '?' : state.liveCount;
+        const sa = shownAmmo();
+        if (lt) lt.innerText = sa.l;
         const bt = document.getElementById('blank-txt');
-        if (bt) bt.innerText = state.fog ? '?' : state.blankCount;
+        if (bt) bt.innerText = sa.b;
     }
     const dmg = document.getElementById('dmg-indicator');
     if (dmg) dmg.classList.toggle('hidden', state.damageMultiplier === 1);

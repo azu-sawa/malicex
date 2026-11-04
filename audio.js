@@ -220,6 +220,8 @@ const Music = (() => {
                  pad: 1, drone: 1.3, kick: [1,0,0,1, 0,0,1,0, 1,0,0,1, 0,0,1,0], hat: 1, bell: 0.15, arp: 1, scale: [0, 1, 3, 6, 7, 8, 10], bass8: true },
         win:   { bpm: 56, beats: 4, root: 48, prog: [[0, [0, 4, 7]], [7, [0, 4, 7]], [9, [0, 3, 7]], [5, [0, 4, 7]]],
                  pad: 1, drone: 0.4, kick: null, hat: 0, bell: 0.9, arp: 0, scale: [0, 2, 4, 7, 9] },
+        cine:  { bpm: 42, beats: 4, root: 40, prog: [[0, [0, 3, 7]], [-2, [0, 3, 7]], [-5, [0, 3, 6]], [-7, [0, 3, 7]]],
+                 pad: 1, drone: 1.2, kick: null, hat: 0, bell: 0.35, arp: 0, scale: [0, 3, 5, 7, 10] },
         death: { bpm: 40, beats: 4, root: 33, prog: [[0, [0, 3, 7]], [0, [0, 3, 6]], [-1, [0, 3, 7]], [0, [0, 3, 7]]],
                  pad: 0.6, drone: 1.2, kick: null, hat: 0, bell: 0.5, arp: 0, scale: [0, 3, 6, 7, 10] }
     };

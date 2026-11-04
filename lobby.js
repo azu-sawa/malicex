@@ -13,7 +13,7 @@ function showLobbyTab(id) {
         if (b) { b.classList.toggle('on', t === id); b.setAttribute('aria-selected', t === id ? 'true' : 'false'); }
     });
     if (settings.lobbyTab !== id) { settings.lobbyTab = id; saveSettings(); }
-    if (id === 'archive') renderContracts();
+    if (id === 'archive') { renderContracts(); renderArchiveExtras(); }
 }
 
 const MODE_INFO = {
@@ -34,6 +34,8 @@ function modeLabel(m) {
     if (m === 'DAILY') return 'DAILY SEED';
     if (m === 'GAUNTLET') return 'GAUNTLET';
     if (m === 'FINALE') return 'THE LAST TABLE';
+    if (m === 'WEEKLY') return 'WEEKLY SEED';
+    if (m === 'UNDERSIDE') return 'THE UNDERSIDE';
     return (MODE_INFO[m] || MODE_INFO.NORMAL).n;
 }
 
@@ -80,7 +82,19 @@ function renderLobby() {
         if (last) { t.textContent = 'ONE MORE HAND'; s.textContent = 'Same table again: ' + modeLabel(last); }
         else { t.textContent = 'SIT DOWN'; s.textContent = 'Your first hand. The house will show you how it works.'; }
     }
-    const tut = q('menu-btn-wipe');
+    const wk = q('menu-btn-weekly');
+    if (wk) {
+        const best = (meta.weeklyBest && meta.weeklyBest.date === weeklySeed()) ? meta.weeklyBest.score : 0;
+        wk.innerHTML = `<span class="mode-name">WEEKLY SEED</span><span class="mode-sub">${weeklySeed()}. A fresh table every week, same for everyone. Best ${best}</span><span class="mode-cost">Free</span>`;
+    }
+    const ud = q('menu-btn-underside');
+    if (ud) {
+        ud.classList.toggle('hidden', !meta.trueEnd);
+        ud.innerHTML = `<span class="mode-name">THE UNDERSIDE</span><span class="mode-sub">Act II. Three new dealers and the Host.</span><span class="mode-cost">$${UNDERSIDE_COST + 500}</span>`;
+    }
+    if (q('marks-n')) q('marks-n').textContent = meta.marks || 0;
+    renderSinCard();
+    renderTermsBox();
     renderContracts();
 }
 

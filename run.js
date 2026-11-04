@@ -45,7 +45,7 @@ function selectDifficulty(diff) {
 function beginRun() {
     hideEventScreen();
     const q = new URLSearchParams(location.search).get('seed');
-    if (isDaily) seedRng('daily-' + dailySeed());
+    if (isDaily) seedRng(runSeedKey());
     else if (q) seedRng(q);
     else seedRng(null);
     activeGame = 'MAIN';
@@ -130,7 +130,7 @@ function startGame() {
         if (currentDifficulty === 'ANCIENT') pers = 'ANCIENT';
         else if (currentDifficulty === 'FINALE') pers = 'FIRST';
         else {
-            const list = Object.keys(DEALER_PERSONALITIES).filter(p => p !== 'ANCIENT' && p !== 'FIRST');
+            const list = dealerPool();
             pers = list[Math.floor(rnd() * list.length)];
         }
         if (state.pact === 'HOLLOW_MIND') { giveItem('player', randomItemKey());
