@@ -3,7 +3,7 @@
 // ---------- SAVE / LOAD ----------
 function saveGame() {
     try { flashSaveIndicator(); } catch (e) {}
-    localStorage.setItem(VERSION, JSON.stringify({
+    Store.set(VERSION, JSON.stringify({
         money: globalMoney,
         upgrades,
         introSeen: true,
@@ -21,7 +21,7 @@ function saveGame() {
 }
 
 function loadGame() {
-    const saved = localStorage.getItem(VERSION) || localStorage.getItem(PREV_VERSION) || localStorage.getItem(LEGACY_VERSION);
+    const saved = Store.get(VERSION) || Store.get(PREV_VERSION) || Store.get(LEGACY_VERSION);
     if (!saved) return;
     try {
         const d = JSON.parse(saved);
@@ -50,9 +50,9 @@ function loadGame() {
         });
         if (hadOldSkill) upgrades.unlockColdRead = true;
         nextRunItems = nextRunItems.filter(k => ITEMS[k] && k !== 'PHANTOM');
-        if (!localStorage.getItem(VERSION)) saveGame();   // one-time migration to the Malicex key
+        if (!Store.get(VERSION)) saveGame();   // one-time migration to the Malicex key
     } catch (e) {
         console.error("Save corrupted");
-        localStorage.removeItem(VERSION);
+        Store.remove(VERSION);
     }
 }

@@ -37,6 +37,22 @@ function runSelfTests() {
     sanity = oldSan;
     eq('sanity-check minigame removed', typeof window.openSanityCheck, 'undefined');
     eq('only English text', typeof TEXT.id, 'undefined');
+    // ---- v10 / M1 checks ----
+    const keys = Object.keys(ACHIEVEMENTS);
+    eq('every trophy has a hint', keys.filter(k => !(ACHIEVEMENTS[k].hint || ACH_HINTS[k])).length, 0);
+    eq('trophy count >= 50', keys.length >= 50, true);
+    eq('lore ids unique', new Set(LORE_ENTRIES.map(l => l.id)).size, LORE_ENTRIES.length);
+    eq('finale needs lore <= total', FINALE_LORE_NEEDED <= LORE_ENTRIES.length, true);
+    const oldM = meta.contracts; meta.contracts = null;
+    const c1 = JSON.stringify(todaysContracts().picks); meta.contracts = null;
+    eq('contracts deterministic', JSON.stringify(todaysContracts().picks), c1);
+    eq('three distinct contracts', new Set(todaysContracts().picks).size, 3);
+    meta.contracts = oldM;
+    eq('every item has a description', Object.keys(ITEMS).filter(k => !ITEMS[k].en.d).length, 0);
+    const sv = { a: 1 }; Store.set('__t', JSON.stringify(sv)); eq('store roundtrip', JSON.parse(Store.get('__t')).a, 1); Store.remove('__t');
+    eq('mode multipliers cover finale', MODE_MULT.FINALE > 1, true);
+    eq('name fill', psychFill('{name}|{runs}').split('|').length, 2);
+    eq('import rejects junk', (() => { const b = document.getElementById('save-io'); const o = b.value; b.value = 'nope'; importSave(); b.value = o; return true; })(), true);
     const fails = results.filter(r => !r.ok);
     console.log(`[DMH self-test] ${results.length - fails.length}/${results.length} passed`, fails);
     return { passed: results.length - fails.length, total: results.length, fails };

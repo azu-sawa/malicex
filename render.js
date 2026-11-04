@@ -7,6 +7,7 @@ function renderUI() {
     const r = document.getElementById('player-items-row');
     if (!r) return;
     r.innerHTML = '';
+    r.classList.toggle('no-items', !state.playerItems.length);
     const h = ['Q', 'W', 'E', 'R', 'T'];
     for (let i = 0; i < 5; i++) {
         const k = state.playerItems[i];
@@ -15,11 +16,14 @@ function renderUI() {
             const iName = d.en.n;
             const iDesc = d.en.d;
             const b = document.createElement('button');
-            b.className =
-                `relative border ${d.border} ${d.color} px-3 py-2 text-lg hover:bg-gray-800 flex items-center transition-opacity gap-2 ${state.isProcessing?'opacity-50 cursor-not-allowed':''} font-vt323 group`;
-            b.innerHTML =
-                `<span class="key-hint border-gray-600 text-gray-400">${h[i]}</span> ${d.icon} ${iName}<div class="tooltip hidden group-hover:block">${iDesc}</div>`;
-            b.onclick = () => useItem('player', k, i);
+            b.className = `item-btn relative border ${d.border} ${d.color} px-3 py-2 text-lg hover:bg-gray-800 flex items-center gap-2 ${state.isProcessing?'is-busy':''} font-vt323`;
+            b.innerHTML = `<span class="key-hint border-gray-600 text-gray-400">${h[i]}</span> ${d.icon} <span class="item-name">${iName}</span>`;
+            b.setAttribute('aria-label', iName + '. ' + iDesc);
+            b.onclick = () => itemTap(i, k, b);
+            b.onmouseenter = () => { if (!coarsePointer()) showItemInfo(k, false); };
+            b.onfocus = () => { if (!coarsePointer()) showItemInfo(k, false); };
+            b.onmouseleave = () => { if (!coarsePointer() && itemSel.i < 0) showItemInfo(null); };
+            if (itemSel.i === i && itemSel.key === k) b.classList.add('sel');
             r.appendChild(b);
         } else {
             const emptySlot = document.createElement('div');
@@ -34,9 +38,12 @@ function renderUI() {
         dealerItemsEl.innerHTML = state.dealerItems.map(i => {
             const it = ITEMS[i];
             if (!it) return '';
-            return `<span class="w-6 h-6 rounded-full border border-gray-600 ${it.color.replace('text','bg')} block"></span>`;
+            return `<span class="dealer-item ${it.color}" title="${it.en.n}">${it.icon}</span>`;
         }).join('');
     }
+    const cur = state.playerItems[itemSel.i];
+    if (itemSel.i >= 0 && cur === itemSel.key) showItemInfo(cur, true);
+    else { itemSel = { i: -1, key: '' }; showItemInfo(null); }
 }
 
 function renderHP() {

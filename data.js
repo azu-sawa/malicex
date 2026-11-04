@@ -6,9 +6,9 @@ const TEXT = {
         hud_cash: "YOUR CASH",
         sel_title: "CHOOSE YOUR SIN",
         sel_thief_t: "THIEF",
-        sel_thief_d: "Poor. Starving. Desperate.",
+        sel_thief_d: "Rent is due. The door was unlocked.",
         sel_kill_t: "KILLER",
-        sel_kill_d: "Cold blooded. No regrets.",
+        sel_kill_d: "He had it coming. Probably.",
         menu_norm: "NORMAL",
         menu_hard: "HARDCORE",
         menu_merc: "THE MERCENARY",
@@ -17,7 +17,7 @@ const TEXT = {
         menu_shop: "SHOP",
         menu_ach: "TROPHIES",
         menu_wipe: "WIPE",
-        shop_sub: "\"Good stuff for desperate souls...\"",
+        shop_sub: "\"Everything here has a price. Not all of it is money.\"",
         shop_bal: "BALANCE:",
         shop_back: "BACK",
         shop_buy: "BUY",
@@ -37,16 +37,16 @@ const TEXT = {
         msg_empty: "CLICK... EMPTY",
         msg_your_turn: "YOUR TURN",
         msg_enemy_turn: "ENEMY TURN",
-        res_back: "RETURN TO HELL",
+        res_back: "LEAVE THE TABLE",
         res_win: "SURVIVED",
         res_die: "DIED",
-        res_win_msg: "Opponent Dead. Reward: $",
+        res_win_msg: "The dealer is down. Reward: $",
         res_die_msg: "Darkness consumes you...",
         btn_deal_reset: "RESET",
         btn_start: "NEXT",
         btn_reveal: "REVEAL",
         ach_title: "HALL OF FAME",
-        ach_sub: "\"Badges of honor for the damned...\""
+        ach_sub: ""
     }
 };
 
@@ -306,18 +306,27 @@ function closeAchievements() {
 function renderAchievements() {
     const list = document.getElementById('ach-list-container');
     if (!list) return;
+    const keys = Object.keys(ACHIEVEMENTS);
+    const got = keys.filter(k => unlockedAchievements.includes(k)).length;
+    const sub = document.getElementById('ach-subtitle');
+    if (sub) sub.textContent = got + ' of ' + keys.length + ' found. Locked trophies show a hint.';
     list.innerHTML = '';
-    Object.keys(ACHIEVEMENTS).forEach(key => {
+    // unlocked first, then locked
+    keys.sort((a, b) => (unlockedAchievements.includes(b) ? 1 : 0) - (unlockedAchievements.includes(a) ? 1 : 0));
+    keys.forEach(key => {
         const ach = ACHIEVEMENTS[key];
         const isUnlocked = unlockedAchievements.includes(key);
+        const hint = ach.hint || (typeof ACH_HINTS !== 'undefined' && ACH_HINTS[key]) || '';
         const div = document.createElement('div');
         div.className = `ach-item ${isUnlocked ? 'unlocked' : 'locked'}`;
+        const title = isUnlocked ? ach.title : (ach.secret ? '? ? ?' : ach.title);
+        const body = isUnlocked ? ach.desc : (ach.secret ? 'Secret trophy.' : ach.desc);
         div.innerHTML = `
                 <div class="ach-item-icon">${isUnlocked ? px('trophy') : px('lock')}</div>
                 <div class="ach-text">
-                    <h4>${isUnlocked ? ach.title : '???'}</h4>
-                    <p>${isUnlocked ? ach.desc : 'Terkunci'}</p>
-                    ${isUnlocked ? `<div class="text-xs text-green-500">CLAIMED: $${ach.reward}</div>` : ''}
+                    <h4>${title}</h4>
+                    <p>${body}</p>
+                    ${isUnlocked ? `<div class="ach-claimed">CLAIMED +$${ach.reward}</div>` : `<div class="ach-hint">HINT: ${hint}</div>`}
                 </div>
             `;
         list.appendChild(div);

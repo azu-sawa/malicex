@@ -90,6 +90,7 @@ function updateMoneyDisplay(gained) {
     const hardBtn = document.getElementById('menu-btn-hard');
     if (hardBtn) hardBtn.disabled = globalMoney < 200;
     if (globalMoney >= 5000) unlockAchievement('RICH_KID');
+    if (globalMoney >= 25000) unlockAchievement('TYCOON');
 }
 
 // ---------- DAILY LOGIN ----------

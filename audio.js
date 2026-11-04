@@ -19,14 +19,14 @@ const AudioBus = { master: null, music: null, sfx: null, fx: null, noise: null }
 
 function loadAudioPrefs() {
     try {
-        const p = JSON.parse(localStorage.getItem(AUDIO_PREF_KEY) || '{}');
+        const p = JSON.parse(Store.get(AUDIO_PREF_KEY) || '{}');
         if (typeof p.muted === 'boolean') isMuted = p.muted;
         if (typeof p.music === 'boolean') musicOn = p.music;
         if (typeof p.vol === 'number') musicVol = Math.min(1, Math.max(0, p.vol));
     } catch (e) { /* storage unavailable: defaults */ }
 }
 function saveAudioPrefs() {
-    try { localStorage.setItem(AUDIO_PREF_KEY, JSON.stringify({ muted: isMuted, music: musicOn, vol: musicVol })); } catch (e) { /* ignore */ }
+    try { Store.set(AUDIO_PREF_KEY, JSON.stringify({ muted: isMuted, music: musicOn, vol: musicVol })); } catch (e) { /* ignore */ }
 }
 
 // Builds the mixer on any context (live or offline, so it can be unit-tested).

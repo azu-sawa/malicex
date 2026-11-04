@@ -49,7 +49,6 @@ function updateTexts() {
     if (document.getElementById('menu-btn-ledger')) document.getElementById('menu-btn-ledger').innerText = "GRIMOIRE";
     if (document.getElementById('menu-btn-wipe')) document.getElementById('menu-btn-wipe').innerText = T
         .menu_wipe;
-    if (document.getElementById('news-ticker')) document.getElementById('news-ticker').innerText = T.ticker;
     if (document.getElementById('shop-subtitle')) document.getElementById('shop-subtitle').innerText = T
         .shop_sub;
     if (document.getElementById('shop-balance-lbl')) document.getElementById('shop-balance-lbl').innerText =
@@ -147,16 +146,19 @@ function showMenu() {
     updateMoneyDisplay();
     checkDailyLogin();
     updateSanityUI();
+    renderLobby();
+    showLobbyTab(settings.lobbyTab || 'play');
+    rotateWhisper();
+    if (PSY.abandoned) { unlockAchievement('ABANDONED'); }
+    askName();
 }
 
 // ---------- TOGGLES ----------
-function toggleAdvancedModes() { document.getElementById('advanced-modes').classList.toggle('hidden'); }
 
-function toggleMinigames() { document.getElementById('minigames').classList.toggle('hidden'); }
 
 function resetSave() {
-    if (confirm(("ERASE YOUR SOUL?"))) {
-        [VERSION, PREV_VERSION, LEGACY_VERSION].forEach(k => localStorage.removeItem(k));
+    if (confirm('Erase all progress, settings and trophies on this device? This cannot be undone.')) {
+        [VERSION, PREV_VERSION, LEGACY_VERSION, SETTINGS_KEY, AUDIO_PREF_KEY].forEach(k => Store.remove(k));
         location.reload();
     }
 }
@@ -213,13 +215,15 @@ function renderLedger() {
             div.className = 'ledger-item';
             div.innerHTML = `
                     <div class="text-3xl">${item.icon}</div>
-                    <div><div class="font-bold ${item.color}">${name}</div><div class="text-xs text-gray-400">${desc}</div></div>
+                    <div><div class="font-bold ${item.color}">${name}${(meta.codex && meta.codex[k]) ? '' : ' <span class="codex-new">NOT USED YET</span>'}</div><div class="text-xs text-gray-400">${desc}${item.sanityCost ? ' (-' + item.sanityCost + ' Sanity)' : ''}${item.sanityGain ? ' (+' + item.sanityGain + ' Sanity)' : ''}</div></div>
                 `;
             items.appendChild(div);
         });
     }
     const loreList = document.getElementById('lore-list-ledger');
     if (loreList) {
+        const lh = loreList.previousElementSibling;
+        if (lh) lh.textContent = `LORE PAGES ${unlockedLore.length}/${LORE_ENTRIES.length}`;
         loreList.innerHTML = '';
         LORE_ENTRIES.forEach(entry => {
             const isUnlocked = unlockedLore.includes(entry.id);

@@ -46,6 +46,7 @@ function raisePoker() {
     if (state.pokerRaise >= 2) return;
     if (!canSpendSanity(10)) { SFX.empty(); return; }
     state.pokerRaise++;
+    state.raiseMax = Math.max(state.raiseMax || 0, state.pokerRaise);
     state.raised = true;
     updateSanity(-10);
     SFX.glitch();
@@ -67,6 +68,8 @@ function redrawPoker() {
 
 function foldPoker() {
     if (state.isProcessing || state.pokerStage < 1 || !pokerPhaseOpen()) return;
+    meta.folds = (meta.folds || 0) + 1;
+    if (meta.folds >= 5) unlockAchievement('COWARD');
     showdown(true);
 }
 
@@ -153,6 +156,7 @@ function showdown(fold) {
 function payPokerWin(p) {
     const copies = hasRelic('GREED') ? 2 : 1;
     for (let i = 0; i < copies; i++) giveItem('player', p.rew);
+    if (p.cat >= 8 && !state.cheatCharmWin) unlockAchievement('ROYAL');
     if (p.cat >= 5) { giveItem('player', randomItemKey());
         unlockAchievement('HIGH_HAND'); }
     for (let i = 0; i < state.pokerRaise; i++) {

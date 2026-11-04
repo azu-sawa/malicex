@@ -4,19 +4,19 @@
 const DIALOGUE = {
     en: {
         dealer: {
-            normal: ["Life is cheap here.", "Good luck, lost soul.", "Cards determine your fate.",
+            normal: ["Life is cheap here.", "Sit. You look tired.", "Cards determine your fate.",
                 "Only takes one bullet to fall."
             ],
             hard: ["I won't play nice.", "You'll fall forever.", "Your blood smells of sin.", "Futile."],
             mercenary: ["Target confirmed.", "Just afterlife business.", "These rounds are real.",
                 "No witnesses in limbo."
             ],
-            boss: ["YOUR SOUL IS MINE!", "NO ESCAPE.", "I AM DEATH.", "HELL AWAITS."],
+            boss: ["YOU DID NOT HAVE TO COME.", "NO ONE ASKED YOU.", "COUNT AGAIN.", "I REMEMBER EVERY HAND."],
             endless: ["YOU WANT TO STAY FOREVER?", "NO ESCAPE FROM THE NIGHTMARE.", "AGAIN? FINE.",
                 "I NEVER TIRE."
             ],
-            win: ["Impossible...", "This isn't over.", "Take your coin.", "I'll see you in hell."],
-            lose: ["As predicted.", "Your soul is mine.", "Pathetic.", "Sleep well."],
+            win: ["Impossible...", "This isn't over.", "Take your coin.", "I will be here."],
+            lose: ["As predicted.", "That was almost good.", "Again, then.", "Sleep well."],
             hit: ["Argh!", "You'll pay for that!", "Blood...", "Just a scratch.", "Pain!"],
             taunt: ["Hahaha.", "Hands shaking?", "Click or Bang?", "Scared to fall?"],
             heal: ["Better.", "Not time to break yet.", "Smoke heals."],
@@ -40,7 +40,7 @@ const DIALOGUE = {
             loseHand: ["You cheater!", "The fire... I feel it.", "Don't look at me!"],
             shootHit: ["Die again!", "Your screams are music.", "Blood for the Devil!"],
             shootSelfHit: ["Hahaha! Fitting punishment!", "More! Hurt me!", "It burns!"],
-            shootSelfSafe: ["Not time to burn yet.", "Click. Boring.", "Hell must wait."],
+            shootSelfSafe: ["Not time to burn yet.", "Click. Boring.", "Not yet."],
             getHit: ["This is nothing!", "I'm already dead inside!", "Hit harder!"],
             useItem: ["New torture tool.", "Cheating is fun.", "My new toy."]
         }
@@ -48,7 +48,7 @@ const DIALOGUE = {
 };
 
 // ---------- HORROR ----------
-const HORROR_WORDS = ["DIE", "RUN", "HE SEES YOU", "DON'T", "BLOOD", "SIN", "HELL", "WAKE UP", "DEBT",
+const HORROR_WORDS = ["DIE", "RUN", "HE SEES YOU", "DON'T", "BLOOD", "SIN", "STAY", "WAKE UP", "DEBT",
     "EMPTY", "HE IS COMING", "LOOK BEHIND YOU"
 ];
 
@@ -59,10 +59,14 @@ const DISTURBING_WORDS = ["YOU WERE NEVER BORN", "THEY TOOK YOUR NAME", "SMILE F
             // ==================================================================
 // ========== v7.0 CORE ADDITIONS (THE LAST TABLE) ==================
 // ==================================================================
-let meta = { wins: 0, bestHiLo: 0, runs: 0, ascension: 0, ascSel: 0, gauntletWins: 0, gauntletBest: 0, endings: [], dailyBest: { date: '', score: 0 }, dailyPaid: '' };
+let meta = { wins: 0, bestHiLo: 0, runs: 0, ascension: 0, ascSel: 0, gauntletWins: 0, gauntletBest: 0, endings: [], dailyBest: { date: '', score: 0 }, dailyPaid: '',
+    winStreak: 0, bestStreak: 0, contracts: null, contractsDone: 0, codex: {}, inRun: false, lastDeath: null, folds: 0, tarot: 0, bestScore: 0, trueEnd: false, lastRunAt: 0 };
 
 function runDefaults() {
     return {
+        itemUse: {},
+        blankStreak: 0,
+        raiseMax: 0,
         shieldPlayer: false,
         shieldDealer: false,
         shellLie: false,
@@ -113,6 +117,7 @@ function giveItem(who, key) {
         return false;
     }
     list.push(key);
+    if (who === 'player') { noteCodex(key); if (list.length >= 5) unlockAchievement('HOARDER'); }
     return true;
 }
 
@@ -141,6 +146,8 @@ function safeTypeWriter(element, text, speed, stateObj, fadeOut = false) {
 }
 
 function dealerSpeak(k) {
+    const pl = (typeof psychLine === 'function') ? psychLine(k) : null;
+    if (pl) { safeTypeWriter(document.getElementById('dealer-dialogue'), pl, 30, dealerTyperState, false); return; }
     let a = (DIALOGUE.en && DIALOGUE.en.dealer && DIALOGUE.en.dealer[k]) ?
         DIALOGUE.en.dealer[k] : null;
     if (!a || a.length === 0) a = (DIALOGUE['en'] && DIALOGUE['en'].dealer && DIALOGUE['en'].dealer[k]) ?

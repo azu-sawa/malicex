@@ -25,7 +25,7 @@ function pickEnding() {
 }
 
 function finalWinHooks(p) {
-    const final = ['BOSS', 'ANCIENT', 'GAUNTLET'].includes(currentDifficulty);
+    const final = ['BOSS', 'ANCIENT', 'GAUNTLET', 'FINALE'].includes(currentDifficulty);
     const m = document.getElementById('result-msg');
     if (!final || !m) return;
     let extra = '';
@@ -38,11 +38,13 @@ function finalWinHooks(p) {
         unlockAchievement('GAUNTLET_CLEAR');
         if (isDaily) unlockAchievement('DAILY_DONE');
     }
+    if (currentDifficulty === 'FINALE') { meta.trueEnd = true; unlockAchievement('TRUE_END'); const rt = document.getElementById('result-title'); if (rt) { rt.innerText = 'FREE'; rt.dataset.text = 'FREE'; } }
     if (ascLevel() >= 3) unlockAchievement('ASCENDED');
     if (!isDaily && ascLevel() === (meta.ascension || 0) && meta.ascension < 5) {
         meta.ascension++;
         extra += `<div class="text-xl mt-4 text-red-400">${'ASCENSION'} ${meta.ascension} ${'UNLOCKED'}</div>`;
     }
+    if (currentDifficulty === 'FINALE') { m.innerHTML += `<div class="mt-6 text-2xl text-cyan-300 tracking-widest">THE LAST TABLE IS EMPTY</div>`; return; }
     const id = pickEnding();
     const e = ENDINGS[id];
     if (!meta.endings.includes(id)) {
@@ -87,6 +89,7 @@ function unlockLoreFor(achId) {
     const lid = LORE_BY_ACH[achId];
     if (lid && !unlockedLore.includes(lid)) {
         unlockedLore.push(lid);
+        checkLoreTrophies();
         log('LORE FRAGMENT FOUND', 'text-purple-400');
     }
 }

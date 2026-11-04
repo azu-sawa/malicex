@@ -140,7 +140,7 @@ const GAUNTLET_ITEMS = [
 ];
 
 function buildGauntlet() {
-    const pool = shuffle(Object.keys(DEALER_PERSONALITIES).filter(p => p !== 'ANCIENT'));
+    const pool = shuffle(Object.keys(DEALER_PERSONALITIES).filter(p => p !== 'ANCIENT' && p !== 'FIRST'));
     const lineup = pool.slice(0, 3).concat(['ANCIENT']);
     state.gauntlet = { stage: 0, total: lineup.length, lineup, relics: [], cleared: 0 };
 }
@@ -150,7 +150,7 @@ function setupFight(personality, hp, items) {
     if (asc >= 1) hp += 1;
     if (state.pact === 'THIN_ICE') hp += 1;
     currentDealerPersonality = personality;
-    Music.setScene((['BOSS', 'ANCIENT'].includes(currentDifficulty) || personality === 'WARDEN') ? 'boss' : 'fight', { stage: state.gauntlet ? state.gauntlet.stage : 0 });
+    Music.setScene((['BOSS', 'ANCIENT', 'FINALE'].includes(currentDifficulty) || personality === 'WARDEN') ? 'boss' : 'fight', { stage: state.gauntlet ? state.gauntlet.stage : 0 });
     state.maxDealerHp = hp;
     state.dealerHp = hp;
     state.dealerItems = [...items];

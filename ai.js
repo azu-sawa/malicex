@@ -62,6 +62,7 @@ function processShot(shooter, target) {
                 document.body.classList.remove('flash-white');
                 document.getElementById('gun-ui-panel').classList.remove('shake-hard');
             }, 200);
+            state.blankStreak = 0;
             let dmg = 1 * state.damageMultiplier + (shellMod === 'HOLLOW' ? 1 : 0);
             const pierceShot = shellMod === 'GHOST';
             if (target === 'self') {
@@ -69,6 +70,7 @@ function processShot(shooter, target) {
                 triggerBlood();
                 if (shooter === 'player') {
                     dealDamage('player', dmg, { pierce: pierceShot });
+                    buzz([60, 40, 90]);
                     playerSpeak('shootSelfHit');
                     triggerMemory();
                     
@@ -89,6 +91,7 @@ function processShot(shooter, target) {
                     updateSanity(5);
                 } else {
                     dealDamage('player', dmg, { pierce: pierceShot });
+                    buzz([60, 40, 90]);
                     dealerSpeak('taunt');
                     playerSpeak('getHit');
                     triggerMemory();
@@ -102,9 +105,12 @@ function processShot(shooter, target) {
         } else {
             log(shellMod === 'DUD' ? 'DUD! The shell was defective.' : TEXT.en.msg_empty, 'text-gray-500');
             SFX.empty();
+            if (shooter === 'player' && target !== 'self') state.blankStreak = 0;
             if (target === 'self') {
                 log("SAFE", 'text-blue-400');
                 if (shooter === 'player') {
+                    state.blankStreak = (state.blankStreak || 0) + 1;
+                    if (state.blankStreak >= 3) unlockAchievement('ROULETTE');
                     playerSpeak('shootSelfSafe');
                     updateSanity(3);
                 }

@@ -58,7 +58,7 @@ const DEALER_PERSONALITIES = {
     },
     ANCIENT: {
         name: "The Ancient",
-        taunts: ["I was here before sin...", "Your soul tastes like ash", "Elder blood runs cold",
+        taunts: ["I was here before sin...", "You hold your breath when you lie", "Elder blood runs cold",
             "You cannot kill what never lived"
         ],
         onPlayerHit: () => { updateSanity(-10);
@@ -150,4 +150,13 @@ DEALER_PERSONALITIES.WARDEN = {
         if (items.includes('CIGARETTES') && st.dealerHp < st.maxDealerHp) return 'CIGARETTES';
         return null;
     }
+};
+
+// ---------- THE FIRST PLAYER (true ending boss) ----------
+DEALER_PERSONALITIES.FIRST = {
+    name: "The First Player",
+    taunts: ["You came back.", "I know how this ends.", "You hold the gun like I did.", "Look at me. Look."],
+    onPlayerHit: () => { updateSanity(-8); showDisturbingOverlay("LOOK AT ME"); },
+    aiBehavior: DEALER_PERSONALITIES.ANCIENT.aiBehavior,
+    itemPriority: DEALER_PERSONALITIES.ANCIENT.itemPriority
 };

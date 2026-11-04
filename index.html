@@ -2,11 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Malicex">
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAABa0lEQVR4AeyawQ3CMAxFI25w4cgYSOzBElyYiQtLsAcSYzAFqFercfPTOIrrj5SDG+fbef5ShdTd/nD8RV67FPxHAMENkCAHnF/f5GEhQ4UAIMJecgnAy6Ss+qQDrMh60aUD5KS015zMHTVG7kAHjDrFXn3RAb1Ij1JH9kEHSCLRYsgBj9sl1axaqDW1pjNIPQgAIuwllwC8TMqqTzrAiqwXXTrAy6Ss+qQDrMh60aUDvEzKqk86wIrsKLpLfUAOuD/fqWYtNZHbr6k1ncnpzT2HAMwJeH9GAN4nuLZ/OmAtQe/n6QA5wc/1lHJL5pbGOb2l56X6Mk/Tlbl0gCQSLaYDok1c3pcOkESixZADkNdLKUjtcxatnrZXWnvKgwBMB0ZfaH8EgBLbWj4dsLWJovehA1BiNfnaq07Tqz2naco9OkASiRbTAdEmLu9LB0gi0eJmDtD+nVnstRpUMwCtGuqtQwC9ibeut1bvDwAA//+yy730AAAABklEQVQDAEZVg9D0F5mIAAAAAElFTkSuQmCC">
+    <link rel="apple-touch-icon" href="data:image/png;base64,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">
     <title>Malicex</title>
     <style>.hidden{display:none!important}</style>
-    <link rel="stylesheet" href="style.css?v=92b">
-    <link rel="stylesheet" href="tailwind.css?v=92b">
+    <link rel="stylesheet" href="style.css?v=M1">
+    <link rel="stylesheet" href="tailwind.css?v=M1">
     <meta name="theme-color" content="#090a0f">
 </head>
 <body class="flex flex-col items-center justify-between p-4 screen-flicker">
@@ -48,7 +54,7 @@
     </div>
 
     <!-- MONEY HUD -->
-    <div class="fixed top-4 right-4 z-[999] border-2 border-yellow-700 bg-black/90 px-4 py-2 shadow-[0_0_15px_rgba(255,165,0,0.2)]">
+    <div id="money-hud" class="fixed top-4 right-4 z-[999] border border-yellow-700 bg-black/90 px-3 py-1">
         <span class="text-sm text-yellow-700 font-bold tracking-widest block text-right font-vt323" id="hud-label">YOUR CASH</span>
         <div class="text-3xl text-yellow-500 tracking-wider font-vt323">$<span id="money-display">0</span></div>
     </div>
@@ -65,22 +71,22 @@
         <div class="absolute top-10 w-full text-center text-gray-600 z-50 text-xl tracking-widest animate-pulse font-press" id="select-title">CHOOSE YOUR SIN</div>
         <div class="flex-1 flex flex-col items-center justify-center border-r border-green-900 cursor-pointer hover:bg-green-900/10 transition-colors group" onclick="chooseStory('THIEF')">
             <h1 class="text-4xl text-green-600 mb-2 group-hover:text-green-400 font-press" id="sel-thief-title">THIEF</h1>
-            <p class="text-2xl text-gray-500" id="sel-thief-desc">Poor. Starving. Desperate.</p>
+            <p class="text-2xl text-gray-500" id="sel-thief-desc">Rent is due. The door was unlocked.</p>
         </div>
         <div class="flex-1 flex flex-col items-center justify-center border-l border-red-900 cursor-pointer hover:bg-red-900/10 transition-colors group" onclick="chooseStory('PARRICIDE')">
             <h1 class="text-4xl text-red-600 mb-2 group-hover:text-red-400 font-press" id="sel-killer-title">KILLER</h1>
-            <p class="text-2xl text-gray-500" id="sel-killer-desc">Cold blooded. No regrets.</p>
+            <p class="text-2xl text-gray-500" id="sel-killer-desc">He had it coming. Probably.</p>
         </div>
     </div>
 
     <!-- STARTUP -->
     <div id="startup-screen" class="main-menu z-[1000] bg-black">
         <div class="text-center">
-            <h1 class="text-6xl text-red-700 font-bold mb-8 glitch" data-text="WAKE UP" style="font-family:'Press Start 2P'">WAKE UP</h1>
-            <p class="text-2xl text-gray-500 mb-12 tracking-[0.3em] animate-pulse">THEY ARE WAITING...</p>
+            <h1 class="text-5xl text-red-700 font-bold mb-8 glitch" data-text="MALICEX" style="font-family:'Press Start 2P'">MALICEX</h1>
+            <p class="text-2xl text-gray-500 mb-12 tracking-[0.3em] animate-pulse">Someone left the light on.</p>
             <div class="flex flex-col gap-4 items-center">
                 <button class="btn-retro w-64 border-red-800 text-red-600 hover:text-white" onclick="enterGame()">ENTER</button>
-                <p class="text-sm text-gray-600 max-w-xs">Headphones recommended. Sound and music start when you enter.</p>
+                <p class="text-sm text-gray-600 max-w-xs">Headphones recommended. Sound starts when you enter. Progress is saved on this device only.</p>
             </div>
         </div>
     </div>
@@ -91,81 +97,154 @@
         <button id="skip-intro" class="btn-retro w-64 fixed bottom-10 hidden" onclick="endIntro()">CONTINUE [SPACE]</button>
     </div>
 
-    <!-- ========== MAIN MENU ========== -->
+    <!-- ========== LOBBY ========== -->
     <div id="main-menu" class="main-menu hidden z-[800]">
-
-        <!-- LOBBY SANITY METER -->
-        <div id="sanity-hud-lobby" class="sanity-hud-lobby">
-            <span class="text-purple-400 text-xs"><i class="px px-brain"></i> SANITY<span id="lobby-sanity-tier"></span></span>
-            <div style="width:150px;height:12px;background:#1a1a1a;border:1px solid #333;">
-                <div id="lobby-sanity-fill" class="sanity-fill-lobby" style="width:100%;"></div>
+      <div class="lobby">
+        <div class="lobby-head">
+            <div id="sanity-hud-lobby" class="sanity-hud-lobby">
+                <span class="lobby-label"><i class="px px-brain"></i> SANITY<span id="lobby-sanity-tier"></span></span>
+                <div class="lobby-meter"><div id="lobby-sanity-fill" class="sanity-fill-lobby" style="width:100%;"></div></div>
+                <span id="lobby-sanity-text" class="lobby-num">100</span>
             </div>
-            <span id="lobby-sanity-text" class="text-purple-300 text-sm">100</span>
+            <div class="lobby-chip" id="chip-streak" title="Consecutive wins. Each one adds 10% cash to the next win, up to 50%."><i class="px px-bolt"></i> STREAK <b id="streak-n">0</b></div>
+            <div class="lobby-chip" id="chip-contracts" title="Daily contracts finished today"><i class="px px-lock"></i> CONTRACTS <b id="contracts-n">0/3</b></div>
         </div>
 
-        <div class="top-left-controls">
-            <button id="btn-audio" class="btn-retro" onclick="toggleAudio()">AUDIO: ON</button>
-            <button id="btn-music" class="btn-retro" onclick="toggleMusic()">MUSIC: ON</button>
-            <input id="music-vol" type="range" min="0" max="100" value="60" oninput="setMusicVolume(this.value)" title="Music volume">
-        </div>
+        <h1 id="lobby-title" class="menu-title glitch" data-text="MALICEX">MALICEX</h1>
+        <div id="version-label" class="lobby-version">VERSION M1</div>
+        <div id="story-mode-indicator" class="lobby-subject"></div>
+        <div id="news-ticker" class="lobby-whisper" aria-live="polite"></div>
 
-        <h1 class="menu-title glitch text-6xl mb-2 text-red-600" data-text="MALICEX">MALICEX</h1>
-        <div id="version-label" class="text-2xl text-gray-600 mb-6 tracking-widest">v9.2 &middot; SOFT PHOSPHOR</div>
-        <div id="story-mode-indicator" class="text-xl tracking-widest mb-6 text-green-800 uppercase"></div>
-
-        <button id="btn-daily-login" class="btn-retro w-80 mb-6 border-yellow-600 text-yellow-500 hidden" onclick="claimDailyReward()">
-            CLAIM DAILY REWARD +$500 <br><span class="text-lg text-gray-500">Reset: 06:00 AM</span>
+        <button id="btn-daily-login" class="btn-retro lobby-claim hidden" onclick="claimDailyReward()">
+            COLLECT TODAY'S PAYMENT +$500 <span class="lobby-sub">Resets at 06:00</span>
         </button>
 
-        <div class="grid grid-cols-1 gap-1 w-80 relative z-10">
-            <button id="menu-btn-normal" class="btn-retro text-sm py-2" onclick="selectDifficulty('NORMAL')">NORMAL <span class='text-xs text-gray-500 block'>Free | Standard Horror</span></button>
-            <button id="menu-btn-hard" class="btn-retro btn-danger text-sm py-2" onclick="selectDifficulty('HARD')">HARDCORE <span class='text-xs text-gray-500 block'>$200 | Smart AI</span></button>
+        <button id="btn-again" class="lobby-primary" onclick="lobbyPrimary()">
+            <span id="again-title">SIT DOWN</span><span id="again-sub" class="lobby-sub"></span>
+        </button>
 
-            <button id="menu-btn-gauntlet" class="btn-retro text-sm py-2 border-amber-700 text-amber-500" onclick="selectDifficulty('GAUNTLET')">GAUNTLET <span id="gauntlet-sub" class='text-xs text-gray-500 block'>$500 | 4 Dealers</span></button>
-            <button id="menu-btn-daily" class="btn-retro text-sm py-2 border-cyan-700 text-cyan-400" onclick="selectDifficulty('DAILY')">DAILY SEED <span id="daily-sub" class='text-xs text-gray-500 block'>Free</span></button>
-            <button id="menu-btn-asc" class="btn-retro text-xs py-1 border-red-900 text-red-500" onclick="cycleAscension()">ASCENSION 0 / 0</button>
+        <nav class="lobby-tabs" role="tablist" aria-label="Lobby sections">
+            <button class="lobby-tab" id="tabbtn-play" role="tab" onclick="showLobbyTab('play')"><i class="px px-skull"></i><span>PLAY</span></button>
+            <button class="lobby-tab" id="tabbtn-archive" role="tab" onclick="showLobbyTab('archive')"><i class="px px-brain"></i><span>ARCHIVE</span></button>
+            <button class="lobby-tab" id="tabbtn-under" role="tab" onclick="showLobbyTab('under')"><i class="px px-coin"></i><span>MARKET</span></button>
+            <button class="lobby-tab" id="tabbtn-system" role="tab" onclick="showLobbyTab('system')"><i class="px px-lock"></i><span>SYSTEM</span></button>
+        </nav>
 
-            <div class="h-px bg-gray-800 my-0.5"></div>
-
-            <button class="btn-retro text-purple-400 border-purple-600 text-sm py-2" onclick="toggleAdvancedModes()">ADVANCED MODES</button>
-            <div id="advanced-modes" class="hidden grid grid-cols-1 gap-0.5">
-                <button id="menu-btn-merc" class="btn-retro border-purple-500 text-purple-400 text-sm py-1.5" onclick="selectDifficulty('MERCENARY')">THE MERCENARY <span class='text-xs text-gray-500 block'>$2,000 | Elite Guard</span></button>
-                <button id="menu-btn-boss" class="btn-retro border-red-800 text-red-600 animate-pulse hidden text-sm py-1.5" onclick="selectDifficulty('BOSS')">THE DEVIL <span class='text-xs text-gray-500 block'>$5,000 | Final Boss</span></button>
-                <button id="menu-btn-ancient" class="btn-retro border-amber-600 text-amber-500 hidden text-sm py-1.5" onclick="selectDifficulty('ANCIENT')">THE ANCIENT <span class='text-xs text-gray-500 block'>$8,000 | Elder Horror</span></button>
-                <button id="menu-btn-endless" class="btn-retro border-white text-gray-200 hidden text-sm py-1.5" onclick="selectDifficulty('ENDLESS')">ENDLESS NIGHTMARE <span class='text-xs text-gray-500 block'>$500 | Survival</span></button>
+        <!-- PLAY -->
+        <section id="tab-play" class="lobby-panel" role="tabpanel">
+            <button id="menu-btn-normal" class="mode-card" onclick="selectDifficulty('NORMAL')">NORMAL</button>
+            <button id="menu-btn-hard" class="mode-card mode-red" onclick="selectDifficulty('HARD')">HARDCORE</button>
+            <button id="menu-btn-gauntlet" class="mode-card mode-amber" onclick="selectDifficulty('GAUNTLET')">GAUNTLET <span id="gauntlet-sub" class="mode-sub"></span></button>
+            <button id="menu-btn-daily" class="mode-card mode-cyan" onclick="selectDifficulty('DAILY')">DAILY SEED <span id="daily-sub" class="mode-sub"></span></button>
+            <button id="menu-btn-asc" class="mode-card mode-slim" onclick="cycleAscension()">ASCENSION 0 / 0</button>
+            <button class="mode-card mode-slim mode-purple" onclick="toggleAdvancedModes()" aria-expanded="false">HARDER TABLES &#9662;</button>
+            <div id="advanced-modes" class="hidden lobby-sub-panel">
+                <button id="menu-btn-merc" class="mode-card mode-purple" onclick="selectDifficulty('MERCENARY')">THE MERCENARY</button>
+                <button id="menu-btn-boss" class="mode-card mode-red hidden" onclick="selectDifficulty('BOSS')">THE DEVIL</button>
+                <button id="menu-btn-ancient" class="mode-card mode-amber hidden" onclick="selectDifficulty('ANCIENT')">THE ANCIENT</button>
+                <button id="menu-btn-endless" class="mode-card hidden" onclick="selectDifficulty('ENDLESS')">ENDLESS NIGHTMARE</button>
+                <button id="menu-btn-finale" class="mode-card mode-finale" onclick="selectDifficulty('FINALE')">THE LAST TABLE</button>
             </div>
+        </section>
 
-            <button class="btn-retro text-green-400 border-green-600 text-sm py-2" onclick="toggleMinigames()">MINIGAMES</button>
-            <div id="minigames" class="hidden grid grid-cols-1 gap-0.5">
-                <div class="flex flex-wrap gap-0.5">
-                    <button class="btn-retro flex-1 text-blue-400 border-blue-600 text-sm py-1.5" onclick="openBlackjack()">BJ</button>
-                    <button class="btn-retro flex-1 text-purple-400 border-purple-600 text-sm py-1.5" onclick="openSlots()">SLOTS</button>
-                    <button class="btn-retro flex-1 text-orange-400 border-orange-600 text-sm py-1.5" onclick="openCups()">CUPS</button>
-                    <button class="btn-retro flex-1 text-cyan-400 border-cyan-600 text-sm py-1.5" onclick="openHiLo()">HI-LO</button>
-                </div>
+        <!-- ARCHIVE -->
+        <section id="tab-archive" class="lobby-panel hidden" role="tabpanel">
+            <div class="contracts-box">
+                <div class="contracts-title">TODAY'S CONTRACTS</div>
+                <div id="contracts-list"></div>
             </div>
+            <button id="menu-btn-ach" class="mode-card mode-amber" onclick="openAchievements()">TROPHIES</button>
+            <button id="menu-btn-ledger" class="mode-card" onclick="openLedger()">GRIMOIRE</button>
+        </section>
 
-            <div class="flex gap-0.5">
-                <button id="menu-btn-shop" class="btn-retro flex-1 text-yellow-500 border-yellow-700 text-sm py-2" onclick="toggleShop(true)">SHOP</button>
-                <button id="menu-btn-ach" class="btn-retro flex-1 text-yellow-300 border-yellow-600 text-sm py-2" onclick="openAchievements()">TROPHIES</button>
+        <!-- MARKET + GAMES -->
+        <section id="tab-under" class="lobby-panel hidden" role="tabpanel">
+            <button id="menu-btn-shop" class="mode-card mode-amber" onclick="toggleShop(true)">BLACK MARKET <span class="mode-sub">Permanent upgrades and starting gear</span></button>
+            <div class="lobby-sub-title">SIDE GAMES &middot; win cash, lose sanity</div>
+            <div id="minigames" class="lobby-grid">
+                <button class="mode-card mode-slim" onclick="openBlackjack()">BLACKJACK</button>
+                <button class="mode-card mode-slim mode-purple" onclick="openSlots()">SLOTS</button>
+                <button class="mode-card mode-slim mode-amber" onclick="openCups()">CUPS</button>
+                <button class="mode-card mode-slim mode-cyan" onclick="openHiLo()">HI-LO</button>
             </div>
-            <div class="flex gap-0.5">
-                <button id="menu-btn-ledger" class="btn-retro flex-1 text-gray-300 border-gray-500 text-sm py-2" onclick="openLedger()">GRIMOIRE</button>
-                <button id="menu-btn-wipe" class="btn-retro flex-1 border-gray-800 text-gray-600 text-xs py-1 hover:text-red-500" onclick="resetSave()">WIPE</button>
-            </div>
-        </div>
-        <div id="menu-msg" class="text-red-600 mt-4 h-6 text-xl font-bold"></div>
+        </section>
 
-        <div class="ticker-wrap">
-            <div class="ticker" id="news-ticker">NEWS: NEW SOUL ARRIVED AT THE BORDER... ++ HEAVEN REJECTS, HELL AWAITS... ++ ONE LAST BET FOR REDEMPTION... ++ DON'T LOOK DOWN... ++</div>
+        <!-- SYSTEM -->
+        <section id="tab-system" class="lobby-panel hidden" role="tabpanel">
+            <button class="mode-card" onclick="openTutorial()">HOW TO PLAY <span class="mode-sub">Short guide, 6 pages</span></button>
+            <div class="lobby-grid">
+                <button id="btn-audio" class="mode-card mode-slim" onclick="toggleAudio()">AUDIO: ON</button>
+                <button id="btn-music" class="mode-card mode-slim" onclick="toggleMusic()">MUSIC: ON</button>
+                <button id="set-cursor" class="mode-card mode-slim" onclick="toggleSetting('cursor')">CRT POINTER: ON</button>
+                <button id="set-haptics" class="mode-card mode-slim" onclick="toggleSetting('haptics')">VIBRATION: ON</button>
+                <button id="set-lowfx" class="mode-card mode-slim" onclick="toggleSetting('lowfx')">LOW EFFECTS: OFF</button>
+            </div>
+            <label class="lobby-sub-title" for="music-vol">MUSIC VOLUME</label>
+            <input id="music-vol" type="range" min="0" max="100" value="60" oninput="setMusicVolume(this.value)">
+            <div class="lobby-sub-title">SAVE DATA &middot; stored only in this browser</div>
+            <textarea id="save-io" class="save-io" rows="3" spellcheck="false" placeholder="Save code appears here. Paste a code to restore."></textarea>
+            <div class="lobby-grid">
+                <button class="mode-card mode-slim" onclick="exportSave()">EXPORT CODE</button>
+                <button class="mode-card mode-slim" onclick="importSave()">IMPORT CODE</button>
+            </div>
+            <div id="sys-msg" class="lobby-msg"></div>
+            <button id="menu-btn-wipe" class="mode-card mode-slim mode-danger" onclick="resetSave()">ERASE EVERYTHING</button>
+        </section>
+
+        <div id="menu-msg" class="lobby-msg"></div>
+      </div>
+    </div>
+
+    <!-- ========== TRUE ENDING ========== -->
+    <div id="finale-screen" class="main-menu hidden z-[1100] bg-black">
+        <div id="finale-text" class="finale-line"></div>
+        <div class="finale-skip">tap to continue</div>
+    </div>
+
+    
+    <!-- ========== TUTORIAL ========== -->
+    <div id="tutorial-screen" class="main-menu hidden bg-black/95 z-[950]">
+        <div class="tut-card">
+            <div id="tut-icon" class="tut-icon"></div>
+            <h2 id="tut-title" class="tut-title"></h2>
+            <div id="tut-body" class="tut-body"></div>
+            <div class="tut-nav">
+                <button id="tut-prev" class="btn-retro" onclick="tutStep(-1)">BACK</button>
+                <span id="tut-count" class="tut-count"></span>
+                <button id="tut-next" class="btn-retro">NEXT</button>
+            </div>
+            <button class="tut-close" onclick="closeTutorial()">Close</button>
         </div>
     </div>
 
-    <!-- ========== SHOP ========== -->
+    <!-- ========== COACH MARK (first hand) ========== -->
+    <div id="coach" class="coach hidden" role="dialog" aria-live="polite">
+        <div id="coach-title" class="coach-title"></div>
+        <div id="coach-text" class="coach-text"></div>
+        <div class="coach-btns">
+            <button id="coach-ok" class="btn-retro">GOT IT</button>
+            <button id="coach-skip" class="coach-skip">Skip all tips</button>
+        </div>
+    </div>
+
+    <!-- ========== NAME ========== -->
+    <div id="name-screen" class="main-menu hidden bg-black z-[960]">
+        <div class="name-card">
+            <p class="name-line">The house is waiting for you.</p>
+            <p class="name-line">What should it call you?</p>
+            <input id="name-input" type="text" maxlength="12" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="a name" onkeydown="if(event.key==='Enter')submitName(false)">
+            <div class="name-btns">
+                <button class="btn-retro" onclick="submitName(false)">THAT IS ME</button>
+                <button class="coach-skip" onclick="submitName(true)">Nobody</button>
+            </div>
+        </div>
+    </div>
+
+<!-- ========== SHOP ========== -->
     <div id="shop-menu" class="main-menu hidden bg-black/95 z-[900]">
         <h1 class="text-5xl text-yellow-600 mb-4 glitch" data-text="BLACK MARKET" style="font-family:'Press Start 2P';">BLACK MARKET</h1>
-        <div class="text-gray-500 mb-6 font-vt323 text-xl" id="shop-subtitle">"Good stuff for desperate souls..."</div>
-        <div class="w-[900px] max-h-[70vh] overflow-y-auto p-4 border-y border-gray-800">
+        <div class="text-gray-500 mb-6 font-vt323 text-xl" id="shop-subtitle">"Everything here has a price. Not all of it is money."</div>
+        <div class="w-full max-w-[900px] max-h-[70vh] overflow-y-auto p-4 border-y border-gray-800">
             <div class="grid grid-cols-3 gap-4" id="shop-grid-container"></div>
         </div>
         <div class="flex gap-4 mt-6">
@@ -180,14 +259,14 @@
     <div id="achievements-screen" class="main-menu hidden bg-black/95 z-[900]">
         <h1 class="text-5xl text-yellow-500 mb-4 glitch" data-text="HALL OF FAME" style="font-family:'Press Start 2P';">HALL OF FAME</h1>
         <div class="text-gray-500 mb-6 font-vt323 text-xl" id="ach-subtitle">"Badges of honor for the damned..."</div>
-        <div class="w-[600px] max-h-[70vh] overflow-y-auto p-4 border-y border-gray-800" id="ach-list-container"></div>
+        <div class="w-full max-w-[600px] max-h-[70vh] overflow-y-auto p-4 border-y border-gray-800" id="ach-list-container"></div>
         <button class="btn-retro w-64 mt-6 border-gray-600 text-gray-400" onclick="closeAchievements()" id="ach-btn-back">BACK</button>
     </div>
 
     <!-- ========== LEDGER ========== -->
     <div id="ledger-screen" class="main-menu hidden bg-black/95 z-[900]">
         <h1 class="text-5xl text-gray-400 mb-4 font-press">THE GRIMOIRE</h1>
-        <div class="w-[800px] max-h-[70vh] overflow-y-auto p-4">
+        <div class="w-full max-w-[800px] max-h-[70vh] overflow-y-auto p-4">
             <div class="ledger-grid">
                 <div class="ledger-section">
                     <h3 class="text-xl text-green-500 mb-4 border-b border-gray-700 pb-2">PLAYER STATISTICS</h3>
@@ -308,15 +387,17 @@
 
     <!-- ========== RESULT SCREEN ========== -->
     <div id="result-screen" class="main-menu hidden z-[900]">
-        <h1 id="result-title" class="text-6xl mb-4 font-bold glitch" data-text="GAME OVER">GAME OVER</h1>
-        <p id="result-msg" class="text-2xl mb-8 text-gray-400 tracking-widest text-center px-4">...</p>
-        <button class="btn-retro w-64 text-xl py-2" onclick="returnToMenu()" id="res-btn-back">RETURN TO HELL</button>
+        <h1 id="result-title" class="text-6xl mb-4 font-bold glitch" data-text="">&nbsp;</h1>
+        <p id="result-msg" class="text-2xl mb-8 text-gray-400 tracking-widest text-center px-4"></p>
+        <button class="btn-retro result-btn" onclick="replayLast()" id="res-btn-again">ONE MORE HAND</button>
+        <button class="btn-retro result-btn" onclick="returnToMenu()" id="res-btn-back">LEAVE THE TABLE</button>
     </div>
 
     <!-- ========== GAMEPLAY UI ========== -->
     <div id="game-ui" class="w-full flex flex-col items-center h-full justify-between py-2 hidden relative z-[200]">
         <div class="w-full max-w-4xl flex justify-between items-start px-4">
             <div class="flex flex-col items-start w-1/3">
+                <div id="dealer-face" class="dealer-face" aria-hidden="true"></div>
                 <div class="hp-wrapper items-start">
                     <span class="hp-label text-red-600 font-bold glitch text-sm" id="dealer-name-label" data-text="DEALER">DEALER</span>
                     <div id="dealer-hp" class="hp-container text-red-700"></div>
@@ -379,6 +460,7 @@
                 </div>
             </div>
             <div class="border-t border-gray-800 pt-2 px-2 bg-gray-900/30 pb-2 controls-panel" id="controls-panel">
+                <div id="item-info" class="item-info idle" aria-live="polite"></div>
                 <div id="player-items-row" class="grid grid-cols-5 gap-1 mb-2 min-h-[40px]"></div>
                 <div id="controls" class="grid grid-cols-2 gap-2 relative">
                     <div class="tension-wrap hidden" id="tension-wrap"><i class="px px-timer"></i> <span id="tension-timer">--</span>s</div>
@@ -395,33 +477,38 @@
         </div>
     </div>
 
-    <!-- ========== MASTER SCRIPT v6.5 – ULTIMATE FUSION ========== -->
+    <!-- ========== SCRIPTS ========== -->
 
-    <script src="rng.js?v=92b"></script>
-    <script src="state.js?v=92b"></script>
-    <script src="audio.js?v=92b"></script>
-    <script src="sanity.js?v=92b"></script>
-    <script src="util.js?v=92b"></script>
-    <script src="pixel.js?v=92b"></script>
-    <script src="data.js?v=92b"></script>
-    <script src="dialogue.js?v=92b"></script>
-    <script src="dealers.js?v=92b"></script>
-    <script src="combat.js?v=92b"></script>
-    <script src="poker.js?v=92b"></script>
-    <script src="items.js?v=92b"></script>
-    <script src="ai.js?v=92b"></script>
-    <script src="render.js?v=92b"></script>
-    <script src="hud.js?v=92b"></script>
-    <script src="effects.js?v=92b"></script>
-    <script src="run.js?v=92b"></script>
-    <script src="gauntlet.js?v=92b"></script>
-    <script src="endings.js?v=92b"></script>
-    <script src="save.js?v=92b"></script>
-    <script src="shop.js?v=92b"></script>
-    <script src="minigames.js?v=92b"></script>
-    <script src="ui.js?v=92b"></script>
-    <script src="debug.js?v=92b"></script>
-    <script src="main.js?v=92b"></script>
+    <script src="rng.js?v=M1"></script>
+    <script src="state.js?v=M1"></script>
+    <script src="store.js?v=M1"></script>
+    <script src="audio.js?v=M1"></script>
+    <script src="sanity.js?v=M1"></script>
+    <script src="util.js?v=M1"></script>
+    <script src="pixel.js?v=M1"></script>
+    <script src="data.js?v=M1"></script>
+    <script src="dialogue.js?v=M1"></script>
+    <script src="dealers.js?v=M1"></script>
+    <script src="combat.js?v=M1"></script>
+    <script src="poker.js?v=M1"></script>
+    <script src="items.js?v=M1"></script>
+    <script src="ai.js?v=M1"></script>
+    <script src="render.js?v=M1"></script>
+    <script src="hud.js?v=M1"></script>
+    <script src="effects.js?v=M1"></script>
+    <script src="run.js?v=M1"></script>
+    <script src="gauntlet.js?v=M1"></script>
+    <script src="endings.js?v=M1"></script>
+    <script src="content.js?v=M1"></script>
+    <script src="save.js?v=M1"></script>
+    <script src="shop.js?v=M1"></script>
+    <script src="minigames.js?v=M1"></script>
+    <script src="ui.js?v=M1"></script>
+    <script src="lobby.js?v=M1"></script>
+    <script src="tutorial.js?v=M1"></script>
+    <script src="psyche.js?v=M1"></script>
+    <script src="debug.js?v=M1"></script>
+    <script src="main.js?v=M1"></script>
 
 </body>
 </html>

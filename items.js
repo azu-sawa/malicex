@@ -8,6 +8,8 @@ function useItem(who, key, idx) {
         state.isProcessing = true;
         state.playerItems.splice(idx, 1);
         state.lastPlayerItem = key;
+        state.itemUse[key] = (state.itemUse[key] || 0) + 1;
+        noteCodex(key);
         totalStats.itemsUsed++;
         state.runItems = (state.runItems || 0) + 1;
         playerSpeak('useItem');
@@ -78,8 +80,11 @@ function useItem(who, key, idx) {
             log(`TAROT: ${card.name} – ${card.desc}`, 'text-purple-400');
             card.effect();
             unlockAchievement('TAROT_INITIATE');
+            meta.tarot = (meta.tarot || 0) + 1;
+            if (meta.tarot >= 5) unlockAchievement('TAROT_5');
         } else if (key === 'PHANTOM') {
             log('It was never there...', 'text-purple-400');
+            unlockAchievement('PHANTOM_USE');
             updateSanity(-3);
             flashScreen('red');
         } else if (key === 'SHIELD') {
@@ -133,6 +138,7 @@ function handleGameEnd() {
     const m = document.getElementById('result-msg');
     state.isProcessing = false;
     stopTurnTimer();
+    meta.inRun = false;
     document.getElementById('sanity-hud').classList.add('hidden');
     if (state.playerHp > 0) {
         if (currentDifficulty === 'ENDLESS') {
@@ -145,8 +151,11 @@ function handleGameEnd() {
             if (currentDifficulty === 'MERCENARY') p = 4000;
             if (currentDifficulty === 'BOSS') p = 10000;
             if (currentDifficulty === 'ANCIENT') p = 18000;
+            if (currentDifficulty === 'FINALE') p = 25000;
             if (currentDifficulty === 'GAUNTLET') p = 2500 + 300 * (state.gauntlet ? state.gauntlet.relics.length : 0);
             p = Math.floor(p * rewardMult());
+            const streakNow = Math.min(5, meta.winStreak || 0);
+            p = Math.floor(p * (1 + 0.1 * streakNow));
             if (isDaily) {
                 if (meta.dailyPaid === dailySeed()) p = 0;
                 else meta.dailyPaid = dailySeed();
@@ -155,6 +164,12 @@ function handleGameEnd() {
             totalStats.moneyEarned += p;
             totalStats.kills++;
             meta.wins++;
+            meta.winStreak = (meta.winStreak || 0) + 1;
+            meta.bestStreak = Math.max(meta.bestStreak || 0, meta.winStreak);
+            if (meta.winStreak >= 3) unlockAchievement('STREAK_3');
+            if (meta.winStreak >= 7) unlockAchievement('STREAK_7');
+            if ((state.runItems || 0) === 0 && currentDifficulty !== 'ENDLESS') unlockAchievement('BARE_HANDS');
+            if ((meta.ascension || 0) >= 5) unlockAchievement('ASC_5');
             checkWinAchievements();
             t.innerText = TEXT.en.res_win;
             t.className = "text-6xl mb-4 text-green-500 font-bold glitch";
@@ -171,6 +186,9 @@ function handleGameEnd() {
         }
     } else {
         deathCount++;
+        meta.lostStreak = meta.winStreak || 0;
+        meta.winStreak = 0;
+        meta.lastDeath = { mode: currentDifficulty, dealer: currentDealerPersonality, round: state.round, at: Date.now() };
         if (deathCount >= 10) unlockAchievement('DEAD_MAN');
         if (rnd() < 0.20) {
             const pick = DISTURBING_WORDS[Math.floor(rnd() * DISTURBING_WORDS.length)];
@@ -197,9 +215,12 @@ function handleGameEnd() {
     }
     recordRunEnd(m);
     addRunSummary(m);
+    runEndV10(m, state.playerHp > 0);
     hideModChip();
-    s.classList.remove('hidden');
+    meta.inRun = false;
     saveGame();
+    if (currentDifficulty === 'FINALE' && state.playerHp > 0) playTrueEnding(() => s.classList.remove('hidden'));
+    else s.classList.remove('hidden');
     updateMoneyDisplay(true);
 }
 

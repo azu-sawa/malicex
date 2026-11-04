@@ -54,8 +54,11 @@ document.addEventListener('keydown', (e) => {
 
 // ---------- INIT ----------
 window.onload = function() {
+    loadSettings();
     loadAudioPrefs();
     loadGame();
+    psycheInit();
+    if (settings.name) DISTURBING_WORDS.push(settings.name.toUpperCase());
     updateSanityUI();
     updateMoneyDisplay();
     updateTexts();
@@ -89,9 +92,8 @@ window.selectDifficulty = selectDifficulty;
 
 window.toggleShop = toggleShop;
 
-window.toggleAdvancedModes = toggleAdvancedModes;
 
-window.toggleMinigames = toggleMinigames;
+
 
 window.claimDailyReward = claimDailyReward;
 
@@ -172,4 +174,4 @@ window.redrawPoker = redrawPoker;
 window.foldPoker = foldPoker;
 
 hudInit();
-console.log("Malicex v9.2 loaded.");
+console.log("Malicex M1 loaded.");

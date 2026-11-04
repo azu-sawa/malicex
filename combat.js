@@ -202,13 +202,13 @@ function startTurnTimer() {
     if (activeGame !== 'MAIN' || state.turn !== 'player' || state.isProcessing) return;
     clearInterval(turnTimer);
 
-    const urgentModes = ['HARD', 'MERCENARY', 'BOSS', 'ANCIENT', 'ENDLESS'];
+    const urgentModes = ['HARD', 'MERCENARY', 'BOSS', 'ANCIENT', 'ENDLESS', 'FINALE'];
     if (!urgentModes.includes(currentDifficulty)) {
         document.getElementById('tension-wrap').classList.add('hidden');
         return;
     }
 
-    timeLeft = (currentDifficulty === 'BOSS' || currentDifficulty === 'ANCIENT') ? 10 : 15;
+    timeLeft = (currentDifficulty === 'BOSS' || currentDifficulty === 'ANCIENT' || currentDifficulty === 'FINALE') ? 10 : 15;
     
     const wrap = document.getElementById('tension-wrap');
     const display = document.getElementById('tension-timer');
@@ -312,6 +312,7 @@ function startRound() {
         refreshCheatButtons();
     }
     toggleGunControls(false);
+    setTimeout(() => coach('poker', () => coach('controls')), 700);
 }
 
 function createDeck() {
@@ -466,6 +467,7 @@ function startTurn() {
         if (currentDifficulty === 'MERCENARY') bonus = 300;
         if (currentDifficulty === 'BOSS') bonus = 500;
         if (currentDifficulty === 'ANCIENT') bonus = 750;
+        if (currentDifficulty === 'FINALE') bonus = 1500;
         if (currentDifficulty === 'ENDLESS') {
             state.round++;
             state.endlessScore++;
@@ -491,6 +493,7 @@ function startTurn() {
             if (available.length > 0) {
                 const newLore = available[Math.floor(rnd() * available.length)];
                 unlockedLore.push(newLore.id);
+                checkLoreTrophies();
                 saveGame();
                 log("LORE FRAGMENT FOUND", "text-purple-400");
             }
@@ -504,6 +507,7 @@ function startTurn() {
         onPlayerTurnHooks();
         toggleGunControls(true);
         startTurnTimer();
+        setTimeout(() => coach('shoot', () => coach('items', () => coach('sanity', () => startTurnTimer()))), 700);
     } else {
         stopTurnTimer();
         spawnDealerTell();

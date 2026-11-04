@@ -17,11 +17,15 @@ const PX_PALETTE = {
     r: '#d11f2a', R: '#6e0f14', o: '#d9731c', y: '#cfae2e', Y: '#7d5a12',
     l: '#8fd13a', G: '#1f9d4a', c: '#3ad6b4', b: '#3a74c9', B: '#173a73',
     p: '#9a4fd6', P: '#55208a', m: '#e0508f', M: '#8f1f55', n: '#7a3f14',
-    f: '#e8c8a4', t: '#1f9d8a'
+    f: '#e8c8a4', t: '#1f9d8a',
+    C: '#38bdf8', a: '#f59e0b', N: '#090a0f', W: '#ffffff'
 };
 
 const PX_SPRITES = {
     disk: ['kkkkkkk.', 'kwwwwwkk', 'kwggggwk', 'kwwwwwwk', 'kddddddk', 'kdwwwwdk', 'kdwkwwdk', '.kkkkkk.'],
+    cur_arrow: ['kk......', 'kck.....', 'kcck....', 'kccck...', 'kcccck..', 'kcckk...', 'kk.kck..', '...kk...'],
+    cur_hand: ['kk......', 'kak.....', 'kaak....', 'kaaak...', 'kaaaak..', 'kaakk...', 'kk.kak..', '...kk...'],
+    logo: ['.CCCCCC.', 'CCCCCCCC', 'CrrCCrrC', 'CrrCCrrC', 'CCCCCCCC', '.CCNNCC.', '..CNCN..', '..CCCC..'],
     eye: ['........', '..kkkk..', '.kwwwwk.', 'kwwbbwwk', 'kwwbkwwk', '.kwwwwk.', '..kkkk..', '........'],
     skull: ['..wwww..', '.wwwwww.', 'wwkwwkww', 'wwkwwkww', '.wwwwww.', '..wkkw..', '..wwww..', '..k.k.k.'],
     cherry: ['.....GG.', '....G.G.', '...G..G.', '.rr..rr.', 'rrrr.rrr', 'rwrr.rwr', 'rrrr.rrr', '.rr..rr.'],

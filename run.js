@@ -27,9 +27,11 @@ function selectDifficulty(diff) {
     else if (diff === 'ANCIENT') cost = 8000;
     else if (diff === 'ENDLESS') cost = 500;
     else if (diff === 'GAUNTLET') cost = 500;
+    else if (diff === 'FINALE') { if (!finaleUnlocked()) { SFX.empty(); return; } }
     if (globalMoney < cost) { shakeElement(document.getElementById('money-display'));
         SFX.empty(); return; }
     globalMoney -= cost;
+    settings.lastMode = diff; saveSettings();
     saveGame();
     updateMoneyDisplay(true);
     isDaily = (diff === 'DAILY');
@@ -78,6 +80,10 @@ function startGame() {
     nextRunItems = [];
     Object.assign(state, runDefaults());
     meta.runs++;
+    meta.inRun = true;
+    saveGame();
+    if (meta.runs >= 25) unlockAchievement('MARATHON');
+    { const hr = new Date().getHours(); if (hr < 5) unlockAchievement('WITCHING'); }
     const bi = document.getElementById('bluff-indicator');
     if (bi) bi.style.display = 'none';
 
@@ -117,11 +123,14 @@ function startGame() {
             items = ['KNIFE', 'HANDCUFFS', 'CIGARETTES', 'SHIELD']; }
         else if (currentDifficulty === 'ANCIENT') { hp = 9;
             items = ['KNIFE', 'GLASS', 'INVERTER', 'CIGARETTES', 'SHIELD']; }
+        else if (currentDifficulty === 'FINALE') { hp = 10;
+            items = ['KNIFE', 'GLASS', 'INVERTER', 'CIGARETTES', 'SHIELD', 'HANDCUFFS']; }
         else if (currentDifficulty === 'ENDLESS') hp = 5;
-        if (upgrades.weakDealer && hp >= 4 && !['BOSS', 'ANCIENT', 'ENDLESS'].includes(currentDifficulty)) hp -= 1;
+        if (upgrades.weakDealer && hp >= 4 && !['BOSS', 'ANCIENT', 'ENDLESS', 'FINALE'].includes(currentDifficulty)) hp -= 1;
         if (currentDifficulty === 'ANCIENT') pers = 'ANCIENT';
+        else if (currentDifficulty === 'FINALE') pers = 'FIRST';
         else {
-            const list = Object.keys(DEALER_PERSONALITIES).filter(p => p !== 'ANCIENT');
+            const list = Object.keys(DEALER_PERSONALITIES).filter(p => p !== 'ANCIENT' && p !== 'FIRST');
             pers = list[Math.floor(rnd() * list.length)];
         }
         if (state.pact === 'HOLLOW_MIND') { giveItem('player', randomItemKey());
