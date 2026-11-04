@@ -23,3 +23,4 @@ Plain HTML/CSS/JS, no build step, no external requests (fonts, art and sound are
 If you edit classes in the HTML or JS, rebuild Tailwind: `npx tailwindcss -c tailwind.config.js -i src/tailwind.css -o css/tailwind.css --minify`.
 
 Self-test: open `index.html?test` and check the console (38 checks).
+Enjoy your play!
