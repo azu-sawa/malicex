@@ -1937,3 +1937,34 @@ body.hallu-on #game-ui .card { transition: translate .18s steps(3), rotate .18s 
 .item-tip { position: fixed; z-index: 1450; max-width: 240px; display: flex; flex-direction: column; gap: 3px; padding: 8px 10px; border: 1px solid #38bdf8; background: rgba(9,10,15,.96); font-size: 1.1rem; pointer-events: none; }
 .item-tip b { color: #fbbf24; } .item-tip span { color: #cbd5e1; } .item-tip em { font-style: normal; color: #f87171; } .item-tip em.gain { color: #4ade80; }
 .item-tip.hidden { display: none !important; }
+
+/* versus + arcana + keys */
+.versus-items { grid-template-columns: repeat(4, 1fr); }
+.versus-items .item-btn { flex-direction: column; font-size: .85rem; padding: 4px 2px; gap: 2px; justify-content: center; }
+.versus-items .item-btn:disabled { opacity: .55; }
+.versus-who { min-width: 7em; color: #94a3b8; } .versus-who.turn { color: #fbbf24; text-shadow: 0 0 6px rgba(251,191,36,.6); }
+.versus-pip { width: 22px; height: 14px; border: 1px solid #475569; } .versus-pip.on { background: #ef4444; border-color: #ef4444; }
+.versus-tag { font-size: .8rem; border: 1px solid #38bdf8; color: #38bdf8; padding: 0 4px; margin-left: 4px; }
+.versus-shells { display: flex; gap: 5px; justify-content: center; min-height: 26px; }
+.vs-shell { width: 12px; height: 26px; border: 2px solid #94a3b8; background: #1e293b; }
+.vs-shell.is-live { background: #ef4444; border-color: #ef4444; } .vs-shell.is-blank { background: #38bdf8; border-color: #38bdf8; }
+.versus-pass { font-family: 'Press Start 2P', monospace; font-size: 1rem; color: #fbbf24; }
+.versus-pass-name { font-size: 1.8rem; color: #e2e8f0; margin-bottom: 8px; }
+.versus-big { font-family: 'Press Start 2P', monospace; font-size: 1.1rem; color: #fbbf24; }
+.versus-sub { color: #94a3b8; } .versus-btns { display: flex; gap: 10px; }
+#versus-cover { z-index: 8; background: #000; }
+#arcana-overlay { position: fixed; inset: 0; z-index: 1500; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.85); overflow-y: auto; }
+#arcana-overlay.hidden { display: none !important; }
+.arcana-card { display: flex; flex-direction: column; gap: 8px; width: min(380px, 92vw); max-height: 92vh; overflow-y: auto; padding: 14px; border: 1px solid #a855f7; background: #0b0713; }
+.arcana-card h2 { font-family: 'Press Start 2P', monospace; font-size: .9rem; text-align: center; color: #c084fc; }
+.arcana-pick { display: flex; flex-direction: column; gap: 2px; text-align: left; padding: 8px 10px; border: 1px solid #7e22ce; background: #12091f; color: #e9d5ff; font-size: 1.1rem; }
+.arcana-pick span { color: #cbd5e1; }
+.arcana-row { display: flex; flex-direction: column; gap: 1px; padding: 6px 8px; border: 1px solid #1e293b; font-size: 1.05rem; color: #64748b; }
+.arcana-row.own { border-color: #a855f7; color: #e9d5ff; } .arcana-row em { font-style: normal; color: #c084fc; }
+.keys-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.key-row { display: flex; justify-content: space-between; align-items: center; gap: 6px; padding: 4px 8px; border: 1px solid #1e293b; font-size: 1rem; color: #94a3b8; }
+.key-row b { color: #fbbf24; } .key-row.listening { border-color: #fbbf24; box-shadow: 0 0 6px rgba(251,191,36,.5); }
+
+#btn-lift, #btn-arcana { grid-column: 1 / -1; }
+.theme-grid { grid-template-columns: repeat(3, 1fr) !important; }
+.theme-grid .mode-card { font-size: .85rem; padding-left: 4px; padding-right: 4px; }

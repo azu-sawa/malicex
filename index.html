@@ -14,8 +14,8 @@
     <link rel="manifest" href="manifest.webmanifest">
     <style>.hidden{display:none!important}</style>
     <script>try{var _t=localStorage.getItem("malicex_theme");if(_t==="green"||_t==="blood")document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
-    <link rel="stylesheet" href="style.css?v=Md2">
-    <link rel="stylesheet" href="tailwind.css?v=Md2">
+    <link rel="stylesheet" href="style.css?v=Md3">
+    <link rel="stylesheet" href="tailwind.css?v=Md3">
     <meta name="theme-color" content="#090a0f">
 </head>
 <body class="flex flex-col items-center justify-between p-4 screen-flicker">
@@ -116,11 +116,11 @@
             </div>
             <div class="lobby-chip" id="chip-streak" title="Consecutive wins. Each one adds 10% cash to the next win, up to 50%."><i class="px px-bolt"></i> STREAK <b id="streak-n">0</b></div>
             <div class="lobby-chip" id="chip-marks" title="Marks buy permanent perks in the Archive tab"><i class="px px-coin"></i> MARKS <b id="marks-n">0</b></div>
-            <div class="lobby-chip" id="chip-contracts" title="Daily contracts finished today"><i class="px px-lock"></i> CONTRACTS <b id="contracts-n">0/3</b></div>
+            <div class="lobby-chip" id="chip-contracts" title="Daily contracts finished today"><i class="px px-lock"></i> DAILY <b id="contracts-n">0/3</b></div>
         </div>
 
         <h1 id="lobby-title" class="menu-title glitch" data-text="MALICEX">MALICEX</h1>
-        <div id="version-label" class="lobby-version">VERSION Μδ</div>
+        <div id="version-label" class="lobby-version">VERSION Μδ · TAROT REWORK</div>
         <div id="story-mode-indicator" class="lobby-subject"></div>
         <div id="news-ticker" class="lobby-whisper" aria-live="polite"></div>
 
@@ -149,7 +149,7 @@
             <button id="menu-btn-weekly" class="mode-card mode-cyan" onclick="selectDifficulty('WEEKLY')">WEEKLY SEED</button>
             <div id="terms-box" class="contracts-box"></div>
             <div id="architect-box" class="contracts-box"></div>
-            <button id="menu-btn-duel" class="mode-card mode-red" onclick="openDuel()">RUSSIAN ROULETTE DUEL <span class="mode-sub">One cylinder, six chambers, three items. Fast.</span></button>
+            <div class="lobby-grid"><button id="menu-btn-versus" class="mode-card mode-red" onclick="openVersus('friend')">1V1 WITH A FRIEND <span class="mode-sub">One device, pass and play.</span></button><button id="menu-btn-versus-cpu" class="mode-card mode-slim" onclick="openVersus('cpu')">1V1 VS THE HOUSE <span class="mode-sub">Practice.</span></button></div>
             <button id="menu-btn-asc" class="mode-card mode-slim" onclick="cycleAscension()">ASCENSION 0 / 0</button>
             <button class="mode-card mode-slim mode-purple" onclick="toggleAdvancedModes()" aria-expanded="false">HARDER TABLES &#9662;</button>
             <div id="advanced-modes" class="hidden lobby-sub-panel">
@@ -165,12 +165,13 @@
         <!-- ARCHIVE -->
         <section id="tab-archive" class="lobby-panel hidden" role="tabpanel">
             <div class="contracts-box">
-                <div class="contracts-title">TODAY'S CONTRACTS</div>
+                <div class="contracts-title">TODAY'S JOBS</div>
                 <div id="contracts-list"></div>
             </div>
             <button id="menu-btn-ach" class="mode-card mode-amber" onclick="openAchievements()">TROPHIES</button>
             <button id="menu-btn-ledger" class="mode-card" onclick="openLedger()">GRIMOIRE</button>
             <div id="marks-box" class="contracts-box"></div>
+            <div id="arcana-box" class="contracts-box"></div>
             <div id="collection-box" class="contracts-box"></div>
             <div id="habit-box" class="contracts-box"></div>
             <div id="board-box" class="contracts-box"></div>
@@ -213,6 +214,7 @@
             <div class="lobby-sub-title">VOLUME</div>
             <label class="vol-row" for="vol-master"><span>MASTER</span><input id="vol-master" type="range" min="0" max="100" value="100" oninput="setVol('master',this.value)"></label>
             <label class="vol-row" for="vol-sfx"><span>EFFECTS</span><input id="vol-sfx" type="range" min="0" max="100" value="100" oninput="setVol('sfx',this.value)"></label>
+            <div id="keys-box" class="contracts-box"></div>
             <div id="radio-box" class="contracts-box"></div>
             <label class="lobby-sub-title" for="music-vol">MUSIC VOLUME</label>
             <input id="music-vol" type="range" min="0" max="100" value="60" oninput="setMusicVolume(this.value)">
@@ -231,25 +233,27 @@
       </div>
     </div>
 
-    <!-- ========== DUEL ========== -->
-    <div id="duel-screen" class="main-menu hidden bg-black z-[900]" role="dialog" aria-label="Russian Roulette Duel">
+    <!-- ========== 1V1 VERSUS ========== -->
+    <div id="versus-screen" class="main-menu hidden bg-black z-[900]" role="dialog" aria-label="1v1 Versus">
         <div class="duel-wrap">
-            <h1 class="duel-title">RUSSIAN ROULETTE DUEL</h1>
-            <div id="duel-opp-hp" class="duel-hp"></div>
-            <div id="duel-opp-items" class="duel-sub"></div>
-            <div class="duel-mid"><div id="duel-cyl" class="duel-cyl" aria-hidden="true"></div><div id="duel-turn" class="duel-turn"></div></div>
-            <div id="duel-count" class="duel-count"></div>
-            <div id="duel-msg" class="duel-msg" aria-live="polite"></div>
-            <div id="duel-you-hp" class="duel-hp"></div>
-            <div id="duel-items" class="duel-items"></div>
+            <h1 class="duel-title">1V1 VERSUS</h1>
+            <div id="vs-b-hp" class="duel-hp"></div>
+            <div id="vs-b-items" class="duel-items versus-items"></div>
+            <div id="versus-turn" class="duel-turn"></div>
+            <div id="versus-shells" class="versus-shells" aria-hidden="true"></div>
+            <div id="versus-count" class="duel-count"></div>
+            <div id="versus-msg" class="duel-msg" aria-live="polite"></div>
+            <div id="vs-a-items" class="duel-items versus-items"></div>
+            <div id="vs-a-hp" class="duel-hp"></div>
             <div class="duel-btns">
-                <button id="duel-shoot" class="btn-retro border-red-800 text-red-500" onclick="duelShootOpp()"><span class="key-hint border-red-900 text-red-500">SPC</span> SHOOT OPPONENT</button>
-                <button id="duel-self" class="btn-retro border-green-800 text-green-500" onclick="duelShootSelf()"><span class="key-hint border-green-900 text-green-500">S</span> SHOOT SELF</button>
+                <button id="versus-shoot" class="btn-retro border-red-800 text-red-500" onclick="vsShoot('opp')"><span class="vs-lbl">SHOOT</span></button>
+                <button id="versus-self" class="btn-retro border-green-800 text-green-500" onclick="vsShoot('self')">SHOOT SELF</button>
             </div>
-            <div class="duel-sub">Blank on yourself: extra turn, +10 Sanity. Live on yourself: 3 damage. [1-3] items &middot; [ESC] pause</div>
-            <button class="btn-retro w-64 border-gray-600 text-gray-400" onclick="closeDuel()">LEAVE</button>
+            <div class="duel-sub">Blank on yourself: shoot again. Items are public, a peek is private. [ESC] pause</div>
+            <button class="btn-retro w-64 border-gray-600 text-gray-400" onclick="closeVersus()">LEAVE</button>
         </div>
-        <div id="duel-end" class="duel-end hidden"></div>
+        <div id="versus-cover" class="duel-end hidden"></div>
+        <div id="versus-end" class="duel-end hidden"></div>
     </div>
 
     <!-- ========== PAUSE ========== -->
@@ -263,6 +267,7 @@
             <div class="duel-sub">1-6 items &middot; SPACE shoot opponent &middot; S shoot self</div>
         </div>
     </div>
+    <div id="arcana-overlay" class="hidden" role="dialog" aria-label="Arcana"></div>
     <div id="item-tip" class="item-tip hidden" role="tooltip"></div>
 
     <!-- ========== CINEMA ========== -->
@@ -554,8 +559,9 @@
                     <button id="btn-redraw" class="btn-retro hidden py-2 text-lg border-blue-700 text-blue-400" onclick="redrawPoker()">REDRAW -8 <span class="khint">[D]</span></button>
                     <button id="btn-fold" class="btn-retro hidden py-2 text-lg border-gray-600 text-gray-400" onclick="foldPoker()">FOLD <span class="khint">[F]</span></button>
                     <button id="btn-shoot-dealer" class="btn-retro hidden hover:bg-red-900 hover:text-white group py-3 text-lg border-red-800 text-red-500" onclick="playerShoot('dealer')"><span class="key-hint bg-black border-red-900 text-red-500">SPC</span> <span id="lbl-shoot-d">SHOOT ENEMY</span></button>
-                    <button id="btn-lift" class="btn-retro col-span-2 hidden py-2 text-lg border-cyan-700 text-cyan-300" onclick="liftAction()">LIFT</button>
                     <button id="btn-shoot-self" class="btn-retro hidden hover:bg-green-900 hover:text-white group py-3 text-lg border-green-800 text-green-500" onclick="playerShoot('self')"><span class="key-hint bg-black border-green-900 text-green-500">S</span> <span id="lbl-shoot-s">SHOOT SELF</span></button>
+                    <button id="btn-lift" class="btn-retro col-span-2 hidden py-2 text-lg border-cyan-700 text-cyan-300" onclick="liftAction()">LIFT</button>
+                    <button id="btn-arcana" class="btn-retro col-span-2 hidden py-2 text-lg border-purple-500 text-purple-300" onclick="openArcana()">ARCANA</button>
                 </div>
             </div>
         </div>
@@ -563,49 +569,52 @@
 
     <!-- ========== SCRIPTS ========== -->
 
-    <script src="rng.js?v=Md2"></script>
-    <script src="timers.js?v=Md2"></script>
-    <script src="state.js?v=Md2"></script>
-    <script src="store.js?v=Md2"></script>
-    <script src="theme.js?v=Md2"></script>
-    <script src="audio.js?v=Md2"></script>
-    <script src="sanity.js?v=Md2"></script>
-    <script src="util.js?v=Md2"></script>
-    <script src="pixel.js?v=Md2"></script>
-    <script src="data.js?v=Md2"></script>
-    <script src="dialogue.js?v=Md2"></script>
-    <script src="dealers.js?v=Md2"></script>
-    <script src="combat.js?v=Md2"></script>
-    <script src="poker.js?v=Md2"></script>
-    <script src="items.js?v=Md2"></script>
-    <script src="ai.js?v=Md2"></script>
-    <script src="render.js?v=Md2"></script>
-    <script src="hud.js?v=Md2"></script>
-    <script src="effects.js?v=Md2"></script>
-    <script src="run.js?v=Md2"></script>
-    <script src="gauntlet.js?v=Md2"></script>
-    <script src="endings.js?v=Md2"></script>
-    <script src="content.js?v=Md2"></script>
-    <script src="save.js?v=Md2"></script>
-    <script src="shop.js?v=Md2"></script>
-    <script src="minigames.js?v=Md2"></script>
-    <script src="ui.js?v=Md2"></script>
-    <script src="lobby.js?v=Md2"></script>
-    <script src="tutorial.js?v=Md2"></script>
-    <script src="psyche.js?v=Md2"></script>
-    <script src="sin.js?v=Md2"></script>
-    <script src="cinema.js?v=Md2"></script>
-    <script src="habit.js?v=Md2"></script>
-    <script src="underside.js?v=Md2"></script>
-    <script src="progress.js?v=Md2"></script>
-    <script src="boss.js?v=Md2"></script>
-    <script src="architect.js?v=Md2"></script>
-    <script src="hallu.js?v=Md2"></script>
-    <script src="duel.js?v=Md2"></script>
-    <script src="radio.js?v=Md2"></script>
-    <script src="qol.js?v=Md2"></script>
-    <script src="debug.js?v=Md2"></script>
-    <script src="main.js?v=Md2"></script>
+    <script src="rng.js?v=Md3"></script>
+    <script src="timers.js?v=Md3"></script>
+    <script src="state.js?v=Md3"></script>
+    <script src="store.js?v=Md3"></script>
+    <script src="theme.js?v=Md3"></script>
+    <script src="audio.js?v=Md3"></script>
+    <script src="sanity.js?v=Md3"></script>
+    <script src="util.js?v=Md3"></script>
+    <script src="pixel.js?v=Md3"></script>
+    <script src="data.js?v=Md3"></script>
+    <script src="dialogue.js?v=Md3"></script>
+    <script src="dealers.js?v=Md3"></script>
+    <script src="combat.js?v=Md3"></script>
+    <script src="poker.js?v=Md3"></script>
+    <script src="items.js?v=Md3"></script>
+    <script src="ai.js?v=Md3"></script>
+    <script src="render.js?v=Md3"></script>
+    <script src="hud.js?v=Md3"></script>
+    <script src="effects.js?v=Md3"></script>
+    <script src="run.js?v=Md3"></script>
+    <script src="gauntlet.js?v=Md3"></script>
+    <script src="endings.js?v=Md3"></script>
+    <script src="content.js?v=Md3"></script>
+    <script src="save.js?v=Md3"></script>
+    <script src="shop.js?v=Md3"></script>
+    <script src="minigames.js?v=Md3"></script>
+    <script src="ui.js?v=Md3"></script>
+    <script src="lobby.js?v=Md3"></script>
+    <script src="tutorial.js?v=Md3"></script>
+    <script src="psyche.js?v=Md3"></script>
+    <script src="sin.js?v=Md3"></script>
+    <script src="cinema.js?v=Md3"></script>
+    <script src="habit.js?v=Md3"></script>
+    <script src="underside.js?v=Md3"></script>
+    <script src="progress.js?v=Md3"></script>
+    <script src="boss.js?v=Md3"></script>
+    <script src="architect.js?v=Md3"></script>
+    <script src="hallu.js?v=Md3"></script>
+    <script src="keys.js?v=Md3"></script>
+    <script src="arcana.js?v=Md3"></script>
+    <script src="versus.js?v=Md3"></script>
+    <script src="reward.js?v=Md3"></script>
+    <script src="radio.js?v=Md3"></script>
+    <script src="qol.js?v=Md3"></script>
+    <script src="debug.js?v=Md3"></script>
+    <script src="main.js?v=Md3"></script>
 
 </body>
 </html>

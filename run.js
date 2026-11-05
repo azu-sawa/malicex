@@ -117,8 +117,8 @@ function startGame() {
     } else {
         if (currentDifficulty === 'HARD') { hp = 4;
             items = ['CIGARETTES']; }
-        else if (currentDifficulty === 'MERCENARY') { hp = 6;
-            items = ['KNIFE', 'CIGARETTES']; }
+        else if (currentDifficulty === 'MERCENARY') { hp = 7;
+            items = ['KNIFE', 'CIGARETTES', 'HANDCUFFS']; }
         else if (currentDifficulty === 'BOSS') { hp = 8;
             items = ['KNIFE', 'HANDCUFFS', 'CIGARETTES', 'SHIELD']; }
         else if (currentDifficulty === 'ANCIENT') { hp = 9;

@@ -206,7 +206,7 @@ const ACHIEVEMENTS = {
     'INSANE': { title: 'INSANE', desc: 'Win a match with Sanity at 10 or below.', reward: 777 },
     'SANITY_KEEPER': { title: 'SANITY KEEPER', desc: 'Win a match at full Sanity (100).', reward: 300 },
     'CHEAT_MASTER': { title: 'CHEAT MASTER', desc: 'Use both cheat skills in the same round.', reward: 500 },
-    'TAROT_INITIATE': { title: 'TAROT INITIATE', desc: 'Use the Tarot Deck for the first time.',
+    'TAROT_INITIATE': { title: 'TAROT INITIATE', desc: 'Play an Arcana card in a boss fight.',
     reward: 200 },
     'FIRST_WIN': { title: 'FIRST WIN', desc: 'Win a full match.', reward: 250 },
     'COMEBACK': { title: 'COMEBACK', desc: 'Win with exactly 1 HP left.', reward: 600 },

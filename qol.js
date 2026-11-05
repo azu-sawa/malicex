@@ -89,20 +89,7 @@ function useSlot(i) {
     if (k) useItem('player', k, i);
     else if (state.phantoms && state.phantoms[i]) phantomClick(i, state.phantoms[i]);
 }
-document.addEventListener('keydown', e => {
-    if (e.ctrlKey || e.metaKey || e.altKey) return;
-    const t = e.target;
-    if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) && e.key !== 'Escape') return;
-    const cine = document.getElementById('cine-screen');
-    if (cine && !cine.classList.contains('hidden')) return;
-    const eat = () => { e.preventDefault(); e.stopImmediatePropagation(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); };
-    if (e.key === 'Escape' && (activeGame === 'MAIN' || activeGame === 'DUEL')) { eat(); setPaused(!QOL.paused); return; }
-    if (QOL.paused) { e.stopImmediatePropagation(); return; }
-    if (activeGame !== 'MAIN') return;
-    if (e.key >= '1' && e.key <= '6') { eat(); useSlot(Number(e.key) - 1); }
-    else if (e.key === ' ' && gunReady()) { eat(); playerShoot('dealer'); }
-    else if ((e.key === 's' || e.key === 'S') && gunReady()) { eat(); playerShoot('self'); }
-}, true);
+// (keyboard handling lives in keys.js so every key can be rebound)
 
 function setPaused(on, silent) {
     const ov = document.getElementById('pause-overlay');
@@ -126,7 +113,7 @@ function pauseQuit() {
     const b = document.getElementById('pause-quit');
     if (!QOL.quitArmed) { QOL.quitArmed = true; b.textContent = 'SURE? THIS COUNTS AS A LOSS'; return; }
     setPaused(false, true);
-    if (activeGame === 'DUEL') { closeDuel(); return; }
+    if (activeGame === 'VERSUS') { closeVersus(); return; }
     meta.winStreak = 0; meta.inRun = false; saveGame();
     returnToMenu();
 }
@@ -138,8 +125,8 @@ function tipInfoFor(btn) {
     const row = btn.parentElement;
     if (!row) return null;
     const i = Array.prototype.indexOf.call(row.children, btn);
-    if (row.id === 'duel-items') {
-        const d = DUEL && DUEL_ITEMS[DUEL.items.p[i]];
+    if (/^vs-[ab]-items$/.test(row.id)) {
+        const d = VS && VS_ITEMS[VS.items[row.id[3]][i]];
         return d ? { name: d.n, desc: d.d, cost: '' } : null;
     }
     if (row.id !== 'player-items-row' || typeof state === 'undefined') return null;

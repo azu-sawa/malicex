@@ -348,7 +348,7 @@ function evalHand(h, c) {
     const stHigh = straightHigh(vals);
     const kick = groups.slice(0, 5).reduce((a, g) => a * 15 + g.v, 0);
     let cat, type, rew, tb = kick;
-    if (sfHigh) { cat = 8; type = "Straight Flush"; rew = "TAROT"; tb = sfHigh; }
+    if (sfHigh) { cat = 8; type = "Straight Flush"; rew = "VOODOO"; tb = sfHigh; }
     else if (groups[0].n === 4) { cat = 7; type = "Four of a Kind"; rew = "VOODOO"; }
     else if (groups[0].n === 3 && groups[1] && groups[1].n >= 2) { cat = 6; type = "Full House"; rew = "KNIFE"; }
     else if (flushVals) { cat = 5; type = "Flush"; rew = "SHIELD"; tb = flushVals.slice(0, 5).reduce((a, v) => a * 15 + v, 0); }

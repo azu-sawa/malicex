@@ -14,7 +14,7 @@ const PHANTOM_POOL = ['CIGARETTES', 'GLASS', 'BEER', 'SEDATIVE'];
 let halluOn = false;
 
 function halluActive() {
-    return typeof sanity === 'number' && sanity <= HALLU_AT && (activeGame === 'MAIN' || activeGame === 'DUEL');
+    return typeof sanity === 'number' && sanity <= HALLU_AT && activeGame === 'MAIN';
 }
 function hRand(a, b) { return a + Math.random() * (b - a); }
 
@@ -53,7 +53,7 @@ function halluTick() {
     document.querySelectorAll('.hallu-txt').forEach(el => { if (el.dataset.o != null) el.textContent = zalgo(el.dataset.o, 2); });
     const calm = settings.lowfx || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
     if (calm) return;
-    document.querySelectorAll('#game-ui .card, #duel-screen .duel-hp, #duel-screen .duel-cyl').forEach(c => {
+    document.querySelectorAll('#game-ui .card').forEach(c => {
         c.style.translate = hRand(-2, 2).toFixed(1) + 'px ' + hRand(-2, 2).toFixed(1) + 'px';
         c.style.rotate = hRand(-1.6, 1.6).toFixed(2) + 'deg';
     });
@@ -122,7 +122,7 @@ renderUI = function() {
     });
 };
 
-// ---- false action illusion (shared with the duel)
+// ---- false action illusion
 function halluMaybeFalseAim(go) {
     if (!halluActive() || Math.random() >= FALSE_AIM_CHANCE) { go(); return; }
     let n = 0;

@@ -81,7 +81,9 @@ function runSelfTests() {
     eq('contracts defined', Object.keys(CONTRACTS).join(), 'SILENCE_PACT,ASCETIC_LIMIT,PARANOIA_MODE');
     eq('zalgo keeps base letters', zalgo('abc', 2).replace(/[\u0300-\u036f]/g, ''), 'abc');
     eq('radio secrets reachable', RADIO_SECRETS.every(x => x.f >= RADIO_MIN && x.f <= RADIO_MAX), true);
-    eq('duel items', Object.keys(DUEL_ITEMS).length, 3);
+    eq('versus items', Object.keys(VS_ITEMS).length, 7);
+    eq('arcana cards', ARCANA_KEYS.length, 14);
+    eq('key actions unique', new Set(KEY_ACTIONS.map(a => a[0])).size, KEY_ACTIONS.length);
     eq('run timers idle in lobby', RunTimers.active() || activeGame !== 'MENU', activeGame !== 'MENU');
     const fails = results.filter(r => !r.ok);
     console.log(`[DMH self-test] ${results.length - fails.length}/${results.length} passed`, fails);
