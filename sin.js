@@ -61,7 +61,7 @@ startRound = function() {
 // ---------- THIEF ----------
 function stealFromDealer(free) {
     if (!state.dealerItems.length) return false;
-    if (state.playerItems.length >= 5) { log('SLOTS FULL. Your pockets cannot hold more.', 'text-gray-500'); return false; }
+    if (state.playerItems.length >= (typeof invCap === 'function' ? invCap() : 5)) { log('SLOTS FULL. Your pockets cannot hold more.', 'text-gray-500'); return false; }
     const i = Math.floor(rnd() * state.dealerItems.length);
     const key = state.dealerItems.splice(i, 1)[0];
     giveItem('player', key);

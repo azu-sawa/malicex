@@ -75,6 +75,14 @@ function runSelfTests() {
     eq('ascension text covers every level', ASC_TEXT.length, 6);
     eq('paper skin keeps dealer hp', TERMS.PAPER.d.indexOf('dealer keeps') > -1, true);
     eq('boss modes known', BOSS_MODES.length, 3);
+    // ---- Mu-delta II modules
+    eq('themes defined', Object.keys(THEMES).length, 3);
+    eq('theme ramp maps white inside ramp', /^#[0-9a-f]{6}$/.test((() => { const o = activeTheme; activeTheme = 'green'; const c = themeColor('#ffffff'); activeTheme = o; return c; })()), true);
+    eq('contracts defined', Object.keys(CONTRACTS).join(), 'SILENCE_PACT,ASCETIC_LIMIT,PARANOIA_MODE');
+    eq('zalgo keeps base letters', zalgo('abc', 2).replace(/[\u0300-\u036f]/g, ''), 'abc');
+    eq('radio secrets reachable', RADIO_SECRETS.every(x => x.f >= RADIO_MIN && x.f <= RADIO_MAX), true);
+    eq('duel items', Object.keys(DUEL_ITEMS).length, 3);
+    eq('run timers idle in lobby', RunTimers.active() || activeGame !== 'MENU', activeGame !== 'MENU');
     const fails = results.filter(r => !r.ok);
     console.log(`[DMH self-test] ${results.length - fails.length}/${results.length} passed`, fails);
     return { passed: results.length - fails.length, total: results.length, fails };

@@ -128,6 +128,7 @@ function tone(freq, type, dur, vol, o) {
     g.connect(o.bus || AudioBus.sfx);
     osc.start(t0);
     osc.stop(t0 + dur + 0.05);
+    osc.onended = () => { try { osc.disconnect(); g.disconnect(); } catch (e) {} };
 }
 
 function noiseBurst(dur, o) {
@@ -149,6 +150,7 @@ function noiseBurst(dur, o) {
     }
     node.connect(g); g.connect(o.bus || AudioBus.sfx);
     src.start(t0, Math.random() * 1.5); src.stop(t0 + dur + 0.05);
+    src.onended = () => { try { src.disconnect(); g.disconnect(); if (node !== src) node.disconnect(); } catch (e) {} };
 }
 
 // legacy helpers (older code still calls these)

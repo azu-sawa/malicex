@@ -1864,3 +1864,76 @@ body { text-shadow: 0 0 3px rgba(125,211,252,.35), 0 0 .5px rgba(255,60,60,.45),
     #selection-screen p { font-size: 1.3rem !important; }
 }
 #select-title { color: #94a3b8 !important; }
+
+/* =====================================================================
+   Mu-delta II: themes, hallucinations, contracts, duel, radio, QoL
+   ===================================================================== */
+:root { --text-glow: 0 0 4px rgba(56,189,248,.35); --scanline-opacity: 1; --theme-tint: transparent; }
+html[data-theme="green"] { --bg-color:#0f380f; --text-glow:0 0 5px rgba(155,188,15,.5); --scanline-opacity:.95; --term-green:#9bbc0f; --glow-soft:0 0 6px rgba(155,188,15,.35); --theme-tint:#8bac0f; }
+html[data-theme="blood"] { --bg-color:#1a0000; --text-glow:0 0 5px rgba(255,51,51,.5); --scanline-opacity:1; --term-green:#ff3333; --glow-soft:0 0 6px rgba(255,51,51,.35); --theme-tint:#ff3333; }
+body { background: var(--bg-color); }
+h1, h2, h3, .menu-title, .panel-title, .hp-label, #sanity-tier, .btn-retro, #live-txt, #blank-txt { text-shadow: var(--text-glow); }
+html[data-theme] .crt-overlay { opacity: var(--scanline-opacity); }
+.theme-tint { display: none; position: fixed; inset: 0; z-index: 1405; pointer-events: none; mix-blend-mode: color; background: var(--theme-tint); }
+html[data-theme] .theme-tint { display: block; }
+.theme-grid .mode-card.on, .term-row.on { border-color: var(--term-green); box-shadow: inset 0 0 0 1px var(--term-green); }
+
+/* touch + selection locks, 44px hit boxes */
+html, body { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; overscroll-behavior: none; }
+button, [role="button"], a, .mode-card, .btn-retro, .btn-chip, .lobby-tab, .item-btn, .term-row, select { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+button, .btn-retro, .btn-chip, .mode-card, .lobby-tab, .item-btn, .term-row, .cine-skip, .tut-close { min-height: 44px; min-width: 44px; }
+input[type=range] { min-height: 44px; }
+.key-hint, .khint { min-height: 0; min-width: 0; }
+
+/* hallucinations */
+body.hallu-on #game-ui .card { transition: translate .18s steps(3), rotate .18s steps(3); }
+.hallu-txt { letter-spacing: .02em; }
+.phantom-fake { animation: phFlick 2.4s steps(1) infinite; }
+@keyframes phFlick { 0%, 92% { opacity: 1; } 94% { opacity: .35; } 96% { opacity: .9; } 98% { opacity: .5; } }
+@media (prefers-reduced-motion: reduce) { .phantom-fake { animation: none; } }
+
+/* contracts */
+.item-btn.sealed { opacity: .45; border-style: dashed !important; filter: grayscale(1); }
+.item-btn.sealed .item-name { letter-spacing: .15em; color: #94a3b8; }
+.item-locked { display: none !important; }
+
+/* duel */
+.duel-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; max-width: 480px; padding: 8px 16px; }
+.duel-title { font-family: 'Press Start 2P', monospace; font-size: 1rem; color: #ef4444; text-shadow: var(--text-glow); }
+.duel-hp { display: flex; align-items: center; gap: 6px; font-size: 1.3rem; }
+.duel-who { min-width: 8.5em; color: #94a3b8; }
+.duel-pip { width: 22px; height: 14px; border: 1px solid #475569; background: transparent; }
+.duel-pip.on { background: #ef4444; border-color: #ef4444; box-shadow: 0 0 6px rgba(239,68,68,.5); }
+.duel-mid { position: relative; display: flex; align-items: center; justify-content: center; gap: 18px; height: 120px; }
+.duel-cyl { position: relative; width: 20px; height: 20px; }
+.cy-ch { position: absolute; left: 0; top: 0; width: 20px; height: 20px; border: 2px solid #94a3b8; border-radius: 50%; background: #0b1220; }
+.cy-ch.fired { background: #1e293b; border-color: #334155; opacity: .5; }
+.cy-ch.cur { border-color: #fbbf24; box-shadow: 0 0 8px rgba(251,191,36,.7); }
+.cy-ch.cur.is-live { background: #ef4444; } .cy-ch.cur.is-blank { background: #38bdf8; }
+.duel-turn { font-family: 'Press Start 2P', monospace; font-size: .6rem; color: #fbbf24; min-width: 8em; }
+.duel-count, .duel-msg { font-size: 1.25rem; text-align: center; min-height: 1.5em; }
+.duel-msg { color: #fbbf24; }
+.duel-items { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 100%; }
+.duel-items .item-btn { justify-content: center; font-size: 1rem; padding: 6px 4px; }
+.duel-btns { display: flex; gap: 10px; width: 100%; justify-content: center; }
+.duel-btns .btn-retro { flex: 1; }
+.duel-btns .btn-retro:disabled { opacity: .35; pointer-events: none; }
+.duel-sub { color: #64748b; font-size: 1.05rem; text-align: center; }
+.duel-end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; background: rgba(0,0,0,.88); z-index: 5; font-size: 1.4rem; text-align: center; padding: 16px; }
+.duel-big { font-family: 'Press Start 2P', monospace; font-size: 1.1rem; } .duel-big.win { color: #fbbf24; } .duel-big.lose { color: #ef4444; }
+
+/* radio + volume */
+.radio-face { border: 1px solid #1e293b; padding: 10px; background: rgba(0,0,0,.4); }
+.radio-freq { font-family: 'Press Start 2P', monospace; font-size: 1.1rem; text-align: center; color: #fbbf24; text-shadow: 0 0 6px rgba(251,191,36,.5); margin-bottom: 6px; }
+.radio-scale { display: flex; justify-content: space-between; color: #64748b; font-size: .95rem; }
+#radio-dial, .vol-row input { width: 100%; accent-color: #fbbf24; }
+.vol-row { display: flex; align-items: center; gap: 10px; font-size: 1.1rem; color: #94a3b8; } .vol-row span { min-width: 5.5em; }
+
+/* pause + tooltip */
+#pause-overlay { position: fixed; inset: 0; z-index: 1500; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,.82); }
+#pause-overlay.hidden { display: none !important; }
+.pause-card { display: flex; flex-direction: column; gap: 12px; width: min(340px, 90vw); padding: 18px; border: 1px solid #38bdf8; background: #090a0f; }
+.pause-card h2 { font-family: 'Press Start 2P', monospace; text-align: center; font-size: 1rem; }
+.item-tip { position: fixed; z-index: 1450; max-width: 240px; display: flex; flex-direction: column; gap: 3px; padding: 8px 10px; border: 1px solid #38bdf8; background: rgba(9,10,15,.96); font-size: 1.1rem; pointer-events: none; }
+.item-tip b { color: #fbbf24; } .item-tip span { color: #cbd5e1; } .item-tip em { font-style: normal; color: #f87171; } .item-tip em.gain { color: #4ade80; }
+.item-tip.hidden { display: none !important; }

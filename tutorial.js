@@ -21,7 +21,7 @@ const TUT_PAGES = [
         'Count what is left. Every shell fired changes the odds.'] },
     { i: 'eye', t: 'ITEMS', b: [
         'You can carry 5 items. Tap an item to read what it does. Tap it again to use it.',
-        'On a keyboard: hover to read, click to use, or press Q W E R T.',
+        'On a keyboard: hover to read, click to use, or press 1-6 (or Q W E R T). SPACE shoots the dealer, S shoots you. ESC pauses.',
         'Items cost nothing to use unless the text says Sanity. You win items at poker.',
         'The Grimoire in the Archive tab lists every item you have found.'] },
     { i: 'brain', t: 'SANITY', b: [

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -13,8 +13,9 @@
     <meta name="theme-color" content="#090a0f">
     <link rel="manifest" href="manifest.webmanifest">
     <style>.hidden{display:none!important}</style>
-    <link rel="stylesheet" href="style.css?v=Md">
-    <link rel="stylesheet" href="tailwind.css?v=Md">
+    <script>try{var _t=localStorage.getItem("malicex_theme");if(_t==="green"||_t==="blood")document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
+    <link rel="stylesheet" href="style.css?v=Md2">
+    <link rel="stylesheet" href="tailwind.css?v=Md2">
     <meta name="theme-color" content="#090a0f">
 </head>
 <body class="flex flex-col items-center justify-between p-4 screen-flicker">
@@ -27,6 +28,7 @@
     <div class="crt-mask" aria-hidden="true"></div>
     <div class="crt-roll" aria-hidden="true"></div>
     <div class="crt-glass" aria-hidden="true"></div>
+    <div class="theme-tint" aria-hidden="true"></div>
     <div class="vignette" id="vignette-fx"></div>
     <div class="blood-overlay" id="blood-fx"></div>
     <div id="subliminal">DIE</div>
@@ -146,6 +148,8 @@
             <button id="menu-btn-daily" class="mode-card mode-cyan" onclick="selectDifficulty('DAILY')">DAILY SEED <span id="daily-sub" class="mode-sub"></span></button>
             <button id="menu-btn-weekly" class="mode-card mode-cyan" onclick="selectDifficulty('WEEKLY')">WEEKLY SEED</button>
             <div id="terms-box" class="contracts-box"></div>
+            <div id="architect-box" class="contracts-box"></div>
+            <button id="menu-btn-duel" class="mode-card mode-red" onclick="openDuel()">RUSSIAN ROULETTE DUEL <span class="mode-sub">One cylinder, six chambers, three items. Fast.</span></button>
             <button id="menu-btn-asc" class="mode-card mode-slim" onclick="cycleAscension()">ASCENSION 0 / 0</button>
             <button class="mode-card mode-slim mode-purple" onclick="toggleAdvancedModes()" aria-expanded="false">HARDER TABLES &#9662;</button>
             <div id="advanced-modes" class="hidden lobby-sub-panel">
@@ -200,6 +204,16 @@
                 <button id="set-fast" class="mode-card mode-slim" onclick="toggleSetting('fast')">FAST HANDS: OFF</button>
                 <button class="mode-card mode-slim" onclick="runUiSelfTest()">RUN SELF-TEST</button>
             </div>
+            <div class="lobby-sub-title">SCREEN COLOURS</div>
+            <div class="lobby-grid theme-grid">
+                <button id="theme-default" class="mode-card mode-slim" onclick="setTheme('default')">CYAN / AMBER</button>
+                <button id="theme-green" class="mode-card mode-slim" onclick="setTheme('green')">GREEN MONO</button>
+                <button id="theme-blood" class="mode-card mode-slim" onclick="setTheme('blood')">BLOOD AMBER</button>
+            </div>
+            <div class="lobby-sub-title">VOLUME</div>
+            <label class="vol-row" for="vol-master"><span>MASTER</span><input id="vol-master" type="range" min="0" max="100" value="100" oninput="setVol('master',this.value)"></label>
+            <label class="vol-row" for="vol-sfx"><span>EFFECTS</span><input id="vol-sfx" type="range" min="0" max="100" value="100" oninput="setVol('sfx',this.value)"></label>
+            <div id="radio-box" class="contracts-box"></div>
             <label class="lobby-sub-title" for="music-vol">MUSIC VOLUME</label>
             <input id="music-vol" type="range" min="0" max="100" value="60" oninput="setMusicVolume(this.value)">
             <div class="lobby-sub-title">INSTALL &middot; on iPad: Share, then Add to Home Screen. It then plays offline.</div>
@@ -216,6 +230,40 @@
         <div id="menu-msg" class="lobby-msg"></div>
       </div>
     </div>
+
+    <!-- ========== DUEL ========== -->
+    <div id="duel-screen" class="main-menu hidden bg-black z-[900]" role="dialog" aria-label="Russian Roulette Duel">
+        <div class="duel-wrap">
+            <h1 class="duel-title">RUSSIAN ROULETTE DUEL</h1>
+            <div id="duel-opp-hp" class="duel-hp"></div>
+            <div id="duel-opp-items" class="duel-sub"></div>
+            <div class="duel-mid"><div id="duel-cyl" class="duel-cyl" aria-hidden="true"></div><div id="duel-turn" class="duel-turn"></div></div>
+            <div id="duel-count" class="duel-count"></div>
+            <div id="duel-msg" class="duel-msg" aria-live="polite"></div>
+            <div id="duel-you-hp" class="duel-hp"></div>
+            <div id="duel-items" class="duel-items"></div>
+            <div class="duel-btns">
+                <button id="duel-shoot" class="btn-retro border-red-800 text-red-500" onclick="duelShootOpp()"><span class="key-hint border-red-900 text-red-500">SPC</span> SHOOT OPPONENT</button>
+                <button id="duel-self" class="btn-retro border-green-800 text-green-500" onclick="duelShootSelf()"><span class="key-hint border-green-900 text-green-500">S</span> SHOOT SELF</button>
+            </div>
+            <div class="duel-sub">Blank on yourself: extra turn, +10 Sanity. Live on yourself: 3 damage. [1-3] items &middot; [ESC] pause</div>
+            <button class="btn-retro w-64 border-gray-600 text-gray-400" onclick="closeDuel()">LEAVE</button>
+        </div>
+        <div id="duel-end" class="duel-end hidden"></div>
+    </div>
+
+    <!-- ========== PAUSE ========== -->
+    <div id="pause-overlay" class="hidden" role="dialog" aria-label="Paused">
+        <div class="pause-card">
+            <h2>PAUSED</h2>
+            <label class="vol-row" for="pv-master"><span>MASTER</span><input id="pv-master" type="range" min="0" max="100" value="100" oninput="setVol('master',this.value)"></label>
+            <label class="vol-row" for="pv-sfx"><span>EFFECTS</span><input id="pv-sfx" type="range" min="0" max="100" value="100" oninput="setVol('sfx',this.value)"></label>
+            <button class="btn-retro" onclick="setPaused(false)">RESUME <span class="khint">[ESC]</span></button>
+            <button id="pause-quit" class="btn-retro border-red-900 text-red-500" onclick="pauseQuit()">QUIT TO MENU</button>
+            <div class="duel-sub">1-6 items &middot; SPACE shoot opponent &middot; S shoot self</div>
+        </div>
+    </div>
+    <div id="item-tip" class="item-tip hidden" role="tooltip"></div>
 
     <!-- ========== CINEMA ========== -->
     <div id="cine-screen" class="hidden" role="dialog" aria-label="Cutscene" onclick="cineAdvance()">
@@ -505,9 +553,9 @@
                     <button id="btn-raise" class="btn-retro col-span-2 hidden py-2 text-lg border-yellow-600 text-yellow-500" onclick="raisePoker()">RAISE: -10 SANITY, 2X STAKES <span class="khint">[B]</span></button>
                     <button id="btn-redraw" class="btn-retro hidden py-2 text-lg border-blue-700 text-blue-400" onclick="redrawPoker()">REDRAW -8 <span class="khint">[D]</span></button>
                     <button id="btn-fold" class="btn-retro hidden py-2 text-lg border-gray-600 text-gray-400" onclick="foldPoker()">FOLD <span class="khint">[F]</span></button>
-                    <button id="btn-shoot-dealer" class="btn-retro hidden hover:bg-red-900 hover:text-white group py-3 text-lg border-red-800 text-red-500" onclick="playerShoot('dealer')"><span class="key-hint bg-black border-red-900 text-red-500">1</span> <span id="lbl-shoot-d">SHOOT ENEMY</span></button>
+                    <button id="btn-shoot-dealer" class="btn-retro hidden hover:bg-red-900 hover:text-white group py-3 text-lg border-red-800 text-red-500" onclick="playerShoot('dealer')"><span class="key-hint bg-black border-red-900 text-red-500">SPC</span> <span id="lbl-shoot-d">SHOOT ENEMY</span></button>
                     <button id="btn-lift" class="btn-retro col-span-2 hidden py-2 text-lg border-cyan-700 text-cyan-300" onclick="liftAction()">LIFT</button>
-                    <button id="btn-shoot-self" class="btn-retro hidden hover:bg-green-900 hover:text-white group py-3 text-lg border-green-800 text-green-500" onclick="playerShoot('self')"><span class="key-hint bg-black border-green-900 text-green-500">2</span> <span id="lbl-shoot-s">SHOOT SELF</span></button>
+                    <button id="btn-shoot-self" class="btn-retro hidden hover:bg-green-900 hover:text-white group py-3 text-lg border-green-800 text-green-500" onclick="playerShoot('self')"><span class="key-hint bg-black border-green-900 text-green-500">S</span> <span id="lbl-shoot-s">SHOOT SELF</span></button>
                 </div>
             </div>
         </div>
@@ -515,42 +563,49 @@
 
     <!-- ========== SCRIPTS ========== -->
 
-    <script src="rng.js?v=Md"></script>
-    <script src="state.js?v=Md"></script>
-    <script src="store.js?v=Md"></script>
-    <script src="audio.js?v=Md"></script>
-    <script src="sanity.js?v=Md"></script>
-    <script src="util.js?v=Md"></script>
-    <script src="pixel.js?v=Md"></script>
-    <script src="data.js?v=Md"></script>
-    <script src="dialogue.js?v=Md"></script>
-    <script src="dealers.js?v=Md"></script>
-    <script src="combat.js?v=Md"></script>
-    <script src="poker.js?v=Md"></script>
-    <script src="items.js?v=Md"></script>
-    <script src="ai.js?v=Md"></script>
-    <script src="render.js?v=Md"></script>
-    <script src="hud.js?v=Md"></script>
-    <script src="effects.js?v=Md"></script>
-    <script src="run.js?v=Md"></script>
-    <script src="gauntlet.js?v=Md"></script>
-    <script src="endings.js?v=Md"></script>
-    <script src="content.js?v=Md"></script>
-    <script src="save.js?v=Md"></script>
-    <script src="shop.js?v=Md"></script>
-    <script src="minigames.js?v=Md"></script>
-    <script src="ui.js?v=Md"></script>
-    <script src="lobby.js?v=Md"></script>
-    <script src="tutorial.js?v=Md"></script>
-    <script src="psyche.js?v=Md"></script>
-    <script src="sin.js?v=Md"></script>
-    <script src="cinema.js?v=Md"></script>
-    <script src="habit.js?v=Md"></script>
-    <script src="underside.js?v=Md"></script>
-    <script src="progress.js?v=Md"></script>
-    <script src="boss.js?v=Md"></script>
-    <script src="debug.js?v=Md"></script>
-    <script src="main.js?v=Md"></script>
+    <script src="rng.js?v=Md2"></script>
+    <script src="timers.js?v=Md2"></script>
+    <script src="state.js?v=Md2"></script>
+    <script src="store.js?v=Md2"></script>
+    <script src="theme.js?v=Md2"></script>
+    <script src="audio.js?v=Md2"></script>
+    <script src="sanity.js?v=Md2"></script>
+    <script src="util.js?v=Md2"></script>
+    <script src="pixel.js?v=Md2"></script>
+    <script src="data.js?v=Md2"></script>
+    <script src="dialogue.js?v=Md2"></script>
+    <script src="dealers.js?v=Md2"></script>
+    <script src="combat.js?v=Md2"></script>
+    <script src="poker.js?v=Md2"></script>
+    <script src="items.js?v=Md2"></script>
+    <script src="ai.js?v=Md2"></script>
+    <script src="render.js?v=Md2"></script>
+    <script src="hud.js?v=Md2"></script>
+    <script src="effects.js?v=Md2"></script>
+    <script src="run.js?v=Md2"></script>
+    <script src="gauntlet.js?v=Md2"></script>
+    <script src="endings.js?v=Md2"></script>
+    <script src="content.js?v=Md2"></script>
+    <script src="save.js?v=Md2"></script>
+    <script src="shop.js?v=Md2"></script>
+    <script src="minigames.js?v=Md2"></script>
+    <script src="ui.js?v=Md2"></script>
+    <script src="lobby.js?v=Md2"></script>
+    <script src="tutorial.js?v=Md2"></script>
+    <script src="psyche.js?v=Md2"></script>
+    <script src="sin.js?v=Md2"></script>
+    <script src="cinema.js?v=Md2"></script>
+    <script src="habit.js?v=Md2"></script>
+    <script src="underside.js?v=Md2"></script>
+    <script src="progress.js?v=Md2"></script>
+    <script src="boss.js?v=Md2"></script>
+    <script src="architect.js?v=Md2"></script>
+    <script src="hallu.js?v=Md2"></script>
+    <script src="duel.js?v=Md2"></script>
+    <script src="radio.js?v=Md2"></script>
+    <script src="qol.js?v=Md2"></script>
+    <script src="debug.js?v=Md2"></script>
+    <script src="main.js?v=Md2"></script>
 
 </body>
 </html>

@@ -100,7 +100,7 @@ function pxRasterize(rows, scale) {
     rows.forEach((row, y) => {
         for (let x = 0; x < 8; x++) {
             const col = PX_PALETTE[row[x]];
-            if (col) { ctx.fillStyle = col; ctx.fillRect(x * scale, y * scale, scale, scale); }
+            if (col) { ctx.fillStyle = (typeof themeColor === 'function') ? themeColor(col) : col; ctx.fillRect(x * scale, y * scale, scale, scale); }
         }
     });
     return c.toDataURL('image/png');
@@ -120,10 +120,10 @@ function installPixelStyles() {
     Object.keys(PX_ALIAS).forEach(a => {
         css.push(`.px-${a}{background-image:url(${pxRasterize(PX_SPRITES[PX_ALIAS[a]])})}`);
     });
-    const st = document.createElement('style');
-    st.id = 'pixel-icons';
+    // re-run safe: the theme switcher calls this again with the new palette
+    let st = document.getElementById('pixel-icons');
+    if (!st) { st = document.createElement('style'); st.id = 'pixel-icons'; document.head.appendChild(st); }
     st.textContent = css.join('\n');
-    document.head.appendChild(st);
 }
 
 function px(name, extra) {

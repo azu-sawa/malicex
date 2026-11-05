@@ -8,6 +8,14 @@ Plain HTML/CSS/JS, no build step, no external requests (fonts, art and sound are
 - **GitHub Pages:** upload the flat build (everything in the repo root, `index.html` included), then Settings > Pages > `main` / root.
 - **Locally:** open `index.html`.
 
+## Mu-delta II (modules)
+- **Hallucinations** (Sanity 25 or lower): Zalgo item text, +-2px card jitter, phantom items in empty slots (15% per turn; click = hollow sound, -2 Sanity for 20 s), 5% false "Opponent aims at YOU..." flicker. All of it clears above 25.
+- **Russian Roulette Duel** (PLAY tab): one cylinder, six chambers, Live/Blank shown each round. Shoot self: blank = extra turn +10 Sanity, live = 3 damage. Shoot opponent = 2 damage, ends turn. Three slots: Cylinder Spinner, Magnifying Glass, Handcuffs. Wins go to the Hall of Hands.
+- **The Architect's Contracts** (PLAY tab): SILENCE PACT, ASCETIC LIMIT, PARANOIA MODE. +25% score each. Stored in localStorage (`malicex_architect`).
+- **Radio** (SYSTEM tab): procedural static and a 64-108 MHz dial. Secret signals at 66.6, 94.4 and 103.6 MHz. Hold a lock for 2 s: lore page plus a small effect.
+- **Screen colours** (SYSTEM tab): Cyan/Amber, Green Mono, Blood Amber. Remembered, applied before first paint.
+- **QoL**: keys 1-6 items, SPACE shoot opponent, S shoot self, ESC pause. Item tooltips on hover or long-press. Master and effects volume. Double-tap guard, full cleanup of timers and audio when a run ends, 44px touch targets, pinch-zoom locked.
+
 ## What is new in Mu-delta
 - **Sins that matter:** the Thief lifts items off the dealer (LIFT button, pickpocket on poker wins). The Parricide builds Wrath from wounds and has Blood Bound. Each has a secret ending (THE HEIST, THE INHERITANCE) with its own cutscene. Switch sin in the lobby.
 - **15 pixel cutscenes** (replayable in Archive > Cinema), memory flashes mid-run, fight cards, a CRT power-off death.

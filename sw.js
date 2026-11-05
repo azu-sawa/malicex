@@ -1,5 +1,5 @@
 // Malicex service worker: cache-first, refreshed in the background. Works for any folder layout.
-const CACHE = 'malicex-md-1';
+const CACHE = 'malicex-md-2';
 self.addEventListener('install', e => { self.skipWaiting(); });
 self.addEventListener('activate', e => {
     e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim()));
