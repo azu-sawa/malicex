@@ -4,7 +4,7 @@ function ascLevel() { return isDaily ? 2 : (meta.ascSel || 0); }
 
 function hasRelic(id) { return !!(state.gauntlet && state.gauntlet.relics.includes(id)); }
 
-function rewardMult() { return (1 + 0.2 * ascLevel()) * (state.pact === 'THIN_ICE' ? 1.5 : 1); }
+function rewardMult() { return (1 + 0.3 * ascLevel()) * (state.pact === 'THIN_ICE' ? 1.5 : 1); }
 
 // ==================== END v8.0 ====================
 // ---------- UTILITIES ----------

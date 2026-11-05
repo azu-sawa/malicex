@@ -8,7 +8,7 @@
 
 // ---------- TERMS: side bets you set before a run ----------
 const TERMS = {
-    PAPER:  { n: 'PAPER SKIN', d: 'You and the dealer start with 2 HP.', m: 0.4 },
+    PAPER:  { n: 'PAPER SKIN', d: 'You are capped at 3 HP. The dealer keeps his normal HP.', m: 0.3 },
     EMPTY:  { n: 'EMPTY POCKETS', d: 'Poker wins give no items. Only what you steal or earn elsewhere.', m: 0.4 },
     BLIND:  { n: 'BLIND TRUST', d: 'The LIVE and BLANK counts are hidden. Count the shells.', m: 0.3 },
     CLOCK:  { n: 'SHORT FUSE', d: 'Every one of your turns has an 8 second timer.', m: 0.3 },
@@ -143,8 +143,7 @@ updateSanity = function(d) {
 const _prSetup = setupFight;
 setupFight = function(p, hp, items) {
     if (hasTerm('PAPER')) {
-        hp = Math.min(hp, state.gauntlet ? 3 : 2);
-        if (!state.termInit) { state.termInit = true; state.maxPlayerHp = Math.min(state.maxPlayerHp, 2); state.playerHp = Math.min(state.playerHp, 2); }
+        if (!state.termInit) { state.termInit = true; state.maxPlayerHp = Math.min(state.maxPlayerHp, 3); state.playerHp = Math.min(state.playerHp, 3); }
     }
     return _prSetup(p, hp, items);
 };
@@ -187,9 +186,9 @@ function renderCollectionBox() {
         `<div class="coll-dealers">${ds.map(k => `<span class="${be[k] ? 'got' : ''}">${be[k] ? DEALER_PERSONALITIES[k].name.replace('The ', '') : '???'}</span>`).join('')}</div>` +
         row('Relics found', rs.filter(k => rseen[k]).length, rs.length) +
         row('Items found', items.filter(k => codex[k]).length, items.length) +
-        row('Endings', (meta.endings || []).length + (meta.sinEndings || []).length, 6) +
+        row('Endings', (meta.endings || []).length + (meta.sinEndings || []).length, 5) +
         row('Lore pages', unlockedLore.length, LORE_ENTRIES.length) +
-        row('Cutscenes', Object.keys(meta.cineSeen || {}).length, CINE_LIST.length);
+        row('Cutscenes', cineList().filter(c => (meta.cineSeen || {})[c[0]]).length, cineList().length);
 }
 
 // ---------- hall of hands + weekly ----------
@@ -218,11 +217,8 @@ function afterResultHooks(won) {
     try { r = runScore(won); } catch (e) { r = { score: 0, grade: 'D' }; }
     const m = document.getElementById('result-msg');
     habitRunEnd();
-    meta.sinsPlayed = meta.sinsPlayed || {};
     if (won) {
         noteBeaten(currentDealerPersonality);
-        meta.sinsPlayed[storyMode] = 1;
-        if (meta.sinsPlayed.THIEF && meta.sinsPlayed.PARRICIDE) unlockAchievement('BOTH_SINS');
         const n = marksForWin();
         if (n > 0) { addMarks(n); if (m) m.innerHTML += `<div class="run-line text-amber-400">+${n} MARK${n > 1 ? 'S' : ''}</div>`; }
         if ((state.terms || []).length >= 2) unlockAchievement('TERMS_2');
@@ -287,7 +283,6 @@ Object.assign(ACHIEVEMENTS, {
     INHERIT_END: { title: 'THE INHERITANCE', desc: 'Reach the Parricide ending.', reward: 3000, hint: 'The last blow has to carry your anger.', secret: true },
     WRATH_FIRST: { title: 'RED MIST', desc: 'Land a shot with Wrath.', reward: 400, hint: 'Take two wounds as the Parricide, then shoot back.' },
     BLOOD_BOUND: { title: 'BLOOD BOUND', desc: 'Survive a killing blow as the Parricide.', reward: 800, hint: 'The family does not let go easily.' },
-    BOTH_SINS: { title: 'TWO CRIMES', desc: 'Win a run as the Thief and a run as the Parricide.', reward: 1000, hint: 'Switch your sin in the lobby.' },
     READ: { title: 'IT KNOWS', desc: 'Get read by the house.', reward: 400, hint: 'Play the same way long enough that it adapts.' },
     TERMS_2: { title: 'DOUBLE DOWN', desc: 'Win a run with two terms active.', reward: 800, hint: 'Pick two terms before the run, and live.' },
     WEEKLY_DONE: { title: 'THE LONG WEEK', desc: 'Win the Weekly seed.', reward: 1200, hint: 'A harder table that changes every Monday.' },

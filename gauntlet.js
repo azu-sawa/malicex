@@ -130,7 +130,7 @@ function openPactScreen(cb) {
 }
 
 // ---------- GAUNTLET ----------
-const GAUNTLET_HP = [2, 4, 5, 6];
+const GAUNTLET_HP = [3, 4, 5, 6];
 
 const GAUNTLET_ITEMS = [
     [],
@@ -213,13 +213,14 @@ function gauntletFightWon() {
     totalStats.moneyEarned += bonus;
     totalStats.kills++;
     updateMoneyDisplay(true);
-    updateSanity(10);
+    updateSanity(6);
     dealerSpeak('lose');
     SFX.win();
     flashScreen('green');
-    state.playerHp = Math.min(state.maxPlayerHp, state.playerHp + 1);
+    const careful = (state.fightDmg || 0) <= 1 && ascLevel() < 5;
+    if (careful) state.playerHp = Math.min(state.maxPlayerHp, state.playerHp + 1);
     renderHP();
-    log(`DEALER DOWN! +$${bonus}`, 'text-green-500');
+    log(`DEALER DOWN! +$${bonus}${careful ? '  You heal 1.' : '  The wounds stay: you took ' + state.fightDmg + '.'}`, 'text-green-500');
     saveGame();
     setTimeout(offerRelicChoice, 1600);
 }
@@ -326,7 +327,7 @@ function updateV8Menu() {
     const a = document.getElementById('menu-btn-asc');
     if (a) {
         a.innerText = `${'ASCENSION'} ${meta.ascSel || 0} / ${meta.ascension || 0}`;
-        a.title = 'Each level: +20% rewards. 1: dealers +1 HP. 2: dealers start with a Shield. 3: Sanity -10. 4: +1 live shell. 5: max HP -1.';
+        a.title = ASC_TEXT.slice(1, (meta.ascSel || 0) + 1).map((t, i) => (i + 1) + ': ' + t).join(' ') || ASC_TEXT[0];
     }
     const g = document.getElementById('gauntlet-sub');
     if (g) g.innerText = `$500 | 4 Dealers · Relics · Best ${meta.gauntletBest || 0}`;

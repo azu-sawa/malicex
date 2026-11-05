@@ -1815,3 +1815,52 @@ html.shellletters .shell.blank::after { content: 'B'; color: #0b1220; font-size:
 .lobby-head { display: flex; flex-wrap: wrap; gap: 6px; }
 .lobby-head .sanity-hud-lobby { flex: 1 1 100%; }
 .lobby-head .lobby-chip { flex: 1 1 0; min-width: 0; padding: 4px 6px; font-size: .9rem; white-space: nowrap; justify-content: center; }
+
+/* ===================== CRT screen (Mu-delta) ===================== */
+/* strong horizontal scanlines + a faint phosphor glow between them */
+.crt-overlay {
+    background:
+        repeating-linear-gradient(0deg, rgba(0,0,0,.30) 0, rgba(0,0,0,.30) 1px, rgba(0,0,0,0) 1px, rgba(0,0,0,0) 3px),
+        linear-gradient(90deg, rgba(255,0,0,.035), rgba(0,255,120,.02), rgba(0,80,255,.035)) !important;
+    background-size: 100% 3px, 3px 100% !important;
+    opacity: 1 !important;
+    z-index: 1400;
+}
+/* RGB phosphor triads */
+.crt-mask {
+    position: fixed; inset: 0; pointer-events: none; z-index: 1401; opacity: .35;
+    background: repeating-linear-gradient(90deg, rgba(255,40,40,.10) 0 1px, rgba(40,255,90,.07) 1px 2px, rgba(60,90,255,.10) 2px 3px);
+}
+/* the slow bright band that rolls down an old tube */
+.crt-roll {
+    position: fixed; left: 0; right: 0; top: -25%; height: 22%; pointer-events: none; z-index: 1402;
+    background: linear-gradient(180deg, rgba(180,220,255,0), rgba(180,220,255,.055) 55%, rgba(180,220,255,0));
+    animation: crtRoll 7.5s linear infinite;
+}
+@keyframes crtRoll { from { transform: translateY(0); } to { transform: translateY(560%); } }
+/* curved glass: rounded corners, dark bezel, vignette, soft corner reflection */
+.crt-glass {
+    position: fixed; inset: 0; pointer-events: none; z-index: 1403; border-radius: 34px / 28px;
+    box-shadow: inset 0 0 0 7px #020305, inset 0 0 70px 14px rgba(0,0,0,.72), inset 0 0 28px rgba(56,189,248,.10);
+    background:
+        radial-gradient(120% 90% at 18% 6%, rgba(200,230,255,.07), rgba(200,230,255,0) 42%),
+        radial-gradient(140% 120% at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,.35) 100%);
+}
+/* slight phosphor bloom and chromatic fringe on all text */
+body { text-shadow: 0 0 3px rgba(125,211,252,.35), 0 0 .5px rgba(255,60,60,.45), 0 0 .5px rgba(60,120,255,.4); }
+@keyframes crtHum { 0%, 94% { opacity: 1; } 95% { opacity: .82; } 96% { opacity: 1; } 98% { opacity: .9; } 100% { opacity: 1; } }
+.crt-glass { animation: crtHum 6s steps(1) infinite; }
+.no-crtfx .crt-mask, .no-crtfx .crt-roll, .no-crtfx .crt-glass { display: none !important; }
+.no-crtfx .crt-overlay { opacity: .5 !important; mix-blend-mode: normal; }
+.no-crtfx body { text-shadow: none; }
+.lowfx .crt-mask, .lowfx .crt-roll { display: none !important; }
+@media (prefers-reduced-motion: reduce) { .crt-roll { animation: none; display: none; } }
+@media (max-width: 640px) { .crt-glass { border-radius: 22px / 18px; box-shadow: inset 0 0 0 5px #020305, inset 0 0 46px 8px rgba(0,0,0,.7), inset 0 0 20px rgba(56,189,248,.08); } .crt-mask { opacity: .22; } }
+/* sin selection on phones: stack the two choices */
+@media (max-width: 640px) {
+    #selection-screen { flex-direction: column; padding-top: 6.5rem; }
+    #selection-screen > div:not(.absolute) { border: 0 !important; border-top: 1px solid #1e293b !important; padding: 0 16px; text-align: center; }
+    #selection-screen h1 { font-size: 1.7rem !important; }
+    #selection-screen p { font-size: 1.3rem !important; }
+}
+#select-title { color: #94a3b8 !important; }

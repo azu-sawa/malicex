@@ -212,6 +212,12 @@ const CINE_SCRIPTS = {
 };
 
 // ---------- engine ----------
+// cutscenes that belong to the other sin can never be seen on this save
+function cineList() {
+    const other = storyMode === 'THIEF' ? ['intro_parricide', 'end_inherit'] : ['intro_thief', 'end_heist'];
+    return CINE_LIST.filter(c => !other.includes(c[0]));
+}
+
 const CINE = { on: false, raf: 0, g: null, art: 'black', t0: 0, shot: 0, line: 0, typing: null, script: null, done: null, opts: null, last: 0 };
 
 function cineEl(id) { return document.getElementById(id); }
@@ -223,7 +229,7 @@ function cinePlay(id, done, opts) {
     meta.cineSeen = meta.cineSeen || {};
     const first = !meta.cineSeen[id];
     meta.cineSeen[id] = 1;
-    if (Object.keys(meta.cineSeen).length >= CINE_LIST.length) unlockAchievement('CINEMA_ALL');
+    if (cineList().every(c => meta.cineSeen[c[0]])) unlockAchievement('CINEMA_ALL');
     CINE.on = true; CINE.script = sc; CINE.done = done; CINE.opts = opts || {}; CINE.shot = -1; CINE.id = id;
     const cv = cineEl('cine-canvas'); CINE.g = cv.getContext('2d'); CINE.g.imageSmoothingEnabled = false;
     scr.classList.remove('hidden');
@@ -409,9 +415,9 @@ function renderCinemaBox() {
     const box = cineEl('cinema-box');
     if (!box) return;
     const seen = meta.cineSeen || {};
-    const n = CINE_LIST.filter(c => seen[c[0]]).length;
-    box.innerHTML = `<div class="contracts-title">CINEMA ${n}/${CINE_LIST.length}</div>` +
-        `<div class="cine-grid">` + CINE_LIST.map(c => seen[c[0]]
+    const L = cineList(), n = L.filter(c => seen[c[0]]).length;
+    box.innerHTML = `<div class="contracts-title">CINEMA ${n}/${L.length}</div>` +
+        `<div class="cine-grid">` + L.map(c => seen[c[0]]
             ? `<button class="cine-item" onclick="replayCine('${c[0]}')"><b>${c[1]}</b><span>${c[2]}</span></button>`
             : `<div class="cine-item locked"><b>? ? ?</b><span>Not seen yet</span></div>`).join('') + `</div>`;
 }

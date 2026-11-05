@@ -24,6 +24,9 @@
 
     <!-- ========== FX OVERLAYS ========== -->
     <div class="crt-overlay"></div>
+    <div class="crt-mask" aria-hidden="true"></div>
+    <div class="crt-roll" aria-hidden="true"></div>
+    <div class="crt-glass" aria-hidden="true"></div>
     <div class="vignette" id="vignette-fx"></div>
     <div class="blood-overlay" id="blood-fx"></div>
     <div id="subliminal">DIE</div>
@@ -71,6 +74,7 @@
     <!-- SELECTION SCREEN -->
     <div id="selection-screen" class="hidden flex w-full h-full absolute top-0 left-0 z-[300] bg-black">
         <div class="absolute top-10 w-full text-center text-gray-600 z-50 text-xl tracking-widest animate-pulse font-press" id="select-title">CHOOSE YOUR SIN</div>
+        <div class="absolute top-24 w-full text-center text-gray-500 z-50 text-lg tracking-widest px-4">It is permanent. Only erasing your save changes it.</div>
         <div class="flex-1 flex flex-col items-center justify-center border-r border-green-900 cursor-pointer hover:bg-green-900/10 transition-colors group" onclick="chooseStory('THIEF')">
             <h1 class="text-4xl text-green-600 mb-2 group-hover:text-green-400 font-press" id="sel-thief-title">THIEF</h1>
             <p class="text-2xl text-gray-500" id="sel-thief-desc">Rent is due. The door was unlocked.</p>
@@ -192,6 +196,7 @@
                 <button id="set-lowfx" class="mode-card mode-slim" onclick="toggleSetting('lowfx')">LOW EFFECTS: OFF</button>
                 <button id="set-bigtext" class="mode-card mode-slim" onclick="toggleSetting('bigtext')">LARGE TEXT: OFF</button>
                 <button id="set-letters" class="mode-card mode-slim" onclick="toggleSetting('shellletters')">SHELL LETTERS: OFF</button>
+                <button id="set-crtfx" class="mode-card mode-slim" onclick="toggleSetting('crtfx')">CRT SCREEN: ON</button>
                 <button id="set-fast" class="mode-card mode-slim" onclick="toggleSetting('fast')">FAST HANDS: OFF</button>
                 <button class="mode-card mode-slim" onclick="runUiSelfTest()">RUN SELF-TEST</button>
             </div>
@@ -543,6 +548,7 @@
     <script src="habit.js?v=Md"></script>
     <script src="underside.js?v=Md"></script>
     <script src="progress.js?v=Md"></script>
+    <script src="boss.js?v=Md"></script>
     <script src="debug.js?v=Md"></script>
     <script src="main.js?v=Md"></script>
 

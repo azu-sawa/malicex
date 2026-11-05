@@ -31,9 +31,9 @@ const TUT_PAGES = [
         'At low Sanity item descriptions and the LIVE/BLANK numbers can lie. The shell icons never lie: count them.',
         'At zero you are not dead, but you will not trust your own eyes.'] },
     { i: 'knife', t: 'YOUR SIN', b: [
-        'You came here for a reason. Pick it in the lobby: THIEF or PARRICIDE.',
+        'You came here for a reason. You choose it once, at the very start: THIEF or PARRICIDE. It stays until you erase your save.',
         'The Thief lifts items off the dealer. The Parricide turns pain into Wrath.',
-        'Each has a secret ending. Read the goal on the lobby card.'] },
+        'Each has its own secret ending. Read the goal on the lobby card.'] },
     { i: 'trophy', t: 'KEEP PLAYING', b: [
         'Win in a row to build a streak: +10% cash per win, up to +50%.',
         'Three contracts every day pay extra. Trophies have hints even when locked.',

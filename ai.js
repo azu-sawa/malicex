@@ -29,7 +29,7 @@ function aiTurn() {
             return;
         }
     }
-    let knows = state.shellRevealed || state.dealerItems.includes('GLASS') || hasTerm('SEEN');
+    let knows = state.shellRevealed || state.dealerItems.includes('GLASS') || hasTerm('SEEN') || (ascLevel() >= 4 && rnd() < 0.25);
     let target = dealer.aiBehavior(knows);
     processShot('dealer', target);
 }

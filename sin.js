@@ -198,11 +198,15 @@ onPlayerTurnHooks = function() {
     }
 };
 
-// ---------- switching sin ----------
+// ---------- choosing a sin (permanent) ----------
+// New saves choose on the first screen and are locked. Older saves that never
+// chose get exactly one choice here.
+function sinLocked() { return !!meta.sinChosen; }
+
 function setSin(k) {
-    if (!SIN_INFO[k] || activeGame === 'MAIN') return;
+    if (!SIN_INFO[k] || activeGame === 'MAIN' || sinLocked()) return;
     storyMode = k;
-    meta.sinsPlayed = meta.sinsPlayed || {};
+    meta.sinChosen = true;
     saveGame();
     SFX.click();
     const ind = document.getElementById('story-mode-indicator');
@@ -216,13 +220,16 @@ function renderSinCard() {
     const box = document.getElementById('sin-card');
     if (!box) return;
     const i = SIN_INFO[storyMode] || SIN_INFO.THIEF;
-    const other = storyMode === 'THIEF' ? 'PARRICIDE' : 'THIEF';
     const got = (meta.sinEndings || []).includes(storyMode === 'THIEF' ? 'HEIST' : 'INHERITANCE');
+    const locked = sinLocked();
     box.innerHTML =
-        `<div class="sin-head"><span class="sin-label">YOUR SIN</span>` +
-        `<div class="sin-toggle" role="group" aria-label="Choose your sin">` +
-        ['THIEF', 'PARRICIDE'].map(k => `<button class="sin-btn ${k === storyMode ? 'on' : ''}" onclick="setSin('${k}')" aria-pressed="${k === storyMode}">${k}</button>`).join('') +
-        `</div></div>` +
+        `<div class="sin-head"><span class="sin-label">YOUR SIN${locked ? ' &middot; PERMANENT' : ''}</span>` +
+        (locked
+            ? `<div class="sin-toggle"><span class="sin-btn on">${storyMode}</span></div>`
+            : `<div class="sin-toggle" role="group" aria-label="Choose your sin">` +
+              ['THIEF', 'PARRICIDE'].map(k => `<button class="sin-btn ${k === storyMode ? 'on' : ''}" onclick="setSin('${k}')" aria-pressed="${k === storyMode}">${k}</button>`).join('') + `</div>`) +
+        `</div>` +
+        (locked ? '' : `<div class="contracts-note">Choose once. It stays until you erase your save.</div>`) +
         `<ul class="sin-buffs">${i.buffs.map(b => `<li>${b}</li>`).join('')}</ul>` +
         `<div class="sin-goal ${got ? 'done' : ''}">${got ? '[X] ' : '[ ] '}${i.goal}</div>`;
 }

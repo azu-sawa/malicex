@@ -66,7 +66,7 @@ function beginRun() {
 function startGame() {
     const asc = ascLevel();
     setSanityDirect(Math.max(SANITY.RUN_FLOOR, Math.min(100, sanity)));
-    if (asc >= 3) setSanityDirect(Math.max(30, sanity - 10));
+    if (asc >= 3) setSanityDirect(Math.max(30, sanity - 15));
     stopTurnTimer();
     state = {
         ...state,
@@ -119,11 +119,11 @@ function startGame() {
             items = ['CIGARETTES']; }
         else if (currentDifficulty === 'MERCENARY') { hp = 6;
             items = ['KNIFE', 'CIGARETTES']; }
-        else if (currentDifficulty === 'BOSS') { hp = 7;
+        else if (currentDifficulty === 'BOSS') { hp = 8;
             items = ['KNIFE', 'HANDCUFFS', 'CIGARETTES', 'SHIELD']; }
         else if (currentDifficulty === 'ANCIENT') { hp = 9;
             items = ['KNIFE', 'GLASS', 'INVERTER', 'CIGARETTES', 'SHIELD']; }
-        else if (currentDifficulty === 'FINALE') { hp = 10;
+        else if (currentDifficulty === 'FINALE') { hp = 11;
             items = ['KNIFE', 'GLASS', 'INVERTER', 'CIGARETTES', 'SHIELD', 'HANDCUFFS']; }
         else if (currentDifficulty === 'ENDLESS') hp = 5;
         if (upgrades.weakDealer && hp >= 4 && !['BOSS', 'ANCIENT', 'ENDLESS', 'FINALE'].includes(currentDifficulty)) hp -= 1;

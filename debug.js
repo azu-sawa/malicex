@@ -72,6 +72,9 @@ function runSelfTests() {
     eq('every new trophy has a hint', Object.keys(ACHIEVEMENTS).every(k => ACHIEVEMENTS[k].hint || ACH_HINTS[k]), true);
     eq('settings carry terms', Array.isArray(SETTINGS_DEFAULT.terms), true);
     eq('share card text builds', typeof shareResult, 'function');
+    eq('ascension text covers every level', ASC_TEXT.length, 6);
+    eq('paper skin keeps dealer hp', TERMS.PAPER.d.indexOf('dealer keeps') > -1, true);
+    eq('boss modes known', BOSS_MODES.length, 3);
     const fails = results.filter(r => !r.ok);
     console.log(`[DMH self-test] ${results.length - fails.length}/${results.length} passed`, fails);
     return { passed: results.length - fails.length, total: results.length, fails };

@@ -91,15 +91,14 @@ function updateTexts() {
 
 // ---------- STORY & INTRO ----------
 function determineStoryStart() {
-    const r = Math.random() * 100;
-    if (r < 10) { document.getElementById('selection-screen').classList.remove('hidden');
-        activeGame = 'SELECTION'; } else if (r < 55) { storyMode = 'THIEF';
-        playCutscene(STORY_LINES.en.THIEF); } else { storyMode = 'PARRICIDE';
-        playCutscene(STORY_LINES.en.PARRICIDE); }
+    // the sin is chosen once and stays until the save is erased
+    document.getElementById('selection-screen').classList.remove('hidden');
+    activeGame = 'SELECTION';
 }
 
 function chooseStory(m) {
     storyMode = m;
+    meta.sinChosen = true;
     document.getElementById('selection-screen').classList.add('hidden');
     playCutscene(STORY_LINES.en[m]);
 }

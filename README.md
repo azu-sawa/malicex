@@ -14,6 +14,8 @@ Plain HTML/CSS/JS, no build step, no external requests (fonts, art and sound are
 - **The house learns you:** it reads your habits and arms the dealer against them. At low Sanity item text and shell numbers can lie (the shell icons never do).
 - **New dealers:** The Collector, The Confessor, The Clockwork. **Act II: THE UNDERSIDE** (after the true ending), with The Host. **Weekly seed.**
 - **Terms** (side bets), **Marks and perks**, collection page, hall of hands, share card.
+- **Difficulty pass:** bosses fight in phases (Shield at the start, heal and rearm at half HP, doubled shot at a quarter). The house adapts if you stall. Gauntlet wounds carry over unless you were careful. Dealers counter the item you leaned on. Ascension 1-5 is much harder. Paper Skin now caps you at 3 HP and leaves the dealer his normal HP.
+- **Permanent sin and CRT screen:** you choose your sin once and it stays until you erase your save. The whole game now has curved glass, scanlines, a phosphor mask and a rolling bar (toggle in SYSTEM).
 - **Quality of life:** FAST HANDS, LARGE TEXT, SHELL LETTERS, in-game self-test, installable offline app (https only).
 
 ## What was in M1
