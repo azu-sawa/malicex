@@ -14,8 +14,8 @@
     <link rel="manifest" href="manifest.webmanifest">
     <style>.hidden{display:none!important}</style>
     <script>try{var _t=localStorage.getItem("malicex_theme");if(_t==="green"||_t==="blood")document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
-    <link rel="stylesheet" href="style.css?v=Md3">
-    <link rel="stylesheet" href="tailwind.css?v=Md3">
+    <link rel="stylesheet" href="style.css?v=Md4">
+    <link rel="stylesheet" href="tailwind.css?v=Md4">
     <meta name="theme-color" content="#090a0f">
 </head>
 <body class="flex flex-col items-center justify-between p-4 screen-flicker">
@@ -164,7 +164,7 @@
 
         <!-- ARCHIVE -->
         <section id="tab-archive" class="lobby-panel hidden" role="tabpanel">
-            <div class="contracts-box">
+            <div id="jobs-box" class="contracts-box">
                 <div class="contracts-title">TODAY'S JOBS</div>
                 <div id="contracts-list"></div>
             </div>
@@ -234,23 +234,49 @@
     </div>
 
     <!-- ========== 1V1 VERSUS ========== -->
-    <div id="versus-screen" class="main-menu hidden bg-black z-[900]" role="dialog" aria-label="1v1 Versus">
-        <div class="duel-wrap">
-            <h1 class="duel-title">1V1 VERSUS</h1>
-            <div id="vs-b-hp" class="duel-hp"></div>
-            <div id="vs-b-items" class="duel-items versus-items"></div>
-            <div id="versus-turn" class="duel-turn"></div>
-            <div id="versus-shells" class="versus-shells" aria-hidden="true"></div>
-            <div id="versus-count" class="duel-count"></div>
-            <div id="versus-msg" class="duel-msg" aria-live="polite"></div>
-            <div id="vs-a-items" class="duel-items versus-items"></div>
-            <div id="vs-a-hp" class="duel-hp"></div>
-            <div class="duel-btns">
-                <button id="versus-shoot" class="btn-retro border-red-800 text-red-500" onclick="vsShoot('opp')"><span class="vs-lbl">SHOOT</span></button>
-                <button id="versus-self" class="btn-retro border-green-800 text-green-500" onclick="vsShoot('self')">SHOOT SELF</button>
+    <div id="versus-screen" class="hidden bg-black z-[900] vs-screen" role="dialog" aria-label="1v1 Versus">
+        <div class="vs-game">
+            <div class="w-full max-w-4xl flex justify-between items-start px-4">
+                <div class="flex flex-col items-start w-1/2">
+                    <div class="hp-wrapper items-start">
+                        <span class="hp-label text-red-600 font-bold text-sm" id="vs-top-name">OPPONENT</span>
+                        <div id="vs-top-hp" class="hp-container text-red-700"></div>
+                    </div>
+                    <div id="vs-top-tags" class="vs-tags"></div>
+                </div>
+                <div class="flex flex-col items-end w-1/2">
+                    <div id="versus-turn" class="vs-turn"></div>
+                    <div id="vs-top-items" class="flex gap-1 flex-wrap justify-end vs-mini"></div>
+                </div>
             </div>
-            <div class="duel-sub">Blank on yourself: shoot again. Items are public, a peek is private. [ESC] pause</div>
-            <button class="btn-retro w-64 border-gray-600 text-gray-400" onclick="closeVersus()">LEAVE</button>
+            <div class="flex-1 w-full max-w-4xl flex flex-col items-center justify-center relative min-h-0">
+                <div id="versus-msg" class="vs-msg" aria-live="polite"></div>
+                <div class="relative w-full max-w-sm bg-gray-900 border-2 border-gray-800 p-4 rounded shadow-2xl flex flex-col items-center justify-center" id="vs-gun-panel">
+                    <div id="versus-shells" class="flex gap-1 h-12 items-center justify-center mb-1 w-full bg-black/40 p-1 border border-gray-800 shadow-inner" aria-hidden="true"></div>
+                    <div class="flex gap-8 text-2xl font-bold mt-1">
+                        <span class="text-red-600 drop-shadow-[0_0_8px_red]"><span id="vs-live">0</span> LIVE</span>
+                        <span class="text-gray-500"><span id="vs-blank">0</span> BLANK</span>
+                    </div>
+                    <div id="versus-count" class="vs-peek"></div>
+                </div>
+            </div>
+            <div class="w-full max-w-4xl px-4">
+                <div class="flex justify-between items-end mb-2">
+                    <div class="hp-wrapper items-start">
+                        <span class="hp-label text-green-500 font-bold text-sm" id="vs-bot-name">YOU</span>
+                        <div id="vs-bot-hp" class="hp-container text-green-600"></div>
+                    </div>
+                    <div id="vs-bot-tags" class="vs-tags"></div>
+                </div>
+                <div class="border-t border-gray-800 pt-2 px-2 bg-gray-900/30 pb-2 controls-panel">
+                    <div id="vs-bot-items" class="grid grid-cols-4 gap-1 mb-2 min-h-[40px]"></div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="versus-shoot" class="btn-retro hover:bg-red-900 hover:text-white py-3 text-lg border-red-800 text-red-500" onclick="vsShoot('opp')"><span class="vs-lbl">SHOOT</span> <span class="khint">[SPACE]</span></button>
+                        <button id="versus-self" class="btn-retro hover:bg-green-900 hover:text-white py-3 text-lg border-green-800 text-green-500" onclick="vsShoot('self')">SHOOT SELF <span class="khint">[S]</span></button>
+                    </div>
+                    <div class="vs-foot"><span>Blank on yourself: shoot again. Items are public, a peek is private.</span><button class="btn-chip" onclick="closeVersus()">LEAVE</button></div>
+                </div>
+            </div>
         </div>
         <div id="versus-cover" class="duel-end hidden"></div>
         <div id="versus-end" class="duel-end hidden"></div>
@@ -569,52 +595,52 @@
 
     <!-- ========== SCRIPTS ========== -->
 
-    <script src="rng.js?v=Md3"></script>
-    <script src="timers.js?v=Md3"></script>
-    <script src="state.js?v=Md3"></script>
-    <script src="store.js?v=Md3"></script>
-    <script src="theme.js?v=Md3"></script>
-    <script src="audio.js?v=Md3"></script>
-    <script src="sanity.js?v=Md3"></script>
-    <script src="util.js?v=Md3"></script>
-    <script src="pixel.js?v=Md3"></script>
-    <script src="data.js?v=Md3"></script>
-    <script src="dialogue.js?v=Md3"></script>
-    <script src="dealers.js?v=Md3"></script>
-    <script src="combat.js?v=Md3"></script>
-    <script src="poker.js?v=Md3"></script>
-    <script src="items.js?v=Md3"></script>
-    <script src="ai.js?v=Md3"></script>
-    <script src="render.js?v=Md3"></script>
-    <script src="hud.js?v=Md3"></script>
-    <script src="effects.js?v=Md3"></script>
-    <script src="run.js?v=Md3"></script>
-    <script src="gauntlet.js?v=Md3"></script>
-    <script src="endings.js?v=Md3"></script>
-    <script src="content.js?v=Md3"></script>
-    <script src="save.js?v=Md3"></script>
-    <script src="shop.js?v=Md3"></script>
-    <script src="minigames.js?v=Md3"></script>
-    <script src="ui.js?v=Md3"></script>
-    <script src="lobby.js?v=Md3"></script>
-    <script src="tutorial.js?v=Md3"></script>
-    <script src="psyche.js?v=Md3"></script>
-    <script src="sin.js?v=Md3"></script>
-    <script src="cinema.js?v=Md3"></script>
-    <script src="habit.js?v=Md3"></script>
-    <script src="underside.js?v=Md3"></script>
-    <script src="progress.js?v=Md3"></script>
-    <script src="boss.js?v=Md3"></script>
-    <script src="architect.js?v=Md3"></script>
-    <script src="hallu.js?v=Md3"></script>
-    <script src="keys.js?v=Md3"></script>
-    <script src="arcana.js?v=Md3"></script>
-    <script src="versus.js?v=Md3"></script>
-    <script src="reward.js?v=Md3"></script>
-    <script src="radio.js?v=Md3"></script>
-    <script src="qol.js?v=Md3"></script>
-    <script src="debug.js?v=Md3"></script>
-    <script src="main.js?v=Md3"></script>
+    <script src="rng.js?v=Md4"></script>
+    <script src="timers.js?v=Md4"></script>
+    <script src="state.js?v=Md4"></script>
+    <script src="store.js?v=Md4"></script>
+    <script src="theme.js?v=Md4"></script>
+    <script src="audio.js?v=Md4"></script>
+    <script src="sanity.js?v=Md4"></script>
+    <script src="util.js?v=Md4"></script>
+    <script src="pixel.js?v=Md4"></script>
+    <script src="data.js?v=Md4"></script>
+    <script src="dialogue.js?v=Md4"></script>
+    <script src="dealers.js?v=Md4"></script>
+    <script src="combat.js?v=Md4"></script>
+    <script src="poker.js?v=Md4"></script>
+    <script src="items.js?v=Md4"></script>
+    <script src="ai.js?v=Md4"></script>
+    <script src="render.js?v=Md4"></script>
+    <script src="hud.js?v=Md4"></script>
+    <script src="effects.js?v=Md4"></script>
+    <script src="run.js?v=Md4"></script>
+    <script src="gauntlet.js?v=Md4"></script>
+    <script src="endings.js?v=Md4"></script>
+    <script src="content.js?v=Md4"></script>
+    <script src="save.js?v=Md4"></script>
+    <script src="shop.js?v=Md4"></script>
+    <script src="minigames.js?v=Md4"></script>
+    <script src="ui.js?v=Md4"></script>
+    <script src="lobby.js?v=Md4"></script>
+    <script src="tutorial.js?v=Md4"></script>
+    <script src="psyche.js?v=Md4"></script>
+    <script src="sin.js?v=Md4"></script>
+    <script src="cinema.js?v=Md4"></script>
+    <script src="habit.js?v=Md4"></script>
+    <script src="underside.js?v=Md4"></script>
+    <script src="progress.js?v=Md4"></script>
+    <script src="boss.js?v=Md4"></script>
+    <script src="architect.js?v=Md4"></script>
+    <script src="hallu.js?v=Md4"></script>
+    <script src="keys.js?v=Md4"></script>
+    <script src="arcana.js?v=Md4"></script>
+    <script src="versus.js?v=Md4"></script>
+    <script src="reward.js?v=Md4"></script>
+    <script src="radio.js?v=Md4"></script>
+    <script src="qol.js?v=Md4"></script>
+    <script src="debug.js?v=Md4"></script>
+    <script src="main.js?v=Md4"></script>
 
 </body>
 </html>

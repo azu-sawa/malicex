@@ -47,3 +47,13 @@ Plain HTML/CSS/JS, no build step, no external requests (fonts, art and sound are
 If you edit classes in the HTML or JS, rebuild Tailwind: `npx tailwindcss -c tailwind.config.js -i src/tailwind.css -o css/tailwind.css --minify`.
 
 Self-test: open `index.html?test` and check the console (38 checks).
+
+
+## Md4 (touch + 1v1 + compact lobby)
+- 1v1 now uses the same layout as the main fight (HP blocks, shell chamber, item row, big buttons). The player whose turn it is always sits at the bottom; the pass-the-device cover is unchanged.
+- Architect's Contracts panel rebuilt (it rendered as run-together text); buttons lock during a run.
+- Lobby boxes fold (tap a title). Fold state is remembered; most start folded.
+- PAPER SKIN now pays +60% cash.
+- Theme changes cross-fade instead of snapping; bezel, vignette and borders follow the theme.
+- Hints rewritten to be subtler but more useful.
+- Touch scrolling: lobby, fight screen (when the screen is short) and 1v1 all scroll by finger on iPad and phones.

@@ -1874,8 +1874,8 @@ html[data-theme="blood"] { --bg-color:#1a0000; --text-glow:0 0 5px rgba(255,51,5
 body { background: var(--bg-color); }
 h1, h2, h3, .menu-title, .panel-title, .hp-label, #sanity-tier, .btn-retro, #live-txt, #blank-txt { text-shadow: var(--text-glow); }
 html[data-theme] .crt-overlay { opacity: var(--scanline-opacity); }
-.theme-tint { display: none; position: fixed; inset: 0; z-index: 1405; pointer-events: none; mix-blend-mode: color; background: var(--theme-tint); }
-html[data-theme] .theme-tint { display: block; }
+.theme-tint { display: block; opacity: 0; transition: opacity .8s ease, background-color .8s ease; position: fixed; inset: 0; z-index: 1405; pointer-events: none; mix-blend-mode: color; background: var(--theme-tint); }
+html[data-theme] .theme-tint { opacity: .9; }
 .theme-grid .mode-card.on, .term-row.on { border-color: var(--term-green); box-shadow: inset 0 0 0 1px var(--term-green); }
 
 /* touch + selection locks, 44px hit boxes */
@@ -1968,3 +1968,53 @@ body.hallu-on #game-ui .card { transition: translate .18s steps(3), rotate .18s 
 #btn-lift, #btn-arcana { grid-column: 1 / -1; }
 .theme-grid { grid-template-columns: repeat(3, 1fr) !important; }
 .theme-grid .mode-card { font-size: .85rem; padding-left: 4px; padding-right: 4px; }
+
+/* ===== Touch scrolling (iPad / phones) ===== */
+#game-ui { overflow-y: auto; overflow-x: hidden; min-height: 0; max-height: 100vh; max-height: 100dvh;
+  -webkit-overflow-scrolling: touch; overscroll-behavior: contain; touch-action: pan-y; }
+#game-ui button, #game-ui .item-btn { touch-action: manipulation; }
+.main-menu, #versus-screen, #arcana-overlay, #pause-overlay { -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+#versus-screen { overflow-y: auto; }
+.arch-grid { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 560px) { .arch-grid { grid-template-columns: 1fr; } }
+.term:disabled { opacity: .5; }
+
+/* ===== Compact lobby: foldable boxes ===== */
+.contracts-box { padding: 6px 10px; }
+.contracts-title { cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 36px; margin-bottom: 4px; }
+.contracts-title::after { content: '\25BE'; color: #64748b; margin-left: auto; padding-left: 8px; }
+.contracts-title .terms-bonus { margin-left: auto; }
+.contracts-title .terms-bonus + * { margin-left: 0; }
+.contracts-box.folded > :not(.contracts-title) { display: none !important; }
+.contracts-box.folded { padding-top: 2px; padding-bottom: 2px; }
+.contracts-box.folded .contracts-title { margin-bottom: 0; }
+.contracts-box.folded .contracts-title::after { content: '\25B8'; }
+.lobby-panel { gap: 6px; }
+.mode-card { padding-top: 10px; padding-bottom: 10px; }
+
+/* ===== Seamless theme blending ===== */
+body { transition: opacity .45s ease, background-color .8s ease; }
+html.theme-fading *, html.theme-fading *::before, html.theme-fading *::after {
+  transition: color .7s ease, background-color .7s ease, border-color .7s ease, box-shadow .7s ease, text-shadow .7s ease, fill .7s ease !important; }
+html.theme-fading .crt-overlay { transition: opacity .7s ease; }
+.crt-overlay { transition: opacity .8s ease; }
+html[data-theme] .contracts-box, html[data-theme] .term, html[data-theme] .mode-card { border-color: color-mix(in srgb, var(--term-green) 35%, #1e293b); }
+html[data-theme] body { background: radial-gradient(ellipse at center, var(--bg-color) 55%, color-mix(in srgb, var(--bg-color) 60%, #000) 100%); }
+@media (prefers-reduced-motion: reduce) { html.theme-fading *, .theme-tint, body { transition: none !important; } }
+
+/* ===== 1v1 uses the main game layout ===== */
+.vs-screen { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; overflow-y: auto; overflow-x: hidden; padding: 8px 0; touch-action: pan-y; }
+.vs-screen.hidden { display: none; }
+.vs-game { width: 100%; min-height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: space-between; gap: 6px; }
+.vs-turn { font-family: 'Press Start 2P', monospace; font-size: .6rem; color: #fbbf24; text-align: right; margin-bottom: 6px; }
+.vs-msg { color: #fbbf24; font-size: 1.25rem; text-align: center; min-height: 1.6em; margin-bottom: 8px; padding: 0 12px; }
+.vs-peek { min-height: 1.4em; margin-top: 4px; font-size: 1.15rem; }
+.vs-tags { min-height: 1.4em; display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.vs-mini-ic { display: inline-flex; width: 26px; height: 26px; align-items: center; justify-content: center; border: 1px solid #334155; background: rgba(9,10,15,.8); }
+.vs-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 6px; color: #64748b; font-size: 1rem; }
+#vs-bot-items .item-btn { flex-direction: column; font-size: .85rem; padding: 4px 2px; gap: 2px; justify-content: center; }
+#vs-bot-items .item-btn:disabled { opacity: .55; }
+#vs-bot-items .item-empty { min-height: 40px; border: 1px dashed #1e293b; }
+@media (max-height: 560px) { .vs-game { gap: 2px; } #vs-gun-panel { padding: 6px; } }
+body.vs-on #money-hud { display: none; }
+.vs-screen { padding: 12px 0 56px; }

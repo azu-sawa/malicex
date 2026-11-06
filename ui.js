@@ -157,7 +157,7 @@ function showMenu() {
 
 function resetSave() {
     if (confirm('Erase all progress, settings and trophies on this device? This cannot be undone.')) {
-        [VERSION, PREV_VERSION, LEGACY_VERSION, SETTINGS_KEY, AUDIO_PREF_KEY, 'malicex_theme', 'malicex_architect', 'malicex_vol', 'malicex_radio'].forEach(k => Store.remove(k));
+        [VERSION, PREV_VERSION, LEGACY_VERSION, SETTINGS_KEY, AUDIO_PREF_KEY, 'malicex_theme', 'malicex_keys', 'malicex_fold', 'malicex_architect', 'malicex_vol', 'malicex_radio'].forEach(k => Store.remove(k));
         location.reload();
     }
 }

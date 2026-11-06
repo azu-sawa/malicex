@@ -213,3 +213,38 @@ renderLobby = function() { _qolLobby(); syncVolUI(); };
 document.addEventListener('gesturestart', e => e.preventDefault());
 document.addEventListener('touchmove', e => { if (e.touches && e.touches.length > 1) e.preventDefault(); }, { passive: false });
 syncVolUI();
+
+// =====================================================================
+// COMPACT LOBBY: every panel box folds. Fold state is remembered.
+// =====================================================================
+const FOLD_KEY = 'malicex_fold';
+const FOLD_DEFAULT = ['architect-box', 'terms-box', 'arcana-box', 'collection-box', 'habit-box', 'board-box', 'marks-box', 'cinema-box', 'keys-box', 'radio-box', 'jobs-box'];
+let foldState = null;
+function foldLoad() {
+    try { foldState = JSON.parse(Store.get(FOLD_KEY) || 'null'); } catch (e) { foldState = null; }
+    if (!foldState || typeof foldState !== 'object') { foldState = {}; FOLD_DEFAULT.forEach(k => { foldState[k] = true; }); }
+}
+function foldKey(box, i) { return box.id || ('box' + i); }
+function applyFolds() {
+    if (!foldState) foldLoad();
+    document.querySelectorAll('#main-menu .contracts-box').forEach((box, i) => {
+        if (!box.id) box.id = 'box' + i;
+        const t = box.querySelector('.contracts-title');
+        if (t) t.setAttribute('role', 'button');
+        box.classList.toggle('folded', !!foldState[foldKey(box, i)]);
+    });
+}
+document.addEventListener('click', e => {
+    const t = e.target.closest && e.target.closest('.contracts-title');
+    if (!t) return;
+    const box = t.parentElement;
+    if (!box || !box.classList.contains('contracts-box')) return;
+    const f = !box.classList.contains('folded');
+    box.classList.toggle('folded', f);
+    foldState[box.id] = f;
+    Store.set(FOLD_KEY, JSON.stringify(foldState));
+    try { SFX.click(); } catch (_) {}
+});
+const _foldRenderLobby = renderLobby;
+renderLobby = function() { const r = _foldRenderLobby.apply(this, arguments); applyFolds(); return r; };
+setTimeout(applyFolds, 0);

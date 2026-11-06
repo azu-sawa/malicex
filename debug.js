@@ -75,6 +75,9 @@ function runSelfTests() {
     eq('ascension text covers every level', ASC_TEXT.length, 6);
     eq('paper skin keeps dealer hp', TERMS.PAPER.d.indexOf('dealer keeps') > -1, true);
     eq('boss modes known', BOSS_MODES.length, 3);
+    eq('paper skin pays at least 50%', TERMS.PAPER.m >= 0.5, true);
+    eq('contracts render as a grid of 3', (renderContractsPanel(), document.querySelectorAll('#architect-box .term').length), 3);
+    eq('lobby boxes can fold', (applyFolds(), document.querySelectorAll('#main-menu .contracts-box.folded').length > 0), true);
     // ---- Mu-delta II modules
     eq('themes defined', Object.keys(THEMES).length, 3);
     eq('theme ramp maps white inside ramp', /^#[0-9a-f]{6}$/.test((() => { const o = activeTheme; activeTheme = 'green'; const c = themeColor('#ffffff'); activeTheme = o; return c; })()), true);

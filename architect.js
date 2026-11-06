@@ -47,13 +47,13 @@ function renderContractsPanel() {
     const box = document.getElementById('architect-box');
     if (!box) return;
     const n = activeContracts().length;
-    box.innerHTML = `<div class="contracts-title">THE ARCHITECT'S CONTRACTS <span class="terms-bonus">${n ? '+' + Math.round(n * ARCH_BONUS * 100) + '% SCORE' : 'optional'}</span></div>` +
-        Object.keys(CONTRACTS).map(id => {
+    const locked = activeGame === 'MAIN';
+    box.innerHTML = `<div class="contracts-title">THE ARCHITECT'S CONTRACTS <span class="terms-bonus">${n ? '+' + Math.round(n * ARCH_BONUS * 100) + '% score' : 'optional'}</span></div>` +
+        `<div class="terms-grid arch-grid">` + Object.keys(CONTRACTS).map(id => {
             const c = CONTRACTS[id], on = !!archState.active[id], w = archState.done[id] || 0;
-            return `<button class="term-row ${on ? 'on' : ''}" onclick="toggleContract('${id}')" aria-pressed="${on}">` +
-                `<span class="term-name">${on ? '[X]' : '[ ]'} ${c.name}</span><span class="term-desc">${c.d}</span>` +
-                `<span class="term-desc">+25% score &middot; cleared ${w}x</span></button>`;
-        }).join('');
+            return `<button class="term ${on ? 'on' : ''}" onclick="toggleContract('${id}')" aria-pressed="${on}"${locked ? ' disabled' : ''}>` +
+                `<b>${on ? '&#9632; ' : '&#9633; '}${c.name}</b><span>${c.d}</span><i>+25% score${w ? ' &middot; cleared ' + w + 'x' : ''}</i></button>`;
+        }).join('') + `</div><div class="contracts-note">Chosen before a run. Each one adds +25% to the final score.</div>`;
 }
 const _archRenderLobby = renderLobby;
 renderLobby = function() { _archRenderLobby(); renderContractsPanel(); };

@@ -52,17 +52,30 @@ function themeColor(hex) {
     return (_rampCache[key] = out);
 }
 
-function applyTheme(id, persist) {
+let themeFadeTimer = 0;
+function applyTheme(id, persist, instant) {
     if (!THEMES[id]) id = 'default';
-    activeTheme = id;
     const root = document.documentElement, t = THEMES[id];
-    if (id === 'default') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', id);
-    THEME_VAR_KEYS.forEach(k => root.style.removeProperty(k));
-    if (t.vars) Object.keys(t.vars).forEach(k => root.style.setProperty(k, t.vars[k]));
+    const changed = activeTheme !== id;
+    activeTheme = id;
+    const swap = () => {
+        if (id === 'default') root.removeAttribute('data-theme'); else root.setAttribute('data-theme', id);
+        THEME_VAR_KEYS.forEach(k => root.style.removeProperty(k));
+        if (t.vars) Object.keys(t.vars).forEach(k => root.style.setProperty(k, t.vars[k]));
+        if (typeof installPixelStyles === 'function') installPixelStyles();   // redraw every sprite
+    };
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', (t.vars && t.vars['--bg-color']) || '#090a0f');
     if (persist) Store.set(THEME_KEY, id);
-    if (typeof installPixelStyles === 'function') installPixelStyles();   // redraw every sprite
+    if (instant || !changed || !document.body) { swap(); }
+    else {
+        // cross-fade: every colour eases over 0.7s, and sprites are re-cut while the screen is dipped
+        root.classList.add('theme-fading');
+        document.body.style.opacity = '.55';
+        clearTimeout(themeFadeTimer);
+        setTimeout(() => { swap(); document.body.style.opacity = ''; }, 220);
+        themeFadeTimer = setTimeout(() => root.classList.remove('theme-fading'), 1000);
+    }
     syncThemeButtons();
 }
 

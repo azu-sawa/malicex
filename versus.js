@@ -37,6 +37,7 @@ function openVersus(mode) {
     document.getElementById('main-menu').classList.add('hidden');
     document.getElementById('versus-screen').classList.remove('hidden');
     activeGame = 'VERSUS';
+    document.body.classList.add('vs-on');
     RunTimers.clearAll(); RunTimers.begin();
     initAudio(); Music.setScene('fight');
     vsNew(mode || 'friend');
@@ -60,6 +61,7 @@ function closeVersus() {
     document.getElementById('versus-cover').classList.add('hidden');
     document.getElementById('main-menu').classList.remove('hidden');
     activeGame = 'MENU';
+    document.body.classList.remove('vs-on');
     Music.setScene('menu');
     renderLobby();
 }
@@ -211,39 +213,44 @@ function vsEnd(win) {
 }
 
 // ---------------- drawing ----------------
-function vsPips(n) { let s = ''; for (let i = 0; i < VS_HP; i++) s += `<span class="versus-pip ${i < n ? 'on' : ''}"></span>`; return s; }
 function vsSlots(side, live) {
     let h = '';
     for (let i = 0; i < VS_SLOTS; i++) {
         const k = VS.items[side][i];
         if (!k) { h += '<div class="item-empty"></div>'; continue; }
         const d = VS_ITEMS[k];
-        h += `<button class="item-btn border border-gray-700 ${d.c}" ${live ? '' : 'disabled'} onclick="vsUse('${side}',${i})" aria-label="${d.n}. ${d.d}">` +
+        h += `<button class="item-btn border border-gray-700 ${d.c}" ${live ? '' : 'disabled'} onclick="vsUse('${side}',${i})" aria-label="${d.n}. ${d.d}" data-tip="${d.n}: ${d.d}">` +
              `${live ? `<span class="key-hint border-gray-600 text-gray-400">${keyLabel('item' + (i + 1))}</span>` : ''} ${px(d.ico)} <span class="item-name">${d.n}</span></button>`;
     }
     return h;
 }
+function vsMini(side) { return VS.items[side].map(k => `<span class="vs-mini-ic ${VS_ITEMS[k].c}" title="${VS_ITEMS[k].n}">${px(VS_ITEMS[k].ico)}</span>`).join(''); }
+function vsHpBlocks(n) { let s = ''; for (let i = 0; i < VS_HP; i++) s += `<div class="hp-segment ${i < n ? 'filled' : 'lost'}"></div>`; return s; }
+function vsTags(s) { return (VS.shield[s] ? '<span class="versus-tag">SHIELD</span>' : '') + (VS.knife[s] ? '<span class="versus-tag">SAW</span>' : '') + (VS.cuffed[s] ? '<span class="versus-tag">CUFFED</span>' : ''); }
+// the player whose turn it is always sits at the bottom, exactly like the main game
 function vsRender() {
     if (!VS) return;
     const r = vsLeft(), set = (id, h) => { const e = document.getElementById(id); if (e) e.innerHTML = h; };
-    ['a', 'b'].forEach(s => {
-        const my = VS.turn === s && !VS.over;
-        set('vs-' + s + '-hp', `<span class="versus-who ${my ? 'turn' : ''}">${vsName(s)}</span>${vsPips(VS.hp[s])}` +
-            `${VS.shield[s] ? '<span class="versus-tag">SHIELD</span>' : ''}${VS.knife[s] ? '<span class="versus-tag">SAW</span>' : ''}${VS.cuffed[s] ? '<span class="versus-tag">CUFFED</span>' : ''}`);
-        const mine = my && !(VS.mode === 'cpu' && s === 'b') && !VS.cover;
-        set('vs-' + s + '-items', vsSlots(s, mine));
-    });
+    const bot = VS.mode === 'cpu' ? 'a' : VS.turn, top = vsOther(bot);
+    const myTurn = VS.turn === bot && !VS.over && !VS.cover && !(VS.mode === 'cpu' && bot === 'b');
+    const nm = (id, s) => { const e = document.getElementById(id); if (e) e.textContent = vsName(s); };
+    nm('vs-top-name', top); nm('vs-bot-name', bot);
+    set('vs-top-hp', vsHpBlocks(VS.hp[top])); set('vs-bot-hp', vsHpBlocks(VS.hp[bot]));
+    set('vs-top-tags', vsTags(top)); set('vs-bot-tags', vsTags(bot));
+    set('vs-top-items', vsMini(top));
+    set('vs-bot-items', vsSlots(bot, myTurn));
     const peek = VS.peek && VS.peekFor === VS.turn && !VS.cover ? VS.peek : null;
-    set('versus-count', `LIVE <b class="text-red-500">${r.live}</b> &middot; BLANK <b class="text-cyan-300">${r.blank}</b>` +
-        (peek ? ` &middot; NEXT: <b class="${peek === 'live' ? 'text-red-500' : 'text-cyan-300'}">${peek.toUpperCase()}</b>` : ''));
+    set('versus-count', peek ? `NEXT SHELL: <b class="${peek === 'live' ? 'text-red-500' : 'text-cyan-300'}">${peek.toUpperCase()}</b>` : '');
+    const lv = document.getElementById('vs-live'), bl = document.getElementById('vs-blank');
+    if (lv) lv.textContent = r.live; if (bl) bl.textContent = r.blank;
     let shells = '';
-    for (let i = 0; i < r.total; i++) shells += `<span class="vs-shell ${i === 0 && peek ? 'is-' + peek : ''}"></span>`;
+    for (let i = 0; i < r.total; i++) shells += `<div class="shell ${i === 0 && peek ? peek : 'unknown'}"></div>`;
     set('versus-shells', shells);
     set('versus-msg', VS.cover ? '' : VS.msg);
     set('versus-turn', VS.over ? '' : `${vsName(VS.turn)}'S TURN`);
     const can = !VS.busy && !VS.over && !VS.cover && !(VS.mode === 'cpu' && VS.turn === 'b');
     const so = document.getElementById('versus-shoot'), ss = document.getElementById('versus-self');
-    if (so) { so.disabled = !can; so.querySelector('.vs-lbl').textContent = 'SHOOT ' + (VS.mode === 'cpu' && VS.turn === 'a' ? vsName('b') : vsName(vsOther(VS.turn))); }
+    if (so) { so.disabled = !can; so.querySelector('.vs-lbl').textContent = 'SHOOT ' + vsName(top); }
     if (ss) ss.disabled = !can;
 }
 

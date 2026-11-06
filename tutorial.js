@@ -86,16 +86,16 @@ document.addEventListener('keydown', e => {
 
 // ---------- coach marks during the first hand ----------
 const COACH = {
-    poker: { target: '#community-cards', t: 'POKER FIRST',
-        b: 'Five shared cards will appear here. Press the button below to deal them. The better hand wins items and shoots first.' },
-    controls: { target: '#controls', t: 'YOUR BUTTONS',
-        b: 'The button is the only thing you need to start. RAISE costs Sanity for a bigger payout. FOLD ends the hand early.' },
+    poker: { target: '#community-cards', t: 'A QUIET WORD',
+        b: 'Win the hand and you shoot first. Items are the other prize. The cards only matter until the table goes quiet.' },
+    controls: { target: '#controls', t: 'THE BUTTONS',
+        b: 'One of these starts everything. The others cost something, usually a little of your mind. Raise only when the hand is already yours.' },
     shoot: { target: '#gun-ui-panel', t: 'THE SHOTGUN',
-        b: 'The numbers show how many LIVE and BLANK shells are loaded. You do not know the order. Shoot the dealer to hurt him. Shoot yourself: a blank keeps your turn, a live shell hurts you.' },
-    items: { target: '#player-items-row', t: 'ITEMS',
-        b: 'Tap an item to read it. Tap again to use it. They are your edge: peek the shell, saw the barrel, cuff the dealer.' },
-    sanity: { target: '#sanity-hud', t: 'SANITY',
-        b: 'This is your mind. When it drops, the house starts lying to you. Keep it steady.' }
+        b: 'The count is honest. The order is not. Each blank spent on yourself buys another turn, so always weigh the odds before you aim inward.' },
+    items: { target: '#player-items-row', t: 'WHAT YOU CARRY',
+        b: 'Hold an item to read it before you commit. Look first, then decide. The right one at the right moment decides a round.' },
+    sanity: { target: '#sanity-hud', t: 'YOUR MIND',
+        b: 'Watch this number. Past a point the room starts to lie, so rest before you have to. Some things the house would rather you never touched are worth the cost.' }
 };
 
 let coachOpen = false;

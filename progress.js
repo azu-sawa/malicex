@@ -8,10 +8,10 @@
 
 // ---------- TERMS: side bets you set before a run ----------
 const TERMS = {
-    PAPER:  { n: 'PAPER SKIN', d: 'You are capped at 3 HP. The dealer keeps his normal HP.', m: 0.3 },
+    PAPER:  { n: 'PAPER SKIN', d: 'You are capped at 3 HP. The dealer keeps his normal HP.', m: 0.6 },
     EMPTY:  { n: 'EMPTY POCKETS', d: 'Poker wins give no items. Only what you steal or earn elsewhere.', m: 0.4 },
-    BLIND:  { n: 'BLIND TRUST', d: 'The LIVE and BLANK counts are hidden. Count the shells.', m: 0.3 },
-    CLOCK:  { n: 'SHORT FUSE', d: 'Every one of your turns has an 8 second timer.', m: 0.3 },
+    BLIND:  { n: 'BLIND TRUST', d: 'The LIVE and BLANK counts are hidden. Count the shells.', m: 0.6 },
+    CLOCK:  { n: 'SHORT FUSE', d: 'Every one of your turns has an 8 second timer.', m: 0.6 },
     DOUBLE: { n: 'DOUBLE OR NOTHING', d: 'Every live shell deals +1 damage. To both of you.', m: 0.5 },
     SEEN:   { n: 'THE HOUSE PEEKS', d: 'The dealer always knows the next shell.', m: 0.6 }
 };
