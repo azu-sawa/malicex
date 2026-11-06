@@ -20,6 +20,8 @@ let upgrades = {
     unlockColdRead: false,
     unlockPsychOut: false,
     ironMind: false,
+    goldTooth: false,
+    steadyHands: false,
     startShield: false
 };
 

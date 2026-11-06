@@ -78,6 +78,7 @@ const PX_SPRITES = {
     hand: ['.f.f.f..', '.f.f.fff', '.ffffff.', '.ffffff.', '.ffffff.', '..ffff..', '..ffff..', '........'],
     gift: ['.rr..rr.', '..rrrr..', 'oooroooo', 'oooroooo', 'rrrrrrrr', 'oooroooo', 'oooroooo', 'oooroooo'],
     bandage: ['........', '.ffffff.', 'ffwkwkff', 'ffkwkwff', '.ffffff.', '........', '........', '........'],
+    key: ['..yyyy..', '.y....y.', '.y....y.', '..yyyy..', '...yY...', '...yY...', '...yyy..', '...yY...'],
     door: ['.nnnnnn.', 'nnYYYYnn', 'nYnnnnYn', 'nYnnnnYn', 'nYnnnyYn', 'nYnnnnYn', 'nYnnnnYn', 'nnnnnnnn'],
     timer: ['...ww...', '.wwwwww.', 'wwwwwkww', 'wwwwkwww', 'wwwkkwww', 'wwwwwwww', '.wwwwww.', '........'],
     spade: ['...kk...', '..kkkk..', '.kkkkkk.', 'kkkkkkkk', 'kkkkkkkk', '.kkkkkk.', '...kk...', '..kkkk..'],

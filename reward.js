@@ -14,7 +14,7 @@ rewardMult = function() {
     const base = _rwMult();
     const asc = ascLevel();
     // Ascension pays a little more per level on top of the base 30%
-    return base * (DIFF_PAY[currentDifficulty] || 1) * (1 + 0.1 * asc);
+    return base * (DIFF_PAY[currentDifficulty] || 1) * (1 + 0.1 * asc) * (upgrades.goldTooth ? 1.1 : 1);
 };
 
 const _rwAfter = afterResultHooks;
@@ -31,4 +31,11 @@ afterResultHooks = function(won) {
         }
     }
     return _rwAfter(won);
+};
+
+// STEADY HANDS: every run opens with at least 70 Sanity (not in Paranoia)
+const _rwStartGame = startGame;
+startGame = function() {
+    _rwStartGame();
+    if (upgrades.steadyHands && sanity < 70 && !(typeof contractOn === 'function' && contractOn('PARANOIA_MODE'))) setSanityDirect(70);
 };

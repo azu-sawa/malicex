@@ -2018,3 +2018,62 @@ html[data-theme] body { background: radial-gradient(ellipse at center, var(--bg-
 @media (max-height: 560px) { .vs-game { gap: 2px; } #vs-gun-panel { padding: 6px; } }
 body.vs-on #money-hud { display: none; }
 .vs-screen { padding: 12px 0 56px; }
+
+/* ===== Market: cards size to their content so price and BUY always show ===== */
+.shop-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 640px) { .shop-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.shop-card { height: auto; min-height: 148px; gap: 8px; padding: 10px; justify-content: space-between; }
+.shop-top { display: flex; gap: 10px; align-items: flex-start; }
+.shop-top .shop-icon { margin: 0; flex: 0 0 auto; font-size: 2rem; }
+.shop-txt { min-width: 0; } .shop-txt h3 { font-size: .95rem; line-height: 1.15; } .shop-txt p { line-height: 1.25; margin-top: 3px; }
+.shop-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.shop-price { font-size: 1.3rem; white-space: nowrap; }
+.shop-buy { width: auto !important; min-height: 44px; padding: 4px 14px !important; font-size: .8rem; }
+.shop-buy:disabled { opacity: .45; }
+.shop-tabs { display: flex; gap: 8px; margin-bottom: 10px; }
+.shop-tab { min-height: 44px; padding: 0 22px; border: 1px solid #334155; color: #94a3b8; background: #05070b; font-family: 'Press Start 2P', monospace; font-size: .65rem; }
+.shop-tab.on { border-color: #38bdf8; color: #38bdf8; box-shadow: 0 0 8px rgba(56,189,248,.25); }
+#shop-menu { overflow-y: auto; }
+
+/* ===== Radio tracks ===== */
+.trk-title { margin-top: 8px; font-family: 'Press Start 2P', monospace; font-size: .55rem; color: #64748b; }
+.trk-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 6px 0; }
+@media (max-width: 480px) { .trk-grid { grid-template-columns: repeat(2, 1fr); } }
+.trk { min-height: 44px; border: 1px solid #1e293b; background: #05070b; color: #94a3b8; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 4px; font-size: .85rem; }
+.trk i { font-style: normal; font-size: .7rem; color: #475569; }
+.trk.on { border-color: #38bdf8; color: #38bdf8; box-shadow: 0 0 8px rgba(56,189,248,.25); }
+.trk.lock { opacity: .45; border-style: dashed; }
+
+/* ===== THE HOUSE (2D pixel arcade) ===== */
+.house-screen { position: fixed; inset: 0; z-index: 920; background: #05070b; display: flex; flex-direction: column; align-items: center; touch-action: none; user-select: none; }
+.house-screen.hidden { display: none; }
+.house-bar { width: 100%; max-width: 980px; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; }
+.house-room { font-family: 'Press Start 2P', monospace; font-size: .7rem; color: #fbbf24; text-align: center; flex: 1; }
+.house-cash { color: #fbbf24; font-size: 1.1rem; min-width: 70px; text-align: right; }
+.house-stage { position: relative; flex: 1; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center; }
+#house-canvas { image-rendering: pixelated; image-rendering: crisp-edges; background: #000; border: 2px solid #1e293b; box-shadow: 0 0 24px rgba(56,189,248,.12); }
+.house-toast { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); background: #0f172a; border: 1px solid #fbbf24; color: #fbbf24; padding: 6px 12px; font-size: 1rem; opacity: 0; transition: opacity .2s; pointer-events: none; z-index: 3; }
+.house-toast.show { opacity: 1; }
+.house-dlg { position: absolute; left: 50%; bottom: 8px; transform: translateX(-50%); width: min(94%, 640px); background: rgba(5,7,11,.96); border: 2px solid #38bdf8; padding: 10px 14px 12px; z-index: 4; min-height: 96px; cursor: pointer; }
+.house-dlg.hidden { display: none; }
+.house-dlg-name { font-family: 'Press Start 2P', monospace; font-size: .62rem; margin-bottom: 6px; }
+.house-dlg-text { color: #e2e8f0; font-size: 1.25rem; line-height: 1.3; min-height: 3.4em; }
+.house-dlg-next { position: absolute; right: 10px; bottom: 6px; font-size: .8rem; color: #fbbf24; animation: houseBlink 1s steps(2) infinite; }
+@keyframes houseBlink { 50% { opacity: .2; } }
+.house-pad { width: 100%; max-width: 980px; display: flex; align-items: center; justify-content: space-between; padding: 6px 18px 14px; gap: 10px; }
+.dpad { position: relative; width: 156px; height: 156px; flex: 0 0 auto; }
+.dp { position: absolute; width: 52px; height: 52px; background: #0b1220; border: 2px solid #334155; color: #94a3b8; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; touch-action: none; }
+.dp.down, .dp:active { background: #134e6b; border-color: #38bdf8; color: #fff; }
+.dp-u { left: 52px; top: 0; } .dp-l { left: 0; top: 52px; } .dp-r { left: 104px; top: 52px; } .dp-d { left: 52px; top: 104px; }
+.house-a { width: 86px; height: 86px; border-radius: 50%; border: 3px solid #fbbf24; background: #3b2a05; color: #fbbf24; font-family: 'Press Start 2P', monospace; font-size: 1.4rem; touch-action: none; flex: 0 0 auto; }
+.house-a:active { background: #78530a; }
+.house-hint { color: #475569; font-size: .95rem; text-align: center; flex: 1; }
+@media (hover: hover) and (pointer: fine) { .house-pad { padding-bottom: 6px; } .dpad { width: 112px; height: 112px; } .dp { width: 36px; height: 36px; font-size: .9rem; } .dp-u { left: 38px; } .dp-l { top: 38px; } .dp-r { left: 76px; top: 38px; } .dp-d { left: 38px; top: 76px; } .house-a { width: 60px; height: 60px; font-size: 1rem; } }
+@media (max-height: 520px) { .dpad { width: 112px; height: 112px; } .dp { width: 36px; height: 36px; } .dp-u { left: 38px; } .dp-l { top: 38px; } .dp-r { left: 76px; top: 38px; } .dp-d { left: 38px; top: 76px; } .house-a { width: 64px; height: 64px; } .house-bar { padding: 2px 10px; } .house-hint { display: none; } }
+.house-btn { border-color: #b45309; }
+body.house-on #money-hud { display: none; }
+.house-view { position: relative; }
+.house-view #house-canvas { display: block; }
+.house-dlg { width: 96%; bottom: 6px; padding: calc(6px * var(--hs, 1)) calc(10px * var(--hs, 1)); min-height: 0; }
+.house-dlg-text { font-size: calc(1.15rem * var(--hs, 1)); min-height: 2.8em; }
+.house-dlg-name { font-size: calc(.6rem * var(--hs, 1)); }

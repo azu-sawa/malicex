@@ -57,3 +57,10 @@ Self-test: open `index.html?test` and check the console (38 checks).
 - Theme changes cross-fade instead of snapping; bezel, vignette and borders follow the theme.
 - Hints rewritten to be subtler but more useful.
 - Touch scrolling: lobby, fight screen (when the screen is short) and 1v1 all scroll by finger on iPad and phones.
+
+
+## Md5 - THE HOUSE
+- **The House**: a walkable pixel-art house (PLAY tab). Hall, Arcade, Dealers' Row, and a Cellar (needs the Brass Key). Arrows/WASD + E/Space, or D-pad + A on touch, or tap the floor to walk. Talk to every dealer: more of what they know unlocks after you beat them, and some lines are real tips. The room darkens as Sanity falls, and at 25 or less something stands in the hall.
+- **Radio changes the BGM**: seven stations on the dial (Tape FM, Music Box, Dead Air, plus Pulse, Hymn, Carnival with the Night Tuner). The Arcade jukebox cycles them too.
+- **Black Market**: price/button clipping bug fixed. New CASH tab items (Cuff Pack, Saw Pack, Lucky Pair, Bluff Kit, Gold Tooth, Steady Hands) and a new MARKS tab (Care Package, Dead Drop, Sealed Card, Night Tuner, Brass Key, Black Card).
+- **Minigame cutscenes**: first sit-down at Blackjack, Slots, Cups and Hi-Lo, plus a jackpot scene and a "going broke" scene. All replayable from CINEMA.

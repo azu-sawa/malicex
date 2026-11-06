@@ -27,6 +27,31 @@ const RADIO_SECRETS = [
 const MORSE = { A: '.-', B: '-...', C: '-.-.', D: '-..', E: '.', F: '..-.', G: '--.', H: '....', I: '..', J: '.---', K: '-.-', L: '.-..', M: '--', N: '-.', O: '---', P: '.--.', Q: '--.-', R: '.-.', S: '...', T: '-', U: '..-', V: '...-', W: '.--', X: '-..-', Y: '-.--', Z: '--..' };
 const RADIO_MSG = 'BEHIND YOU';
 
+// ---------- tracks: each track is a station on the dial ----------
+const RADIO_TRACKS = [
+    { id: 'auto', name: 'THE HOUSE', f: 90.0, d: 'The game picks.' },
+    { id: 'tape', name: 'TAPE FM', f: 88.1, d: 'Warm, worn cassette.' },
+    { id: 'musicbox', name: 'MUSIC BOX', f: 91.7, d: 'A small bright lullaby.' },
+    { id: 'deadair', name: 'DEAD AIR', f: 70.0, d: 'Almost nothing. A hum.' },
+    { id: 'pulse', name: 'PULSE', f: 99.5, d: 'Driving.', locked: true },
+    { id: 'hymn', name: 'HYMN', f: 105.3, d: 'Slow choir pads.', locked: true },
+    { id: 'carnival', name: 'CARNIVAL', f: 76.8, d: 'A waltz, slightly wrong.', locked: true }
+];
+function trackOpen(t) { return !t.locked || !!meta.nightTuner; }
+function bgmPick(id, fromDial) {
+    const t = RADIO_TRACKS.find(x => x.id === id);
+    if (!t) return;
+    if (!trackOpen(t)) { SFX.empty(); radioSay(t.name + ' is jammed. A Night Tuner would clear it (Market, Marks).'); return; }
+    Music.setTrack(id);
+    if (!fromDial) { radio.freq = t.f; if (radio.on) radio.setFreq(t.f); }
+    radioSay('TRACK: ' + t.name + '. ' + t.d);
+    radioUpdateUI(); SFX.click();
+}
+function radioTrackBtns() {
+    const cur = Music.getTrack();
+    return RADIO_TRACKS.map(t => `<button class="trk ${cur === t.id ? 'on' : ''} ${trackOpen(t) ? '' : 'lock'}" onclick="bgmPick('${t.id}')"><b>${t.name}</b><i>${t.f.toFixed(1)}</i></button>`).join('');
+}
+
 let radioSave = { found: {}, hpMod: 0 };
 try { const d = JSON.parse(Store.get(RADIO_KEY) || '{}'); radioSave = { found: d.found || {}, hpMod: d.hpMod || 0 }; } catch (e) {}
 function radioPersist() { Store.set(RADIO_KEY, JSON.stringify(radioSave)); }
@@ -183,6 +208,7 @@ startRound = function() {
 // ---------- UI ----------
 function radioSay(t) { const e = document.getElementById('radio-status'); if (e) e.textContent = t; }
 function radioUpdateUI() {
+    const tr = document.getElementById('radio-tracks'); if (tr) tr.innerHTML = radioTrackBtns();
     const f = document.getElementById('radio-freq'), s = document.getElementById('radio-status');
     if (f) f.textContent = radio.freq.toFixed(1) + ' MHz';
     const sl = document.getElementById('radio-dial');
@@ -202,8 +228,12 @@ function radioToggle() {
     radioSay(radio.on ? 'Static.' : 'Off.');
     SFX.click();
 }
-function radioTune(v) { radio.freq = Math.round(Number(v) * 10) / 10; radio.setFreq(radio.freq); radioUpdateUI(); }
-function radioNudge(d) { radio.setFreq(radio.freq + d); radioUpdateUI(); SFX.hover(); }
+function radioDialTrack() {
+    const t = RADIO_TRACKS.find(x => Math.abs(x.f - radio.freq) < 0.25);
+    if (t && Music.getTrack() !== t.id && trackOpen(t)) bgmPick(t.id, true);
+}
+function radioTune(v) { radio.freq = Math.round(Number(v) * 10) / 10; radio.setFreq(radio.freq); radioDialTrack(); radioUpdateUI(); }
+function radioNudge(d) { radio.setFreq(radio.freq + d); radioDialTrack(); radioUpdateUI(); SFX.hover(); }
 function radioBuild() {
     const box = document.getElementById('radio-box');
     if (!box || box.dataset.built) return;
@@ -214,6 +244,7 @@ function radioBuild() {
         `<div class="radio-scale"><span>${RADIO_MIN}</span><span>76</span><span>88</span><span>98</span><span>${RADIO_MAX}</span></div></div>` +
         `<div class="lobby-grid"><button class="mode-card mode-slim" onclick="radioNudge(-0.1)">&lt; 0.1</button><button class="mode-card mode-slim" onclick="radioNudge(0.1)">0.1 &gt;</button></div>` +
         `<button id="radio-power" class="mode-card mode-slim" onclick="radioToggle()">POWER: OFF</button>` +
+        `<div class="trk-title">BACKGROUND MUSIC</div><div id="radio-tracks" class="trk-grid"></div>` +
         `<div id="radio-status" class="contracts-note">Off. Some stations are not on the dial.</div>`;
     radioUpdateUI();
 }

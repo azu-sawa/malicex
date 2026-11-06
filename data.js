@@ -136,6 +136,22 @@ const SHOP_CATALOG = [
         en_d: "1x Voodoo Doll for next run" },
     { id: 'ironMind', price: 3000, color: 'text-blue-300', icon: px('brain'), en_n: "IRON MIND", en_d: "Sanity losses reduced by 25%" },
     { id: 'startShield', price: 3000, color: 'text-cyan-400', icon: px('shield'), en_n: "KEVLAR SKIN", en_d: "Start with a SHIELD" },
+    { id: 'cuffPack', price: 450, grant: ['HANDCUFFS', 'HANDCUFFS'], color: 'text-amber-400', icon: px('chain'), en_n: "CUFF PACK", en_d: "2x Handcuffs for next run" },
+    { id: 'sawPack', price: 550, grant: ['KNIFE', 'KNIFE'], color: 'text-red-400', icon: px('knife'), en_n: "SAW PACK", en_d: "2x Saw for next run" },
+    { id: 'charmPack', price: 800, grant: ['LUCKY_CHARM', 'LUCKY_CHARM'], color: 'text-yellow-400', icon: px('clover'), en_n: "LUCKY PAIR", en_d: "2x Lucky Charm for next run" },
+    { id: 'bluffPack', price: 650, grant: ['BLUFF', 'BLUFF'], color: 'text-pink-400', icon: px('mask'), en_n: "BLUFF KIT", en_d: "2x Bluff for next run" },
+    { id: 'goldTooth', price: 4000, color: 'text-yellow-400', icon: px('skull'), en_n: "GOLD TOOTH", en_d: "+10% cash on every win (Permanent)" },
+    { id: 'steadyHands', price: 5000, color: 'text-blue-300', icon: px('brain'), en_n: "STEADY HANDS", en_d: "Every run starts with at least 70 Sanity" },
+];
+
+// ---------- MARKS MARKET (bought with Marks, not cash) ----------
+const MARKS_CATALOG = [
+    { id: 'carePkg', cost: 2, repeat: true, color: 'text-green-400', icon: px('crate'), n: "CARE PACKAGE", d: "2 random items for your next run" },
+    { id: 'deadDrop', cost: 3, repeat: true, color: 'text-yellow-400', icon: px('clover'), n: "DEAD DROP", d: "Trade Marks for $1,000 cash" },
+    { id: 'sealedCard', cost: 6, repeat: true, color: 'text-fuchsia-400', icon: px('card'), n: "SEALED CARD", d: "A random Arcana you do not own yet" },
+    { id: 'nightTuner', cost: 4, color: 'text-cyan-400', icon: px('speaker'), n: "NIGHT TUNER", d: "Radio: unlocks 3 more background tracks" },
+    { id: 'brassKey', cost: 6, color: 'text-amber-400', icon: px('key'), n: "BRASS KEY", d: "Opens the cellar door in THE HOUSE" },
+    { id: 'blackCard', cost: 9, color: 'text-pink-400', icon: px('skull'), n: "BLACK CARD", d: "The market restocks: cash prices drop 15% (Permanent)" }
 ];
 
 // ---------- EXPANDED TAROT EFFECTS (v6.0 + v5.4 merged) ----------

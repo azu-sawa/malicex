@@ -14,8 +14,8 @@
     <link rel="manifest" href="manifest.webmanifest">
     <style>.hidden{display:none!important}</style>
     <script>try{var _t=localStorage.getItem("malicex_theme");if(_t==="green"||_t==="blood")document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
-    <link rel="stylesheet" href="style.css?v=Md4">
-    <link rel="stylesheet" href="tailwind.css?v=Md4">
+    <link rel="stylesheet" href="style.css?v=Md5">
+    <link rel="stylesheet" href="tailwind.css?v=Md5">
     <meta name="theme-color" content="#090a0f">
 </head>
 <body class="flex flex-col items-center justify-between p-4 screen-flicker">
@@ -120,7 +120,7 @@
         </div>
 
         <h1 id="lobby-title" class="menu-title glitch" data-text="MALICEX">MALICEX</h1>
-        <div id="version-label" class="lobby-version">VERSION Μδ · TAROT REWORK</div>
+        <div id="version-label" class="lobby-version">VERSION Μδ · THE HOUSE</div>
         <div id="story-mode-indicator" class="lobby-subject"></div>
         <div id="news-ticker" class="lobby-whisper" aria-live="polite"></div>
 
@@ -149,6 +149,7 @@
             <button id="menu-btn-weekly" class="mode-card mode-cyan" onclick="selectDifficulty('WEEKLY')">WEEKLY SEED</button>
             <div id="terms-box" class="contracts-box"></div>
             <div id="architect-box" class="contracts-box"></div>
+            <button class="mode-card mode-amber house-btn" onclick="openHouse()">THE HOUSE <span class="mode-sub">Walk the rooms. Talk to the dealers. Find what they hide.</span></button>
             <div class="lobby-grid"><button id="menu-btn-versus" class="mode-card mode-red" onclick="openVersus('friend')">1V1 WITH A FRIEND <span class="mode-sub">One device, pass and play.</span></button><button id="menu-btn-versus-cpu" class="mode-card mode-slim" onclick="openVersus('cpu')">1V1 VS THE HOUSE <span class="mode-sub">Practice.</span></button></div>
             <button id="menu-btn-asc" class="mode-card mode-slim" onclick="cycleAscension()">ASCENSION 0 / 0</button>
             <button class="mode-card mode-slim mode-purple" onclick="toggleAdvancedModes()" aria-expanded="false">HARDER TABLES &#9662;</button>
@@ -282,6 +283,31 @@
         <div id="versus-end" class="duel-end hidden"></div>
     </div>
 
+    <div id="house-screen" class="hidden house-screen" role="dialog" aria-label="The House">
+        <div class="house-bar">
+            <button class="btn-chip house-exit" onclick="closeHouseBtn()">LEAVE</button>
+            <div id="house-room" class="house-room">THE HALL</div>
+            <div class="house-cash">$<span id="house-cash">0</span></div>
+        </div>
+        <div id="house-stage" class="house-stage">
+            <div id="house-view" class="house-view">
+                <canvas id="house-canvas" width="320" height="208"></canvas>
+                <div id="house-toast" class="house-toast"></div>
+                <div id="house-dlg" class="house-dlg hidden"><div id="house-dlg-name" class="house-dlg-name"></div><div id="house-dlg-text" class="house-dlg-text"></div><div id="house-dlg-next" class="house-dlg-next"></div></div>
+            </div>
+        </div>
+        <div id="house-pad" class="house-pad">
+            <div class="dpad">
+                <button data-dir="up" class="dp dp-u" aria-label="Up">&#9650;</button>
+                <button data-dir="left" class="dp dp-l" aria-label="Left">&#9664;</button>
+                <button data-dir="right" class="dp dp-r" aria-label="Right">&#9654;</button>
+                <button data-dir="down" class="dp dp-d" aria-label="Down">&#9660;</button>
+            </div>
+            <div class="house-hint">Arrows / WASD to walk. E, Space or A to interact.</div>
+            <button id="house-a" class="house-a" aria-label="Interact">A</button>
+        </div>
+    </div>
+
     <!-- ========== PAUSE ========== -->
     <div id="pause-overlay" class="hidden" role="dialog" aria-label="Paused">
         <div class="pause-card">
@@ -357,11 +383,12 @@
     <div id="shop-menu" class="main-menu hidden bg-black/95 z-[900]">
         <h1 class="text-5xl text-yellow-600 mb-4 glitch" data-text="BLACK MARKET" style="font-family:'Press Start 2P';">BLACK MARKET</h1>
         <div class="text-gray-500 mb-6 font-vt323 text-xl" id="shop-subtitle">"Everything here has a price. Not all of it is money."</div>
-        <div class="w-full max-w-[900px] max-h-[70vh] overflow-y-auto p-4 border-y border-gray-800">
-            <div class="grid grid-cols-3 gap-4" id="shop-grid-container"></div>
+        <div id="shop-tabs" class="shop-tabs"><button class="shop-tab on" data-tab="cash" onclick="setShopTab('cash')">CASH</button><button class="shop-tab" data-tab="marks" onclick="setShopTab('marks')">MARKS</button></div>
+        <div class="w-full max-w-[900px] max-h-[62vh] overflow-y-auto p-4 border-y border-gray-800 shop-scroll">
+            <div class="shop-grid" id="shop-grid-container"></div>
         </div>
         <div class="flex gap-4 mt-6">
-            <div class="text-yellow-500 text-2xl pt-2"><span id="shop-balance-lbl">BALANCE:</span> $<span id="shop-money-display">0</span></div>
+            <div class="text-yellow-500 text-2xl pt-2"><span id="shop-balance-lbl">BALANCE:</span> $<span id="shop-money-display">0</span> <span class="text-cyan-300 text-lg ml-3">MARKS <span id="shop-marks-display">0</span></span></div>
             <div class="flex-grow"></div>
             <button class="btn-retro w-64 border-gray-600 text-gray-400" onclick="toggleShop(false)" id="shop-btn-back">BACK</button>
         </div>
@@ -595,52 +622,54 @@
 
     <!-- ========== SCRIPTS ========== -->
 
-    <script src="rng.js?v=Md4"></script>
-    <script src="timers.js?v=Md4"></script>
-    <script src="state.js?v=Md4"></script>
-    <script src="store.js?v=Md4"></script>
-    <script src="theme.js?v=Md4"></script>
-    <script src="audio.js?v=Md4"></script>
-    <script src="sanity.js?v=Md4"></script>
-    <script src="util.js?v=Md4"></script>
-    <script src="pixel.js?v=Md4"></script>
-    <script src="data.js?v=Md4"></script>
-    <script src="dialogue.js?v=Md4"></script>
-    <script src="dealers.js?v=Md4"></script>
-    <script src="combat.js?v=Md4"></script>
-    <script src="poker.js?v=Md4"></script>
-    <script src="items.js?v=Md4"></script>
-    <script src="ai.js?v=Md4"></script>
-    <script src="render.js?v=Md4"></script>
-    <script src="hud.js?v=Md4"></script>
-    <script src="effects.js?v=Md4"></script>
-    <script src="run.js?v=Md4"></script>
-    <script src="gauntlet.js?v=Md4"></script>
-    <script src="endings.js?v=Md4"></script>
-    <script src="content.js?v=Md4"></script>
-    <script src="save.js?v=Md4"></script>
-    <script src="shop.js?v=Md4"></script>
-    <script src="minigames.js?v=Md4"></script>
-    <script src="ui.js?v=Md4"></script>
-    <script src="lobby.js?v=Md4"></script>
-    <script src="tutorial.js?v=Md4"></script>
-    <script src="psyche.js?v=Md4"></script>
-    <script src="sin.js?v=Md4"></script>
-    <script src="cinema.js?v=Md4"></script>
-    <script src="habit.js?v=Md4"></script>
-    <script src="underside.js?v=Md4"></script>
-    <script src="progress.js?v=Md4"></script>
-    <script src="boss.js?v=Md4"></script>
-    <script src="architect.js?v=Md4"></script>
-    <script src="hallu.js?v=Md4"></script>
-    <script src="keys.js?v=Md4"></script>
-    <script src="arcana.js?v=Md4"></script>
-    <script src="versus.js?v=Md4"></script>
-    <script src="reward.js?v=Md4"></script>
-    <script src="radio.js?v=Md4"></script>
-    <script src="qol.js?v=Md4"></script>
-    <script src="debug.js?v=Md4"></script>
-    <script src="main.js?v=Md4"></script>
+    <script src="rng.js?v=Md5"></script>
+    <script src="timers.js?v=Md5"></script>
+    <script src="state.js?v=Md5"></script>
+    <script src="store.js?v=Md5"></script>
+    <script src="theme.js?v=Md5"></script>
+    <script src="audio.js?v=Md5"></script>
+    <script src="sanity.js?v=Md5"></script>
+    <script src="util.js?v=Md5"></script>
+    <script src="pixel.js?v=Md5"></script>
+    <script src="data.js?v=Md5"></script>
+    <script src="dialogue.js?v=Md5"></script>
+    <script src="dealers.js?v=Md5"></script>
+    <script src="combat.js?v=Md5"></script>
+    <script src="poker.js?v=Md5"></script>
+    <script src="items.js?v=Md5"></script>
+    <script src="ai.js?v=Md5"></script>
+    <script src="render.js?v=Md5"></script>
+    <script src="hud.js?v=Md5"></script>
+    <script src="effects.js?v=Md5"></script>
+    <script src="run.js?v=Md5"></script>
+    <script src="gauntlet.js?v=Md5"></script>
+    <script src="endings.js?v=Md5"></script>
+    <script src="content.js?v=Md5"></script>
+    <script src="save.js?v=Md5"></script>
+    <script src="shop.js?v=Md5"></script>
+    <script src="minigames.js?v=Md5"></script>
+    <script src="ui.js?v=Md5"></script>
+    <script src="lobby.js?v=Md5"></script>
+    <script src="tutorial.js?v=Md5"></script>
+    <script src="psyche.js?v=Md5"></script>
+    <script src="sin.js?v=Md5"></script>
+    <script src="cinema.js?v=Md5"></script>
+    <script src="habit.js?v=Md5"></script>
+    <script src="underside.js?v=Md5"></script>
+    <script src="progress.js?v=Md5"></script>
+    <script src="boss.js?v=Md5"></script>
+    <script src="architect.js?v=Md5"></script>
+    <script src="hallu.js?v=Md5"></script>
+    <script src="keys.js?v=Md5"></script>
+    <script src="arcana.js?v=Md5"></script>
+    <script src="versus.js?v=Md5"></script>
+    <script src="reward.js?v=Md5"></script>
+    <script src="radio.js?v=Md5"></script>
+    <script src="minicine.js?v=Md5"></script>
+    <script src="house.js?v=Md5"></script>
+    <script src="qol.js?v=Md5"></script>
+    <script src="debug.js?v=Md5"></script>
+    <script src="main.js?v=Md5"></script>
 
 </body>
 </html>

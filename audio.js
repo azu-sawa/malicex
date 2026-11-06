@@ -224,10 +224,28 @@ const Music = (() => {
                  pad: 1, drone: 0.4, kick: null, hat: 0, bell: 0.9, arp: 0, scale: [0, 2, 4, 7, 9] },
         cine:  { bpm: 42, beats: 4, root: 40, prog: [[0, [0, 3, 7]], [-2, [0, 3, 7]], [-5, [0, 3, 6]], [-7, [0, 3, 7]]],
                  pad: 1, drone: 1.2, kick: null, hat: 0, bell: 0.35, arp: 0, scale: [0, 3, 5, 7, 10] },
+        // ---- radio tracks (picked on the lobby radio, replace menu + fight music)
+        tape:     { bpm: 62, beats: 4, root: 43, prog: [[0, [0, 4, 7]], [5, [0, 4, 7]], [-3, [0, 3, 7]], [-5, [0, 4, 7]]],
+                    pad: 1.1, drone: 0.6, kick: null, hat: 0, bell: 0.55, arp: 0, scale: [0, 2, 4, 7, 9] },
+        musicbox: { bpm: 54, beats: 4, root: 52, prog: [[0, [0, 4, 7]], [7, [0, 4, 7]], [9, [0, 3, 7]], [5, [0, 4, 7]]],
+                    pad: 0.35, drone: 0.2, kick: null, hat: 0, bell: 1, arp: 0, scale: [0, 2, 4, 7, 9, 12] },
+        deadair:  { bpm: 36, beats: 4, root: 31, prog: [[0, [0, 7]], [0, [0, 7]], [-2, [0, 7]], [0, [0, 7]]],
+                    pad: 0.3, drone: 1.5, kick: null, hat: 0, bell: 0, arp: 0, scale: [0] },
+        pulse:    { bpm: 100, beats: 4, root: 40, prog: [[0, [0, 3, 7]], [0, [0, 3, 7]], [-4, [0, 4, 7]], [-2, [0, 3, 7]]],
+                    pad: 0.7, drone: 1, kick: [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0], hat: 0.9, bell: 0.2, arp: 1, scale: [0, 3, 5, 7, 10] },
+        hymn:     { bpm: 44, beats: 4, root: 46, prog: [[0, [0, 4, 7]], [5, [0, 4, 7]], [7, [0, 4, 7]], [0, [0, 4, 7]]],
+                    pad: 1.7, drone: 0.5, kick: null, hat: 0, bell: 0.3, arp: 0, scale: [0, 2, 4, 7, 9] },
+        carnival: { bpm: 112, beats: 3, root: 47, prog: [[0, [0, 4, 7]], [5, [0, 4, 7]], [7, [0, 4, 7]], [0, [0, 3, 7]]],
+                    pad: 0.5, drone: 0.7, kick: [1,0,0,0, 0,0,0,0, 0,0,0,0], hat: 0.6, bell: 1, arp: 1, scale: [0, 2, 4, 7, 9, 12] },
         death: { bpm: 40, beats: 4, root: 33, prog: [[0, [0, 3, 7]], [0, [0, 3, 6]], [-1, [0, 3, 7]], [0, [0, 3, 7]]],
                  pad: 0.6, drone: 1.2, kick: null, hat: 0, bell: 0.5, arp: 0, scale: [0, 3, 6, 7, 10] }
     };
-    const S = { scene: 'off', phase: 'shoot', stage: 0, sanity: 100, hpFrac: 1, dFrac: 1, lowHp: false, bar: 0, timer: null,
+    // the radio can replace the two "ambient" scenes with a chosen track
+    const BGM_KEY = 'malicex_bgm';
+    let track = 'auto';
+    try { track = (typeof Store !== 'undefined' && Store.get(BGM_KEY)) || 'auto'; } catch (e) {}
+    const resolve = name => (track !== 'auto' && SCENES[track] && (name === 'menu' || name === 'fight')) ? track : name;
+    const S = { logical: 'off', scene: 'off', phase: 'shoot', stage: 0, sanity: 100, hpFrac: 1, dFrac: 1, lowHp: false, bar: 0, timer: null,
                 next: 0, sceneGain: null, seed: 9091 };
     const rand = () => { S.seed = (S.seed * 1664525 + 1013904223) >>> 0; return S.seed / 4294967296; };
     const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
@@ -374,11 +392,18 @@ const Music = (() => {
         setScene(name, opts) {
             opts = opts || {};
             const stage = opts.stage || 0;
-            if (name === S.scene && stage === S.stage) return;
+            S.logical = name; name = resolve(name);
+            if (name === S.scene && stage === S.stage && !opts.force) return;
             S.scene = SCENES[name] ? name : 'off'; S.stage = stage; S.phase = opts.phase || 'shoot';
             ensureScene(); startTimer(); pump();
         },
         setPhase(p) { S.phase = p; },
+        getTrack() { return track; },
+        setTrack(id) {
+            track = (id === 'auto' || SCENES[id]) ? id : 'auto';
+            try { Store.set(BGM_KEY, track); } catch (e) {}
+            if (S.logical !== 'off') this.setScene(S.logical, { stage: S.stage, phase: S.phase, force: true });
+        },
         setSanity(n) { S.sanity = n; },
         setVitals(hp, maxHp, dHp, maxDHp) {
             S.hpFrac = clamp(hp / Math.max(1, maxHp), 0, 1);

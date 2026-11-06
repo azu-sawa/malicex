@@ -75,6 +75,15 @@ function runSelfTests() {
     eq('ascension text covers every level', ASC_TEXT.length, 6);
     eq('paper skin keeps dealer hp', TERMS.PAPER.d.indexOf('dealer keeps') > -1, true);
     eq('boss modes known', BOSS_MODES.length, 3);
+    // ---- House update
+    eq('every house map has a way out', Object.keys(HOUSE_MAPS).every(id => HOUSE_MAPS[id].objs.some(o => o.t === 'portal')), true);
+    eq('house portals point at real maps', Object.keys(HOUSE_MAPS).every(id => HOUSE_MAPS[id].objs.filter(o => o.t === 'portal').every(o => o.to === 'EXIT' || HOUSE_MAPS[o.to])), true);
+    eq('every house npc has a script', Object.keys(HOUSE_MAPS).every(id => HOUSE_MAPS[id].objs.filter(o => o.t === 'npc').every(o => HOUSE_FOLK[o.who] && HOUSE_FOLK[o.who].pieces.length >= 3)), true);
+    eq('every dealer has a house script', Object.keys(DEALER_PERSONALITIES).every(k => HOUSE_FOLK[k]), true);
+    eq('radio tracks exist as music scenes', RADIO_TRACKS.every(t => t.id === 'auto' || Music.scenes[t.id]), true);
+    eq('marks market items have costs', MARKS_CATALOG.every(m => m.cost > 0 && m.n && m.d), true);
+    eq('minigame cutscenes exist', ['mini_bj', 'mini_slots', 'mini_cups', 'mini_hilo', 'mini_jackpot', 'mini_ruin'].every(id => CINE_SCRIPTS[id] && CINE_SCRIPTS[id].shots.every(sh => ART[sh.art])), true);
+    eq('shop price shows for every item', SHOP_CATALOG.every(i => shopPrice(i) > 0), true);
     eq('paper skin pays at least 50%', TERMS.PAPER.m >= 0.5, true);
     eq('contracts render as a grid of 3', (renderContractsPanel(), document.querySelectorAll('#architect-box .term').length), 3);
     eq('lobby boxes can fold', (applyFolds(), document.querySelectorAll('#main-menu .contracts-box.folded').length > 0), true);
