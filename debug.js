@@ -78,7 +78,12 @@ function runSelfTests() {
     // ---- House update
     eq('every house map has a way out', Object.keys(HOUSE_MAPS).every(id => HOUSE_MAPS[id].objs.some(o => o.t === 'portal')), true);
     eq('house portals point at real maps', Object.keys(HOUSE_MAPS).every(id => HOUSE_MAPS[id].objs.filter(o => o.t === 'portal').every(o => o.to === 'EXIT' || HOUSE_MAPS[o.to])), true);
-    eq('every house npc has a script', Object.keys(HOUSE_MAPS).every(id => HOUSE_MAPS[id].objs.filter(o => o.t === 'npc').every(o => HOUSE_FOLK[o.who] && HOUSE_FOLK[o.who].pieces.length >= 3)), true);
+    eq('every house npc has a script', Object.keys(HOUSE_MAPS).every(id => HOUSE_MAPS[id].objs.filter(o => o.t === 'npc').every(o => o.who === 'STAND' || (HOUSE_FOLK[o.who] && HOUSE_FOLK[o.who].pieces.length >= 3))), true);
+    eq('house map objects fit inside their rooms', Object.keys(HOUSE_MAPS).every(id => HOUSE_MAPS[id].objs.every(o => o.x >= 0 && o.y >= 0 && o.x + o.w <= HOUSE_MAPS[id].w && o.y + o.h <= HOUSE_MAPS[id].h)), true);
+    eq('every house room has a song', Object.keys(HOUSE_MAPS).every(id => Music.scenes[HOUSE_MAPS[id].song]), true);
+    eq('house recipes use real scraps', HS_RECIPES.every(r => Object.keys(r.cost).every(k => HS_SCRAP_NAME[k])), true);
+    eq('house notes exist for every book', Object.values(HOUSE_MAPS).every(m => m.objs.every(o => !o.nid || HS_NOTES[o.nid])), true);
+    eq('house rooms are bigger than the view', HOUSE_MAPS.HALL.w * 16 > 320, true);
     eq('every dealer has a house script', Object.keys(DEALER_PERSONALITIES).every(k => HOUSE_FOLK[k]), true);
     eq('radio tracks exist as music scenes', RADIO_TRACKS.every(t => t.id === 'auto' || Music.scenes[t.id]), true);
     eq('marks market items have costs', MARKS_CATALOG.every(m => m.cost > 0 && m.n && m.d), true);
@@ -88,7 +93,7 @@ function runSelfTests() {
     eq('contracts render as a grid of 3', (renderContractsPanel(), document.querySelectorAll('#architect-box .term').length), 3);
     eq('lobby boxes can fold', (applyFolds(), document.querySelectorAll('#main-menu .contracts-box.folded').length > 0), true);
     // ---- Mu-delta II modules
-    eq('themes defined', Object.keys(THEMES).length, 3);
+    eq('themes defined', Object.keys(THEMES).length, 5);
     eq('theme ramp maps white inside ramp', /^#[0-9a-f]{6}$/.test((() => { const o = activeTheme; activeTheme = 'green'; const c = themeColor('#ffffff'); activeTheme = o; return c; })()), true);
     eq('contracts defined', Object.keys(CONTRACTS).join(), 'SILENCE_PACT,ASCETIC_LIMIT,PARANOIA_MODE');
     eq('zalgo keeps base letters', zalgo('abc', 2).replace(/[\u0300-\u036f]/g, ''), 'abc');

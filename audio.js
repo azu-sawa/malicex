@@ -237,6 +237,21 @@ const Music = (() => {
                     pad: 1.7, drone: 0.5, kick: null, hat: 0, bell: 0.3, arp: 0, scale: [0, 2, 4, 7, 9] },
         carnival: { bpm: 112, beats: 3, root: 47, prog: [[0, [0, 4, 7]], [5, [0, 4, 7]], [7, [0, 4, 7]], [0, [0, 3, 7]]],
                     pad: 0.5, drone: 0.7, kick: [1,0,0,0, 0,0,0,0, 0,0,0,0], hat: 0.6, bell: 1, arp: 1, scale: [0, 2, 4, 7, 9, 12] },
+        // ---- house rooms + side tables (a radio pick overrides them all)
+        house_hall:     { bpm: 56, beats: 4, root: 45, prog: [[0, [0, 4, 7]], [-4, [0, 4, 7]], [-2, [0, 3, 7]], [-7, [0, 4, 7]]],
+                          pad: 1.0, drone: 0.7, kick: null, hat: 0, bell: 0.45, arp: 0, scale: [0, 2, 4, 7, 9] },
+        house_arcade:   { bpm: 108, beats: 4, root: 48, prog: [[0, [0, 3, 7]], [5, [0, 3, 7]], [3, [0, 4, 7]], [-2, [0, 3, 7]]],
+                          pad: 0.5, drone: 0.5, kick: [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0], hat: 0.8, bell: 0.5, arp: 1, scale: [0, 3, 5, 7, 10, 12] },
+        house_corridor: { bpm: 46, beats: 4, root: 38, prog: [[0, [0, 3, 7]], [0, [0, 3, 7]], [-2, [0, 3, 6]], [-5, [0, 3, 7]]],
+                          pad: 0.7, drone: 1.4, kick: null, hat: 0, bell: 0.15, arp: 0, scale: [0, 3, 5, 6] },
+        house_library:  { bpm: 50, beats: 4, root: 53, prog: [[0, [0, 4, 7]], [5, [0, 4, 7]], [7, [0, 4, 7]], [0, [0, 4, 7]]],
+                          pad: 0.45, drone: 0.25, kick: null, hat: 0, bell: 1, arp: 0, scale: [0, 2, 4, 7, 9, 12] },
+        house_cellar:   { bpm: 40, beats: 4, root: 28, prog: [[0, [0, 7]], [0, [0, 6]], [-1, [0, 7]], [0, [0, 7]]],
+                          pad: 0.35, drone: 1.8, kick: [1,0,0,0, 0,0,1,0, 0,0,0,0, 0,0,0,0], hat: 0, bell: 0.1, arp: 0, scale: [0, 1, 6] },
+        house_wrong:    { bpm: 72, beats: 4, root: 41, prog: [[0, [0, 1, 6]], [1, [0, 1, 6]], [6, [0, 1, 6]], [0, [0, 6]]],
+                          pad: 0.9, drone: 1.2, kick: null, hat: 0.3, bell: 0.6, arp: 1, scale: [0, 1, 6, 7] },
+        casino:         { bpm: 92, beats: 4, root: 50, prog: [[0, [0, 4, 7]], [5, [0, 4, 7]], [7, [0, 4, 7]], [3, [0, 4, 7]]],
+                          pad: 0.55, drone: 0.4, kick: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0], hat: 0.9, bell: 0.55, arp: 1, scale: [0, 2, 4, 7, 9, 12] },
         death: { bpm: 40, beats: 4, root: 33, prog: [[0, [0, 3, 7]], [0, [0, 3, 6]], [-1, [0, 3, 7]], [0, [0, 3, 7]]],
                  pad: 0.6, drone: 1.2, kick: null, hat: 0, bell: 0.5, arp: 0, scale: [0, 3, 6, 7, 10] }
     };
@@ -244,7 +259,7 @@ const Music = (() => {
     const BGM_KEY = 'malicex_bgm';
     let track = 'auto';
     try { track = (typeof Store !== 'undefined' && Store.get(BGM_KEY)) || 'auto'; } catch (e) {}
-    const resolve = name => (track !== 'auto' && SCENES[track] && (name === 'menu' || name === 'fight')) ? track : name;
+    const resolve = name => (track !== 'auto' && SCENES[track] && (name === 'menu' || name === 'fight' || name === 'casino' || name.indexOf('house_') === 0)) ? track : name;
     const S = { logical: 'off', scene: 'off', phase: 'shoot', stage: 0, sanity: 100, hpFrac: 1, dFrac: 1, lowHp: false, bar: 0, timer: null,
                 next: 0, sceneGain: null, seed: 9091 };
     const rand = () => { S.seed = (S.seed * 1664525 + 1013904223) >>> 0; return S.seed / 4294967296; };

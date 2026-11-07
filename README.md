@@ -64,3 +64,10 @@ Self-test: open `index.html?test` and check the console (38 checks).
 - **Radio changes the BGM**: seven stations on the dial (Tape FM, Music Box, Dead Air, plus Pulse, Hymn, Carnival with the Night Tuner). The Arcade jukebox cycles them too.
 - **Black Market**: price/button clipping bug fixed. New CASH tab items (Cuff Pack, Saw Pack, Lucky Pair, Bluff Kit, Gold Tooth, Steady Hands) and a new MARKS tab (Care Package, Dead Drop, Sealed Card, Night Tuner, Brass Key, Black Card).
 - **Minigame cutscenes**: first sit-down at Blackjack, Slots, Cups and Hi-Lo, plus a jackpot scene and a "going broke" scene. All replayable from CINEMA.
+
+## Md6 - THE HOUSE II
+- The house is now five-plus rooms that scroll: Hall, Arcade, Dealers' Row, Library, Cellar (Brass Key), and a Wrong Room that only exists when your Sanity is low (or after the piano's wrong tune).
+- Touch: drag anywhere on the room to walk (floating stick), tap a thing to use it, tap the floor to walk there. The D-pad is optional (PAD toggle); only a faint A button floats over the view. The view grows taller on phones.
+- Things to do: Workbench (craft from scraps you find: Sanity Lamp, Copper Charm, Starter Kit, Black Candle, all feed the NEXT run), Oracle (daily fortune), Chore Board (4 daily chores, paid), vending machine, claw machine, piano (lullaby heals), fireplace, six lore notes, a cat, daily coins and scraps.
+- Horror: faces in the windows, a figure that follows you at low Sanity, blackouts, corrupted dialogue, a different 3 AM house, a hall that loops, the other mirror.
+- Music per room, and casino music for the side games. Themes now change the real background. Shop descriptions are larger.
