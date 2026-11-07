@@ -2147,3 +2147,18 @@ html[data-theme] .house-menu { background-color: var(--surface); border-color: v
 @media (max-height: 520px) { .house-pad .house-a { width: 56px; height: 56px; } .house-bar { padding: 2px 8px; } }
 body.house-on #disturbing-overlay { display: none !important; }
 body.house-on #money-hud, body.house-on #sanity-hud { display: none !important; }
+
+/* ---- phone: the lobby header must not eat the screen; tabs sit near the top ---- */
+.lobby-tabs { position: sticky; top: 0; z-index: 30; background: var(--bg-color, #090a0f); }
+#audio-fab { opacity: .6; }
+@media (max-width: 600px) {
+  .menu-title { font-size: 2.1rem !important; margin: 2px 0 !important; }
+  .lobby-version, .lobby-subject { font-size: .75rem !important; margin: 0 !important; line-height: 1.2; }
+  .lobby-whisper { display: none !important; }
+  .lobby-claim { padding: 8px 10px !important; }
+  .lobby-primary { padding: 10px 12px !important; }
+  .lobby-panel, #tab-play, #tab-archive, #tab-under, #tab-system { padding-bottom: 76px; }
+  #audio-fab { width: 40px; height: 40px; left: 6px; bottom: 6px; }
+  .mode-card, .lobby-tab, .btn-retro, .btn-chip { min-height: 44px; }
+}
+@media (max-width: 600px) { .lobby-tabs { padding-right: 64px; } .lobby-tab span { font-size: .72rem; } }

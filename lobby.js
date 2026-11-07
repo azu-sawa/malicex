@@ -5,7 +5,7 @@
 // =====================================================================
 const LOBBY_TABS = ['play', 'archive', 'under', 'system'];
 
-function showLobbyTab(id) {
+function showLobbyTab(id, fromUser) {
     if (!LOBBY_TABS.includes(id)) id = 'play';
     LOBBY_TABS.forEach(t => {
         const p = document.getElementById('tab-' + t), b = document.getElementById('tabbtn-' + t);
@@ -14,6 +14,7 @@ function showLobbyTab(id) {
     });
     if (settings.lobbyTab !== id) { settings.lobbyTab = id; saveSettings(); }
     if (id === 'archive') { renderContracts(); renderArchiveExtras(); }
+    if (fromUser) { try { const n = document.querySelector('.lobby-tabs'); if (n && window.innerWidth < 700) n.scrollIntoView({ block: 'start', behavior: 'smooth' }); } catch (e) {} }
 }
 
 const MODE_INFO = {
