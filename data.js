@@ -209,6 +209,10 @@ const TAROT_EFFECTS = [
 
 // ---------- ACHIEVEMENTS ----------
 const ACHIEVEMENTS = {
+    'LANDLORD': { title: 'LANDLORD', desc: 'Collect favours from four different tenants.', reward: 400, hint: 'Beat dealers, let them move in, then listen to what each one asks for.' },
+    'NIGHT_OWL': { title: 'NIGHT OWL', desc: 'Win a run you started at night.', reward: 700, hint: 'The House is not the only thing that keeps time. Start a run after dark and survive it.' },
+    'ANSWERED': { title: 'ANSWERED', desc: 'Pick up the telephone in the Hall.', reward: 250, hint: 'It rings when your mind is thin enough. Be in the Hall.' },
+    'FIRST_LIGHT': { title: 'FIRST LIGHT', desc: 'Light the lamp in the House.', reward: 150, hint: 'Something in the Study burns when you ask it to. Candle stubs hide in the rooms.' },
     'FIRST_BLOOD': { title: 'FIRST BLOOD', desc: 'Win your first round.', reward: 100 },
     'PACIFIST': { title: 'PACIFIST', desc: 'Win without shooting the Dealer.', reward: 500 },
     'PSYCHOPATH': { title: 'PSYCHOPATH', desc: 'Win by shooting only yourself.', reward: 666 },

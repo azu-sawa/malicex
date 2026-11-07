@@ -85,6 +85,18 @@ function runSelfTests() {
     eq('house notes exist for every book', Object.values(HOUSE_MAPS).every(m => m.objs.every(o => !o.nid || HS_NOTES[o.nid])), true);
     eq('house rooms are bigger than the view', HOUSE_MAPS.HALL.w * 16 > 320, true);
     eq('every dealer has a house script', Object.keys(DEALER_PERSONALITIES).every(k => HOUSE_FOLK[k]), true);
+    // ---- Tenants + night cycle (Md7)
+    eq('the study exists and leads to the hall', !!HOUSE_MAPS.STUDY && HOUSE_MAPS.STUDY.objs.some(o => o.t === 'portal' && o.to === 'HALL'), true);
+    eq('the hall exit leads to the study', HOUSE_MAPS.HALL.objs.some(o => o.t === 'portal' && o.to === 'STUDY'), true);
+    eq('the study has the computer', HOUSE_MAPS.STUDY.objs.some(o => o.act === 'pc'), true);
+    eq('every tenant has a house script', TENANT_KEYS.every(k => HOUSE_FOLK[k] && DEALER_PERSONALITIES[k]), true);
+    eq('every tenant perk does something', TENANT_KEYS.every(k => TENANT_PERKS[k].fx || TENANT_PERKS[k].marks || k === 'UNPREDICTABLE'), true);
+    eq('tenant favours are capped', (() => { const f = hsData().fx, old = JSON.stringify(f); for (let i = 0; i < 30; i++) tenantAddFx({ sanity: 10, cash: 300, reward: 1.2 }); const ok = f.sanity <= TENANT_CAPS.sanity && f.cash <= TENANT_CAPS.cash && f.reward <= TENANT_CAPS.reward + 1e-9; hsData().fx = JSON.parse(old); return ok; })(), true);
+    eq('day phase is always valid', ['DAY', 'DUSK', 'NIGHT', 'DAWN'].includes(dayPhase()), true);
+    eq('every phase has a label', ['DAY', 'DUSK', 'NIGHT', 'DAWN'].every(k => PHASES[k] && PHASES[k].sub), true);
+    eq('night pays more and costs sanity', PHASES.NIGHT.pay > 1 && PHASES.NIGHT.san < 0, true);
+    eq('the study has a song', !!Music.scenes.house_study, true);
+    eq('house button skips to the menu', typeof closeHouseBtn === 'function' && typeof toggleBoot === 'function', true);
     eq('radio tracks exist as music scenes', RADIO_TRACKS.every(t => t.id === 'auto' || Music.scenes[t.id]), true);
     eq('marks market items have costs', MARKS_CATALOG.every(m => m.cost > 0 && m.n && m.d), true);
     eq('minigame cutscenes exist', ['mini_bj', 'mini_slots', 'mini_cups', 'mini_hilo', 'mini_jackpot', 'mini_ruin'].every(id => CINE_SCRIPTS[id] && CINE_SCRIPTS[id].shots.every(sh => ART[sh.art])), true);

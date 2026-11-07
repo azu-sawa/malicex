@@ -75,3 +75,12 @@ Self-test: open `index.html?test` and check the console (38 checks).
 - Themes rebuilt: no more single-colour wash. Each theme (Forest, Blood, Void, Dust) keeps full-colour sprites and neutral readable text; only background, surfaces and accents change, like the cyan default. Theme choice applies before first paint for all four.
 - House rooms compacted (about 18-28 tiles wide), closer view on phones. New House horror: a telephone that rings at low Sanity (answering costs Sanity, pays a film reel), a doll that creeps closer every time you re-enter the Hall, your name scrawled on the cellar wall, whispers and a heartbeat that is not yours.
 - Interface: readable text on bright buttons in every theme, one-line version label, the floating sound button hides in the lobby and house on small screens.
+
+## Md7 - THE TENANTS
+- **The House is home.** The game opens in THE STUDY. The computer on the desk is the old CRT menu: press it to sit down at the table. SKIP (top left of the House) goes straight to the menu. SYSTEM has a START IN: THE HOUSE / THE MENU switch.
+- **Tenants.** Every dealer you beat moves in (an armchair and a prop in their room, a marker above their head). Talk to one once a day for a favour that feeds your next run (Sanity, cash, a pay boost; capped). Ignore one for 3 days and they turn restless: pay $80 rent, or FACE them (-8 Sanity, +15% pay). Restless tenants walk the Hall at night and leak into your runs. The photo in the Study is the LODGERS list.
+- **Day / night.** Real local time: DAY +5 Sanity, DUSK, NIGHT +25% pay but -8 Sanity, DAWN +3 Sanity at the start of a run. The House changes with it (window sky, tint, visitors, which events can happen). Win a run you started at night for NIGHT OWL. The lobby shows the phase and what is waiting for your next run.
+- **More horror.** Random House events (flicker, knocking, doors that lock, the radio changing station, footsteps, your name, cold), a lamp that holds the House back for 90 seconds (burns a candle stub; L key or LAMP button), run intrusions (a word, a whisper, the shell count lying for a second, a blackout, a tenant speaking), and small lobby disturbances at night or low Sanity. Everything switches off with LOW EFFECTS.
+- **Polish.** Dialogue sits above the on-screen buttons, narrow phones no longer clip the A button, interaction prompts name the thing you are about to use, four new trophies (LANDLORD, NIGHT OWL, ANSWERED, FIRST LIGHT) with hints.
+- Self-test: 90 checks (`index.html?test`).
+

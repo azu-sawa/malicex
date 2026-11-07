@@ -14,8 +14,8 @@
     <link rel="manifest" href="manifest.webmanifest">
     <style>.hidden{display:none!important}</style>
     <script>try{var _t=localStorage.getItem("malicex_theme");if(_t==="green"||_t==="blood"||_t==="void"||_t==="dust")document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
-    <link rel="stylesheet" href="style.css?v=Md6">
-    <link rel="stylesheet" href="tailwind.css?v=Md6">
+    <link rel="stylesheet" href="style.css?v=Md7">
+    <link rel="stylesheet" href="tailwind.css?v=Md7">
     <meta name="theme-color" content="#090a0f">
 </head>
 <body class="flex flex-col items-center justify-between p-4 screen-flicker">
@@ -120,7 +120,8 @@
         </div>
 
         <h1 id="lobby-title" class="menu-title glitch" data-text="MALICEX">MALICEX</h1>
-        <div id="version-label" class="lobby-version">VERSION Μδ · THE HOUSE II</div>
+        <div id="phase-label" class="phase-label"></div>
+        <div id="version-label" class="lobby-version">VERSION Μδ · THE TENANTS</div>
         <div id="story-mode-indicator" class="lobby-subject"></div>
         <div id="news-ticker" class="lobby-whisper" aria-live="polite"></div>
 
@@ -204,6 +205,7 @@
                 <button id="set-letters" class="mode-card mode-slim" onclick="toggleSetting('shellletters')">SHELL LETTERS: OFF</button>
                 <button id="set-crtfx" class="mode-card mode-slim" onclick="toggleSetting('crtfx')">CRT SCREEN: ON</button>
                 <button id="set-fast" class="mode-card mode-slim" onclick="toggleSetting('fast')">FAST HANDS: OFF</button>
+                <button id="set-boot" class="mode-card mode-slim" onclick="toggleBoot()">START IN: THE HOUSE</button>
                 <button class="mode-card mode-slim" onclick="runUiSelfTest()">RUN SELF-TEST</button>
             </div>
             <div class="lobby-sub-title">SCREEN COLOURS</div>
@@ -287,7 +289,7 @@
 
     <div id="house-screen" class="hidden house-screen" role="dialog" aria-label="The House">
         <div class="house-bar">
-            <button class="btn-chip house-exit" onclick="closeHouseBtn()">LEAVE</button>
+            <button class="btn-chip house-exit" onclick="closeHouseBtn()" title="Skip the house: go straight to the computer">SKIP &#9656;</button>
             <div id="house-room" class="house-room">THE HALL</div>
             <button id="house-padtoggle" class="btn-chip house-ptg" aria-label="Toggle on-screen pad">PAD: OFF</button>
             <div class="house-cash">$<span id="house-cash">0</span></div>
@@ -306,7 +308,7 @@
                     <button data-dir="right" class="dp dp-r" aria-label="Right">&#9654;</button>
                     <button data-dir="down" class="dp dp-d" aria-label="Down">&#9660;</button>
                 </div>
-                <button id="house-a" class="house-a" aria-label="Interact">A</button>
+                <div class="house-btns"><button id="house-l" class="house-l" aria-label="Light the lamp">LAMP</button><button id="house-a" class="house-a" aria-label="Interact">A</button></div>
             </div>
         </div>
     </div>
@@ -625,54 +627,55 @@
 
     <!-- ========== SCRIPTS ========== -->
 
-    <script src="rng.js?v=Md6"></script>
-    <script src="timers.js?v=Md6"></script>
-    <script src="state.js?v=Md6"></script>
-    <script src="store.js?v=Md6"></script>
-    <script src="theme.js?v=Md6"></script>
-    <script src="audio.js?v=Md6"></script>
-    <script src="sanity.js?v=Md6"></script>
-    <script src="util.js?v=Md6"></script>
-    <script src="pixel.js?v=Md6"></script>
-    <script src="data.js?v=Md6"></script>
-    <script src="dialogue.js?v=Md6"></script>
-    <script src="dealers.js?v=Md6"></script>
-    <script src="combat.js?v=Md6"></script>
-    <script src="poker.js?v=Md6"></script>
-    <script src="items.js?v=Md6"></script>
-    <script src="ai.js?v=Md6"></script>
-    <script src="render.js?v=Md6"></script>
-    <script src="hud.js?v=Md6"></script>
-    <script src="effects.js?v=Md6"></script>
-    <script src="run.js?v=Md6"></script>
-    <script src="gauntlet.js?v=Md6"></script>
-    <script src="endings.js?v=Md6"></script>
-    <script src="content.js?v=Md6"></script>
-    <script src="save.js?v=Md6"></script>
-    <script src="shop.js?v=Md6"></script>
-    <script src="minigames.js?v=Md6"></script>
-    <script src="ui.js?v=Md6"></script>
-    <script src="lobby.js?v=Md6"></script>
-    <script src="tutorial.js?v=Md6"></script>
-    <script src="psyche.js?v=Md6"></script>
-    <script src="sin.js?v=Md6"></script>
-    <script src="cinema.js?v=Md6"></script>
-    <script src="habit.js?v=Md6"></script>
-    <script src="underside.js?v=Md6"></script>
-    <script src="progress.js?v=Md6"></script>
-    <script src="boss.js?v=Md6"></script>
-    <script src="architect.js?v=Md6"></script>
-    <script src="hallu.js?v=Md6"></script>
-    <script src="keys.js?v=Md6"></script>
-    <script src="arcana.js?v=Md6"></script>
-    <script src="versus.js?v=Md6"></script>
-    <script src="reward.js?v=Md6"></script>
-    <script src="radio.js?v=Md6"></script>
-    <script src="minicine.js?v=Md6"></script>
-    <script src="house.js?v=Md6"></script>
-    <script src="qol.js?v=Md6"></script>
-    <script src="debug.js?v=Md6"></script>
-    <script src="main.js?v=Md6"></script>
+    <script src="rng.js?v=Md7"></script>
+    <script src="timers.js?v=Md7"></script>
+    <script src="state.js?v=Md7"></script>
+    <script src="store.js?v=Md7"></script>
+    <script src="theme.js?v=Md7"></script>
+    <script src="audio.js?v=Md7"></script>
+    <script src="sanity.js?v=Md7"></script>
+    <script src="util.js?v=Md7"></script>
+    <script src="pixel.js?v=Md7"></script>
+    <script src="data.js?v=Md7"></script>
+    <script src="dialogue.js?v=Md7"></script>
+    <script src="dealers.js?v=Md7"></script>
+    <script src="combat.js?v=Md7"></script>
+    <script src="poker.js?v=Md7"></script>
+    <script src="items.js?v=Md7"></script>
+    <script src="ai.js?v=Md7"></script>
+    <script src="render.js?v=Md7"></script>
+    <script src="hud.js?v=Md7"></script>
+    <script src="effects.js?v=Md7"></script>
+    <script src="run.js?v=Md7"></script>
+    <script src="gauntlet.js?v=Md7"></script>
+    <script src="endings.js?v=Md7"></script>
+    <script src="content.js?v=Md7"></script>
+    <script src="save.js?v=Md7"></script>
+    <script src="shop.js?v=Md7"></script>
+    <script src="minigames.js?v=Md7"></script>
+    <script src="ui.js?v=Md7"></script>
+    <script src="lobby.js?v=Md7"></script>
+    <script src="tutorial.js?v=Md7"></script>
+    <script src="psyche.js?v=Md7"></script>
+    <script src="sin.js?v=Md7"></script>
+    <script src="cinema.js?v=Md7"></script>
+    <script src="habit.js?v=Md7"></script>
+    <script src="underside.js?v=Md7"></script>
+    <script src="progress.js?v=Md7"></script>
+    <script src="boss.js?v=Md7"></script>
+    <script src="architect.js?v=Md7"></script>
+    <script src="hallu.js?v=Md7"></script>
+    <script src="keys.js?v=Md7"></script>
+    <script src="arcana.js?v=Md7"></script>
+    <script src="versus.js?v=Md7"></script>
+    <script src="reward.js?v=Md7"></script>
+    <script src="radio.js?v=Md7"></script>
+    <script src="minicine.js?v=Md7"></script>
+    <script src="house.js?v=Md7"></script>
+    <script src="tenants.js?v=Md7"></script>
+    <script src="qol.js?v=Md7"></script>
+    <script src="debug.js?v=Md7"></script>
+    <script src="main.js?v=Md7"></script>
 
 </body>
 </html>

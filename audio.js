@@ -246,6 +246,8 @@ const Music = (() => {
                           pad: 0.7, drone: 1.4, kick: null, hat: 0, bell: 0.15, arp: 0, scale: [0, 3, 5, 6] },
         house_library:  { bpm: 50, beats: 4, root: 53, prog: [[0, [0, 4, 7]], [5, [0, 4, 7]], [7, [0, 4, 7]], [0, [0, 4, 7]]],
                           pad: 0.45, drone: 0.25, kick: null, hat: 0, bell: 1, arp: 0, scale: [0, 2, 4, 7, 9, 12] },
+        house_study:    { bpm: 58, beats: 4, root: 57, prog: [[0, [0, 3, 7]], [5, [0, 4, 7]], [3, [0, 4, 7]], [7, [0, 3, 7]]],
+                          pad: 0.5, drone: 0.3, kick: null, hat: 0, bell: 0.7, arp: 0, scale: [0, 3, 5, 7, 10, 12] },
         house_cellar:   { bpm: 40, beats: 4, root: 28, prog: [[0, [0, 7]], [0, [0, 6]], [-1, [0, 7]], [0, [0, 7]]],
                           pad: 0.35, drone: 1.8, kick: [1,0,0,0, 0,0,1,0, 0,0,0,0, 0,0,0,0], hat: 0, bell: 0.1, arp: 0, scale: [0, 1, 6] },
         house_wrong:    { bpm: 72, beats: 4, root: 41, prog: [[0, [0, 1, 6]], [1, [0, 1, 6]], [6, [0, 1, 6]], [0, [0, 6]]],

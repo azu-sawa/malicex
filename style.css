@@ -2189,3 +2189,35 @@ html[data-theme] .lobby-primary:disabled, html[data-theme] .lobby-primary:disabl
   body.menu-on #audio-fab, body.house-on #audio-fab { display: none; }
 }
 @media (max-width: 380px) { #version-label { font-size: .62rem !important; letter-spacing: 0; } }
+
+/* ---- Md7: the house is home ---- */
+.house-btns { display: flex; gap: 10px; align-items: center; margin-left: auto; pointer-events: none; }
+.house-btns button { pointer-events: auto; }
+.house-l { min-width: 64px; height: 44px; padding: 0 10px; border: 2px solid #fbbf24; border-radius: 22px; background: rgba(40,28,5,.7); color: #fbbf24; font-family: 'Press Start 2P', monospace; font-size: .5rem; opacity: .6; }
+.house-l:active { opacity: 1; }
+.house-pad .house-btns .house-a { margin-left: 0; }
+@keyframes pcIn { from { transform: scale(.88); opacity: 0; filter: brightness(2.2); } to { transform: scale(1); opacity: 1; filter: none; } }
+.main-menu.pc-in { animation: pcIn .5s ease-out; }
+.phase-label { text-align: center; font-size: .9rem; line-height: 1.25; margin: 2px 0 4px; padding: 0 6px; }
+.phase-label .pl-head { color: var(--warn, #fbbf24); letter-spacing: .08em; }
+.phase-label .pl-night { color: #93c5fd; }
+.phase-label .pl-next { color: var(--term-green, #9be7b5); }
+.phase-label .pl-warn { color: #f87171; animation: plBlink 1.4s steps(2) infinite; }
+@keyframes plBlink { 50% { opacity: .35; } }
+#dread-black { position: fixed; inset: 0; background: #000; opacity: 0; pointer-events: none; z-index: 3000; transition: opacity .12s; }
+#dread-black.on { opacity: 1; }
+#dread-note { position: fixed; left: 50%; top: 18%; transform: translateX(-50%); padding: 8px 14px; border: 1px solid #7f1d1d; background: rgba(10,0,0,.92); color: #f87171; font-family: 'Press Start 2P', monospace; font-size: .6rem; letter-spacing: .1em; opacity: 0; pointer-events: none; z-index: 3000; transition: opacity .5s; text-align: center; max-width: 86vw; }
+#dread-note.on { opacity: 1; }
+@media (max-width: 600px) { .phase-label { font-size: .78rem; } .house-ptg { display: inline-block; } }
+
+/* Md7: the dialogue box sits above the on-screen buttons so its text is never hidden under LAMP / A */
+.house-dlg { z-index: 8; }
+/* Md7: on-screen buttons never run off a narrow phone */
+.house-pad:not(.show-dpad) .dpad { display: none; }
+@media (max-width: 359px) {
+  .house-pad .dpad { width: 112px; height: 112px; }
+  .house-pad .dp { width: 36px; height: 36px; font-size: .9rem; }
+  .house-pad .dp-u { left: 38px; } .house-pad .dp-l { top: 38px; } .house-pad .dp-r { left: 76px; top: 38px; } .house-pad .dp-d { left: 38px; top: 76px; }
+  .house-l { min-width: 54px; padding: 0 8px; }
+}
+.house-dlg { background: #05070b; }

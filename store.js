@@ -32,6 +32,7 @@ const SETTINGS_DEFAULT = {
     bigtext: false,      // larger interface text
     shellletters: false, // L / B letters on revealed shells (colour-blind friendly)
     fast: false,         // shorter pauses between actions
+    houseHome: true,     // the game opens in the House (the lobby is the computer in the Study)
     terms: []            // run terms picked in the lobby
 };
 let settings = { ...SETTINGS_DEFAULT };
@@ -49,6 +50,7 @@ function applySettings() {
     const q = id => document.getElementById(id);
     if (q('set-cursor')) q('set-cursor').textContent = 'CRT POINTER: ' + (settings.cursor ? 'ON' : 'OFF');
     if (q('set-haptics')) q('set-haptics').textContent = 'VIBRATION: ' + (settings.haptics ? 'ON' : 'OFF');
+    if (q('set-boot')) q('set-boot').textContent = 'START IN: ' + (settings.houseHome !== false ? 'THE HOUSE' : 'THE MENU');
     if (q('set-lowfx')) q('set-lowfx').textContent = 'LOW EFFECTS: ' + (settings.lowfx ? 'ON' : 'OFF');
     document.documentElement.classList.toggle('no-crtfx', !settings.crtfx);
     if (q('set-crtfx')) q('set-crtfx').textContent = 'CRT SCREEN: ' + (settings.crtfx ? 'ON' : 'OFF');
@@ -59,6 +61,7 @@ function applySettings() {
     if (q('set-fast')) q('set-fast').textContent = 'FAST HANDS: ' + (settings.fast ? 'ON' : 'OFF');
 }
 
+function toggleBoot() { settings.houseHome = settings.houseHome === false; saveSettings(); applySettings(); SFX.click(); }
 function toggleSetting(key) { settings[key] = !settings[key]; saveSettings(); applySettings(); SFX.click(); if (key === 'haptics') buzz(30); }
 
 // vibration (silently ignored where unsupported)

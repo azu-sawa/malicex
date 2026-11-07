@@ -6,8 +6,14 @@ function enterGame() {
     initAudio();
     updateTexts();
     document.getElementById('startup-screen').classList.add('hidden');
-    if (introSeen) showMenu();
-    else determineStoryStart();
+    if (introSeen) {
+        showMenu();
+        // the House is home: the first screen is the Study, and the lobby is the computer on the desk
+        if (settings.houseHome !== false && !window.__bootedHouse && (settings.name || settings.nameAsked) && typeof openHouse === 'function') {
+            window.__bootedHouse = true;
+            try { openHouse(); } catch (e) { console.error(e); }
+        }
+    } else determineStoryStart();
 }
 
 function updateTexts() {

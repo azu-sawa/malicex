@@ -17,7 +17,7 @@
 // =====================================================================
 const HS = { on: false, raf: 0, last: 0, map: 'HALL', x: 0, y: 0, dir: 'down', walk: 0, keys: {}, pad: {}, near: null, dlg: null,
              cool: 0, flash: 0, ghost: null, ghostT: 6, step: 0, t: 0, msg: '', msgT: 0, cam: { x: 0, y: 0 }, trail: [], trailT: 0,
-             follow: null, dark: 0, darkT: 40, stick: null, cat: null, win: [0, 0, 0, 0], menu: null, roomT: 0, lastRoom: '' };
+             follow: null, dark: 0, darkT: 40, stick: null, cat: null, win: [0, 0, 0, 0], menu: null, roomT: 0, lastRoom: '', lamp: 0, seal: 0, evT: 25, cold: 0 };
 let houseReturn = false;
 const TILE = 16; let VW = 320, VH = 208;
 
@@ -29,13 +29,25 @@ function hsLate() { const h = new Date().getHours(); return h === 3; }   // 03:0
 // ---------- maps ----------
 // every map: w,h in tiles. rows 0-1 and the bottom row are wall, as are the side columns.
 const HOUSE_MAPS = {
+    STUDY: { name: 'THE STUDY', w: 16, h: 11, floor: ['#1f1a14', '#241e17'], wall: '#15110d', trim: '#7c5a3a', song: 'house_study',
+        objs: [
+            { t: 'portal', x: 7, y: 10, w: 2, h: 1, to: 'HALL', sx: 4, sy: 11 },
+            { t: 'window', x: 1, y: 0, w: 2, h: 2, wi: 1 },
+            { t: 'photo', x: 4, y: 0, w: 1, h: 2, solid: 1, act: 'photo', label: 'THE LODGERS' },
+            { t: 'pc', x: 6, y: 0, w: 4, h: 2, solid: 1, act: 'pc', label: 'THE COMPUTER' },
+            { t: 'lampst', x: 11, y: 0, w: 1, h: 2, solid: 1 },
+            { t: 'window', x: 13, y: 0, w: 2, h: 2, wi: 2 },
+            { t: 'rug', x: 4, y: 4, w: 8, h: 5 },
+            { t: 'stool', x: 7, y: 2, w: 2, h: 1 },
+            { t: 'coin', x: 2, y: 8, w: 1, h: 1, id: 'st1', amt: 40, label: 'COIN' },
+            { t: 'scrap', x: 13, y: 8, w: 1, h: 1, id: 'ss1', k: 'CANDLE', label: 'CANDLE STUB' }] },
     HALL: { name: 'THE HALL', w: 22, h: 13, floor: ['#241a14', '#2a1f18'], wall: '#14110f', trim: '#7c5a3a', song: 'house_hall',
         objs: [
             { t: 'portal', x: 0, y: 6, w: 1, h: 2, to: 'ARCADE', sx: 20, sy: 6 },
             { t: 'portal', x: 21, y: 6, w: 1, h: 2, to: 'CORRIDOR', sx: 2, sy: 5 },
             { t: 'portal', x: 21, y: 9, w: 1, h: 2, to: 'LIBRARY', sx: 2, sy: 8 },
             { t: 'portal', x: 10, y: 12, w: 2, h: 1, to: 'CELLAR', sx: 10, sy: 3, lock: 'brassKey' },
-            { t: 'portal', x: 4, y: 12, w: 2, h: 1, to: 'EXIT' },
+            { t: 'portal', x: 4, y: 12, w: 2, h: 1, to: 'STUDY', sx: 7, sy: 9 },
             { t: 'portal', x: 0, y: 9, w: 1, h: 2, to: 'WRONG', sx: 17, sy: 7, cond: 'wrong' },
             { t: 'shelf', x: 1, y: 0, w: 2, h: 2, solid: 1, act: 'archive', label: 'THE ARCHIVE' },
             { t: 'window', x: 4, y: 0, w: 2, h: 2, wi: 0 },
@@ -235,6 +247,14 @@ function hsTalkLines(k) {
 // ---------- state / geometry ----------
 let hsGrid = null, hsObjs = [], hsMW = 20, hsMH = 13;
 function hsPortalOpen(o) { if (o.cond === 'wrong') return sanity <= 40 || (HS.map === 'WRONG'); return true; }
+// who walks the Hall tonight: the restless first, then whoever the date picks
+function hsVisitors() {
+    const all = tenantList(); if (!all.length) return [];
+    const rest = all.filter(k => tenantState(k) === 'RESTLESS'), rest2 = all.filter(k => !rest.includes(k));
+    const seed = Array.from(hsDay()).reduce((a, c) => (a * 31 + c.charCodeAt(0)) >>> 0, 7);
+    rest2.sort((a, b) => (((seed ^ a.charCodeAt(0) * 131) % 97) - ((seed ^ b.charCodeAt(0) * 131) % 97)));
+    return rest.concat(rest2).slice(0, 2);
+}
 function hsLoad(id, sx, sy) {
     const m = HOUSE_MAPS[id]; HS.map = id; hsMW = m.w; hsMH = m.h;
     hsObjs = m.objs.filter(o => o.cond !== 'wrong' || sanity <= 40 || hsData().fx.wrong === hsDay());
@@ -242,12 +262,18 @@ function hsLoad(id, sx, sy) {
         const d = hsData(); if (sanity >= 70) d.fx.doll = 0;
         if (d.fx.doll > 0 && sanity <= 45) { const P = [[2, 11], [5, 10], [8, 11], [14, 10], [8, 9]], p = P[Math.min(P.length - 1, d.fx.doll - 1)]; hsObjs = hsObjs.concat([{ t: 'doll', x: p[0], y: p[1], w: 1, h: 1, act: 'doll', label: 'A DOLL' }]); }
     }
+    // the tenants: beaten dealers have moved in. At night they walk the Hall instead of sitting in their rooms.
+    const vis = hsVisitors();
+    hsObjs = hsObjs.filter(o => !(o.t === 'npc' && vis.includes(o.who) && isNight()));
+    hsObjs.filter(o => o.t === 'npc' && TENANT_PERKS[o.who] && hsBeaten(o.who)).forEach(o => hsObjs.push({ t: 'decor', who: o.who, x: o.x + 1, y: o.y, w: 1, h: 1 }));
+    if (id === 'HALL' && isNight()) { const P = [[7, 5], [14, 10]]; vis.forEach((k, i) => { if (P[i]) hsObjs.push({ t: 'npc', who: k, x: P[i][0], y: P[i][1], w: 1, h: 1, solid: 1, act: 'talk', visitor: 1 }); }); }
     hsGrid = [];
     for (let y = 0; y < hsMH; y++) { hsGrid[y] = []; for (let x = 0; x < hsMW; x++) hsGrid[y][x] = (y < 2 || y >= hsMH - 1 || x === 0 || x === hsMW - 1) ? 1 : 0; }
     hsObjs.filter(o => o.t === 'portal').forEach(o => { for (let y = o.y; y < o.y + o.h; y++) for (let x = o.x; x < o.x + o.w; x++) if (hsGrid[y]) hsGrid[y][x] = 0; });
     if (sx !== undefined) { HS.x = sx * TILE + 8; HS.y = sy * TILE + 14; }
     HS.cool = 0.5; HS.near = null; HS.trail = []; HS.follow = null; HS.roomT = 0;
-    HS.cat = (id === 'HALL' || id === 'LIBRARY') ? { x: (id === 'HALL' ? 9 : 6) * TILE, y: (id === 'HALL' ? 11 : 9) * TILE + 12, tx: 0, ty: 0, wait: 1, dir: 1, sit: 0 } : null;
+    HS.seal = 0;
+    HS.cat = (id === 'HALL' || id === 'LIBRARY' || id === 'STUDY') ? { x: (id === 'HALL' ? 9 : id === 'STUDY' ? 3 : 6) * TILE, y: (id === 'HALL' ? 11 : id === 'STUDY' ? 8 : 9) * TILE + 12, tx: 0, ty: 0, wait: 1, dir: 1, sit: 0 } : null;
     hsCam(true);
     const hc = document.getElementById('house-cash'); if (hc) hc.textContent = globalMoney;
     hsData().seen[id] = 1;
@@ -324,9 +350,11 @@ function hsDrawObj(g, o, t) {
         case 'piano': hsRect(g, x, y + 2, w, h - 2, '#0b0b10'); hsRect(g, x + 2, y + 14, w - 4, 8, '#e2e8f0'); for (let k = 0; k < 9; k++) hsRect(g, x + 4 + k * 5, y + 14, 1, 8, '#475569'); for (let k = 0; k < 6; k++) hsRect(g, x + 7 + k * 6, y + 14, 3, 5, '#0b0b10'); hsRect(g, x + 4, y + 6, w - 8, 6, '#1e1b2e'); break;
         case 'window': {
             const vis = HS.win[o.wi] || 0;
-            hsRect(g, x + 1, y + 1, w - 2, h - 2, '#3f2d1e'); hsRect(g, x + 4, y + 4, w - 8, h - 8, HOUSE_MAPS[HS.map].wrong ? '#000000' : '#0b1224');
-            hsRect(g, x + 8, y + 7, 3, 3, '#e2e8f0'); hsRect(g, x + 7, y + 8, 5, 1, '#e2e8f0');
-            for (let k = 0; k < 4; k++) hsRect(g, x + 14 + k * 3, y + 6 + ((k * 7) % 11), 1, 1, '#94a3b8');
+            const ph = dayPhase(), wrongR = HOUSE_MAPS[HS.map].wrong;
+            hsRect(g, x + 1, y + 1, w - 2, h - 2, '#3f2d1e'); hsRect(g, x + 4, y + 4, w - 8, h - 8, wrongR ? '#000000' : ph === 'DAY' ? '#38bdf8' : ph === 'DUSK' ? '#c2410c' : ph === 'DAWN' ? '#9d6b9e' : '#0b1224');
+            if (ph === 'DAY' && !wrongR) { hsRect(g, x + 8, y + 7, 4, 4, '#fde047'); hsRect(g, x + 18, y + 9, 8, 2, '#f1f5f9'); hsRect(g, x + 20, y + 8, 5, 1, '#f1f5f9'); }
+            else if (ph === 'DUSK' && !wrongR) { hsRect(g, x + 8, y + 15, 5, 3, '#fbbf24'); hsRect(g, x + 4, y + 17, w - 8, 3, '#7c2d12'); }
+            else { hsRect(g, x + 8, y + 7, 3, 3, '#e2e8f0'); hsRect(g, x + 7, y + 8, 5, 1, '#e2e8f0'); for (let k = 0; k < 4; k++) hsRect(g, x + 14 + k * 3, y + 6 + ((k * 7) % 11), 1, 1, '#94a3b8'); }
             hsRect(g, x + w / 2 - 1, y + 4, 2, h - 8, '#3f2d1e'); hsRect(g, x + 4, y + h / 2 - 1, w - 8, 2, '#3f2d1e');
             if (vis > 0) { const fx = x + 6 + Math.round(Math.max(-1, Math.min(1, (HS.x - (x + 16)) / 90)) * 2) + (o.wi % 2) * 8; hsRect(g, fx, y + 7, 7, 10, '#030712'); hsRect(g, fx + 1, y + 10, 2, 2, '#ef4444'); hsRect(g, fx + 4, y + 10, 2, 2, '#ef4444'); }
             break; }
@@ -338,7 +366,36 @@ function hsDrawObj(g, o, t) {
         case 'phone': { const r = HS.ring ? (Math.sin(t * 40) > 0 ? 1 : -1) : 0; hsRect(g, x + 1, y + 6, 14, 9, '#3f1d0e'); hsRect(g, x + 3 + r, y + 3, 10, 5, '#111827'); hsRect(g, x + 2 + r, y + 4, 3, 3, '#1f2937'); hsRect(g, x + 11 + r, y + 4, 3, 3, '#1f2937'); hsRect(g, x + 6, y + 9, 4, 3, '#94a3b8'); if (HS.ring && Math.sin(t * 8) > 0) hsRect(g, x + 7, y - 1, 2, 2, '#ef4444'); break; }
         case 'doll': { const lx = HS.x < x + 8 ? -1 : 1; hsRect(g, x + 3, y + 7, 10, 8, '#7f1d1d'); hsRect(g, x + 4, y + 1, 8, 7, '#fde7d0'); hsRect(g, x + 5, y, 6, 2, '#1f2937'); hsRect(g, x + 5 + (lx > 0 ? 1 : 0), y + 4, 2, 2, '#0b0b0b'); hsRect(g, x + 9 + (lx > 0 ? 1 : 0), y + 4, 2, 2, '#0b0b0b'); hsRect(g, x + 7, y + 6, 2, 1, '#be123c'); hsRect(g, x + 4, y + 15, 3, 1, '#0b0b0b'); hsRect(g, x + 9, y + 15, 3, 1, '#0b0b0b'); break; }
         case 'scrawl': { hsRect(g, x, y, w, h, '#14181f'); g.save(); g.font = '7px monospace'; g.fillStyle = sanity <= 30 ? '#b91c1c' : '#6b2b2b'; const nm = playerName().toUpperCase().slice(0, 10); for (let i = 0; i < 4; i++) g.fillText((i === 3 ? nm.slice(0, Math.max(1, nm.length - 2)) : nm), x + 2 + (i % 2) * 3, y + 7 + i * 7 + (Math.sin(t * 5 + i) > 0.97 ? 1 : 0)); g.restore(); break; }
+        case 'pc': {
+            hsRect(g, x + 2, y + 18, w - 4, 12, '#3f2d1e'); hsRect(g, x + 2, y + 18, w - 4, 2, '#7c5a3a');
+            hsRect(g, x + 14, y + 1, 36, 20, '#2a2d34'); hsRect(g, x + 16, y + 3, 32, 15, '#031208');
+            const on = Math.floor(t * 2) % 2, low = sanity <= 30;
+            for (let i = 0; i < 4; i++) hsRect(g, x + 18, y + 5 + i * 3, 8 + ((i * 5 + Math.floor(t)) % 14), 1, low ? '#ef4444' : '#4ade80');
+            if (low) { hsRect(g, x + 34, y + 6, 4, 4, '#030712'); hsRect(g, x + 41, y + 6, 4, 4, '#030712'); hsRect(g, x + 35, y + 7, 2, 2, '#ef4444'); hsRect(g, x + 42, y + 7, 2, 2, '#ef4444'); }
+            else if (on) hsRect(g, x + 18, y + 14, 3, 2, '#4ade80');
+            const daily = document.getElementById('btn-daily-login'); if (daily && !daily.classList.contains('hidden')) hsRect(g, x + 44, y + 4, 3, 8, '#fbbf24');
+            hsRect(g, x + 28, y + 21, 8, 3, '#2a2d34'); hsRect(g, x + 8, y + 22, 14, 4, '#94a3b8'); hsRect(g, x + 42, y + 22, 8, 5, '#64748b'); break; }
+        case 'photo': { hsRect(g, x + 1, y + 3, 14, 20, '#7c5a3a'); hsRect(g, x + 3, y + 5, 10, 16, '#d6c8a8'); const n = Math.min(5, tenantList().length); for (let i = 0; i < n; i++) { hsRect(g, x + 4 + i * 2, y + 9, 2, 3, '#1f2937'); hsRect(g, x + 4 + i * 2, y + 12, 2, 6, '#4b5563'); } if (restlessTenants().length) hsRect(g, x + 12, y + 6, 1, 1, '#ef4444'); break; }
+        case 'lampst': { hsRect(g, x + 7, y + 10, 2, 18, '#57534e'); hsRect(g, x + 3, y + 3, 10, 8, '#fde68a'); hsRect(g, x + 5, y + 4, 6, 5, '#fef3c7'); hsRect(g, x + 4, y + 29, 8, 2, '#44403c'); break; }
+        case 'stool': hsRect(g, x + 8, y + 4, 16, 3, '#7f1d1d'); hsRect(g, x + 10, y + 7, 2, 7, '#44403c'); hsRect(g, x + 20, y + 7, 2, 7, '#44403c'); break;
+        case 'decor': hsDecor(g, x, y, o.who, t); break;
         case 'portal': break;
+    }
+}
+function hsDecor(g, x, y, k, t) {
+    const f = HOUSE_FOLK[k] || { trim: '#94a3b8' }, c = f.trim;
+    switch (k) {
+        case 'SADISTIC': hsRect(g, x + 3, y + 8, 10, 7, '#44403c'); hsRect(g, x + 3, y + 3, 3, 6, '#44403c'); hsRect(g, x + 2, y + 9, 12, 2, c); break;
+        case 'CALCULATING': hsRect(g, x + 1, y + 2, 14, 11, '#14532d'); hsRect(g, x + 3, y + 4, 2, 1, '#e2e8f0'); hsRect(g, x + 7, y + 4, 4, 1, '#e2e8f0'); hsRect(g, x + 3, y + 7, 7, 1, '#e2e8f0'); hsRect(g, x + 3, y + 10, 3, 1, '#e2e8f0'); break;
+        case 'UNPREDICTABLE': hsRect(g, x + 3, y + 9, 5, 5, '#f1f5f9'); hsRect(g, x + 9, y + 11, 5, 5, '#f1f5f9'); hsRect(g, x + 5, y + 11, 1, 1, '#0f172a'); hsRect(g, x + 11, y + 13, 1, 1, '#0f172a'); hsRect(g, x + 4, y + 10, 1, 1, '#0f172a'); break;
+        case 'ANCIENT': case 'CONFESSOR': for (let i = 0; i < 3; i++) { hsRect(g, x + 2 + i * 5, y + 8, 3, 6, '#e7e5e4'); hsRect(g, x + 3 + i * 5, y + 5 + (Math.sin(t * 9 + i) > 0 ? 0 : 1), 1, 3, '#fb923c'); } break;
+        case 'MIMIC': hsRect(g, x + 7, y + 11, 2, 5, '#44403c'); hsRect(g, x + 3, y + 3, 10, 9, '#e5e7eb'); hsRect(g, x + 5, y + 6, 2, 2, '#0f172a'); hsRect(g, x + 9, y + 6, 2, 2, '#0f172a'); hsRect(g, x + 6, y + 10, 4, 1, '#0f172a'); break;
+        case 'WARDEN': hsRect(g, x + 2, y + 3, 12, 2, '#57534e'); for (let i = 0; i < 4; i++) { hsRect(g, x + 3 + i * 3, y + 5, 1, 5, '#a8a29e'); hsRect(g, x + 2 + i * 3, y + 10, 3, 2, c); } break;
+        case 'FIRST': hsRect(g, x + 2, y + 9, 12, 6, '#14532d'); hsRect(g, x + 4, y + 6, 5, 7, '#f1f5f9'); hsRect(g, x + 5, y + 8, 2, 2, '#ef4444'); break;
+        case 'COLLECTOR': hsRect(g, x + 4, y + 5, 8, 10, '#bae6fd'); hsRect(g, x + 5, y + 4, 6, 2, '#64748b'); hsRect(g, x + 6, y + 9, 4, 4, '#fde68a'); break;
+        case 'CLOCKWORK': hsRect(g, x + 3, y + 6, 8, 8, '#a16207'); hsRect(g, x + 5, y + 8, 4, 4, '#1c1917'); hsRect(g, x + 10 + (Math.floor(t * 3) % 2), y + 4, 4, 4, '#ca8a04'); break;
+        case 'HOST': hsRect(g, x + 7, y + 4, 2, 11, '#57534e'); hsRect(g, x + 5, y + 1, 6, 4, '#111827'); hsRect(g, x + 4, y + 14, 8, 2, '#44403c'); break;
+        default: hsRect(g, x + 4, y + 8, 8, 6, c);
     }
 }
 function hsDrawPortals(g, m) {
@@ -399,7 +456,7 @@ function hsDraw() {
     hsObjs.forEach(o => { if (o.t !== 'portal' && o.t !== 'npc') list.push({ y: (o.y + o.h) * TILE - (o.t === 'rug' ? 999 : 0), f: () => hsDrawObj(g, o, t) }); });
     hsObjs.filter(o => o.t === 'npc').forEach(o => {
         const k = o.who, x = o.x * TILE + 2, y = o.y * TILE - 2;
-        if (k !== 'STAND' && k !== 'ECHO' && !hsVisible(k)) { list.push({ y: (o.y + 1) * TILE, f: () => { hsRect(g, x, y + 7, 12, 8, '#292524'); hsRect(g, x + 1, y + 3, 10, 5, '#44403c'); } }); return; }
+        if (k !== 'STAND' && k !== 'ECHO' && !o.visitor && !hsVisible(k)) { list.push({ y: (o.y + 1) * TILE, f: () => { hsRect(g, x, y + 7, 12, 8, '#292524'); hsRect(g, x + 1, y + 3, 10, 5, '#44403c'); } }); return; }
         const bob = Math.floor(Math.sin(t * 2 + o.x) * 0.9);
         let face = (HS.x < o.x * TILE + 8) ? 'right' : 'left';
         if (k === 'STAND') face = 'down';
@@ -407,7 +464,7 @@ function hsDraw() {
         list.push({ y: (o.y + 1) * TILE, f: () => {
             hsRect(g, x - 1, y + 15, 14, 2, 'rgba(0,0,0,.35)');
             hsPerson(g, x, y + bob, away ? 'up' : (HS.y > o.y * TILE + 14 ? 'down' : face), 0, hsFolkOpts(k));
-            if (k !== 'STAND' && k !== 'ECHO' && hsBeaten(k) && k !== 'ARCHITECT' && k !== 'CUSTODIAN' && k !== 'ORACLE') hsRect(g, x + 4, y - 5 + bob, 4, 2, '#4ade80');
+            if (TENANT_PERKS[k] && hsBeaten(k)) { const st = tenantState(k); if (st === 'CONTENT') hsRect(g, x + 4, y - 5 + bob, 4, 2, '#4ade80'); else if (st === 'READY') { hsRect(g, x + 5, y - 9 + bob, 2, 5, '#fbbf24'); hsRect(g, x + 5, y - 3 + bob, 2, 2, '#fbbf24'); } else { hsRect(g, x + 5, y - 9 + bob, 2, 5, '#ef4444'); hsRect(g, x + 5, y - 3 + bob, 2, 2, '#ef4444'); hsRect(g, x + 3, y + 2 + bob, 2, 2, '#ef4444'); hsRect(g, x + 7, y + 2 + bob, 2, 2, '#ef4444'); } }
         } });
     });
     if (HS.cat) list.push({ y: HS.cat.y, f: () => hsCatDraw(g, HS.cat, t) });
@@ -425,17 +482,23 @@ function hsDraw() {
         const bounce = Math.floor(Math.sin(t * 6) * 1.5);
         hsRect(g, cx - 5, cy - 8 + bounce, 10, 9, '#fde68a'); hsRect(g, cx - 4, cy - 7 + bounce, 8, 7, '#0f172a');
         hsRect(g, cx - 1, cy - 6 + bounce, 2, 3, '#fde68a'); hsRect(g, cx - 1, cy - 2 + bounce, 2, 1, '#fde68a');
+        if (o.label) { g.save(); g.font = '6px monospace'; g.textAlign = 'center'; const tw = g.measureText(o.label).width; g.fillStyle = 'rgba(0,0,0,.7)'; g.fillRect(cx - tw / 2 - 2, cy - 17 + bounce, tw + 4, 8); g.fillStyle = '#fde68a'; g.fillText(o.label, cx, cy - 11 + bounce); g.restore(); }
     }
     g.setTransform(1, 0, 0, 1, 0, 0);
     // darkness: grows as Sanity falls; some rooms are dark to begin with; the clock at 3 is darker still
-    const dark = Math.min(0.68, (100 - sanity) / 160 + (m.dark ? 0.25 : 0) + (hsLate() ? 0.12 : 0));
+    const ph = dayPhase();
+    if (ph === 'NIGHT') { g.fillStyle = 'rgba(10,20,70,.16)'; g.fillRect(0, 0, VW, VH); } else if (ph === 'DUSK') { g.fillStyle = 'rgba(251,146,60,.07)'; g.fillRect(0, 0, VW, VH); } else if (ph === 'DAWN') { g.fillStyle = 'rgba(244,114,182,.05)'; g.fillRect(0, 0, VW, VH); }
+    if (HS.cold > 0) { g.fillStyle = 'rgba(80,140,255,' + Math.min(0.25, HS.cold * 0.1) + ')'; g.fillRect(0, 0, VW, VH); }
+    let dark = Math.min(0.68, (100 - sanity) / 160 + (m.dark ? 0.25 : 0) + (hsLate() ? 0.12 : 0) + (ph === 'NIGHT' ? 0.08 : ph === 'DAY' ? -0.06 : 0));
+    if (HS.lamp > 0) dark *= 0.45; dark = Math.max(0, dark);
     if (dark > 0.02) {
-        const px = HS.x - HS.cam.x, py = HS.y - HS.cam.y - 8, rad = Math.max(80, 150 - sanity * 0.5 - (hsLate() ? 25 : 0));
+        const px = HS.x - HS.cam.x, py = HS.y - HS.cam.y - 8, rad = Math.max(80, 150 - sanity * 0.5 - (hsLate() ? 25 : 0)) + (HS.lamp > 0 ? 55 : 0);
         const gr = g.createRadialGradient(px, py, 18, px, py, rad);
         gr.addColorStop(0, 'rgba(0,0,0,0)'); gr.addColorStop(1, `rgba(0,0,0,${dark + 0.2})`);
         g.fillStyle = gr; g.fillRect(0, 0, VW, VH);
         if (sanity <= 40 && Math.sin(t * 17) > 0.96) { g.fillStyle = 'rgba(180,0,0,.08)'; g.fillRect(0, 0, VW, VH); }
     }
+    if (HS.lamp > 0) { const px = HS.x - HS.cam.x, py = HS.y - HS.cam.y - 8, gl = g.createRadialGradient(px, py, 4, px, py, 70); gl.addColorStop(0, 'rgba(253,186,60,.20)'); gl.addColorStop(1, 'rgba(253,186,60,0)'); g.fillStyle = gl; g.fillRect(0, 0, VW, VH); g.save(); g.font = '6px monospace'; g.fillStyle = '#fde68a'; g.fillText('LAMP ' + Math.ceil(HS.lamp) + 's', 4, 10); g.restore(); }
     if (HS.blink > 0) { g.fillStyle = `rgba(0,0,0,${Math.min(1, HS.blink * 2)})`; g.fillRect(0, 0, VW, VH); }
     if (HS.flash > 0) { g.fillStyle = `rgba(255,255,255,${HS.flash})`; g.fillRect(0, 0, VW, VH); }
 }
@@ -443,6 +506,11 @@ function hsDraw() {
 // ---------- the house is watching ----------
 function hsHorror(dt) {
     const low = sanity <= 50, late = hsLate();
+    if (HS.lamp > 0) { HS.lamp -= dt; HS.ghost = null; HS.black = 0; for (let i = 0; i < 6; i++) HS.win[i] = Math.max(0, HS.win[i] - dt * 3); }
+    if (HS.seal > 0) HS.seal -= dt;
+    if (HS.cold > 0) HS.cold -= dt;
+    HS.evT -= dt;
+    if (HS.evT <= 0) { HS.evT = (isNight() ? 16 : 28) + Math.random() * (isNight() ? 22 : 38); if (!(HS.lamp > 0) && !HS.dlg && !HS.menu && (sanity <= 55 || isNight() || restlessTenants().length)) hsEvent(); }
     // windows: faces appear when you are not well, or it is three in the morning
     HS.winT -= dt;
     if (HS.winT <= 0) {
@@ -452,7 +520,7 @@ function hsHorror(dt) {
     }
     for (let i = 0; i < 6; i++) if (HS.win[i] > 0) HS.win[i] = Math.max(0, HS.win[i] - dt);
     // the ghost in the hall and the stranger who walks behind you
-    if (HS.map === 'HALL' && sanity <= 25) {
+    if (HS.map === 'HALL' && sanity <= 25 && !(HS.lamp > 0)) {
         HS.ghostT -= dt;
         if (HS.ghostT <= 0) {
             if (HS.ghost) { HS.ghost = null; HS.ghostT = 7 + Math.random() * 6; }
@@ -460,11 +528,11 @@ function hsHorror(dt) {
         }
     } else if (HS.map !== 'HALL') HS.ghost = null;
     HS.roomT += dt;
-    HS.follow = sanity <= 35 && HS.roomT > 14 && HS.map !== 'WRONG';
+    HS.follow = sanity <= 35 && HS.roomT > 14 && HS.map !== 'WRONG' && !(HS.lamp > 0);
     // lights go out
     if (HS.blink > 0) HS.blink -= dt;
     if (HS.black > 0) { HS.black -= dt; if (HS.black <= 0) { HS.blink = 0.5; if (sanity <= 30 && HOUSE_MAPS[HS.map] && !HOUSE_MAPS[HS.map].wrong) { HS.ghost = { x: HS.x + (Math.random() < 0.5 ? -26 : 26), y: HS.y }; HS.ghostT = 3; } } }
-    else if (sanity <= 45 || late) {
+    else if ((sanity <= 45 || late) && !(HS.lamp > 0)) {
         HS.darkT -= dt;
         if (HS.darkT <= 0) { HS.darkT = (late ? 20 : 30) + Math.random() * 40; HS.black = 0.7 + Math.random() * 0.8; SFX.glitch(); }
     }
@@ -580,6 +648,7 @@ const HS_RECIPES = [
     { id: 'lamp', name: 'SANITY LAMP', cost: { CANDLE: 2 }, text: 'Next run starts with +15 Sanity.', fx: { sanity: 15 } },
     { id: 'charm', name: 'COPPER CHARM', cost: { WIRE: 2, TOOTH: 1 }, text: 'Next run pays 15% more.', fx: { reward: 1.15 } },
     { id: 'kit', name: 'STARTER KIT', cost: { FILM: 1, WIRE: 1 }, text: 'Next run starts with +$200.', fx: { cash: 200 } },
+    { id: 'moon', name: 'MOON TONIC', night: 1, cost: { CANDLE: 2, FILM: 1 }, text: 'NIGHT ONLY. Next run starts with +20 Sanity.', fx: { sanity: 20 } },
     { id: 'mark', name: 'BLACK CANDLE', cost: { CANDLE: 3, FILM: 1 }, text: 'Burn it: +1 Mark right now.', now: () => { addMarks(1); } }
 ];
 const HS_SCRAP_NAME = { TOOTH: 'LOOSE TOOTH', WIRE: 'COPPER WIRE', CANDLE: 'CANDLE STUB', FILM: 'FILM REEL' };
@@ -600,7 +669,7 @@ function hsBench() {
     hsMenu('WORKBENCH', () => {
         const d = hsData(), has = (c) => Object.keys(c).every(k => (d.scraps[k] || 0) >= c[k]);
         return { intro: 'Scraps from around the house: ' + (Object.keys(HS_SCRAP_NAME).map(k => HS_SCRAP_NAME[k] + ' x' + (d.scraps[k] || 0)).join(', ')) + '.',
-            rows: HS_RECIPES.map(r => ({ text: r.name + '  (' + Object.keys(r.cost).map(k => r.cost[k] + ' ' + HS_SCRAP_NAME[k]).join(' + ') + ')', sub: r.text, btn: 'MAKE', off: !has(r.cost),
+            rows: HS_RECIPES.map(r => ({ text: r.name + '  (' + Object.keys(r.cost).map(k => r.cost[k] + ' ' + HS_SCRAP_NAME[k]).join(' + ') + ')', sub: r.text, btn: 'MAKE', off: !has(r.cost) || (r.night && !isNight()),
                 fn: () => { Object.keys(r.cost).forEach(k => d.scraps[k] -= r.cost[k]); if (r.fx) hsAddFx(r.fx); if (r.now) r.now(); saveGame(); SFX.win(); hsToast(r.name + ' MADE'); hsChore('bench'); } })),
             foot: hsFxText() };
     });
@@ -631,6 +700,61 @@ function hsPlay(i) {
     if (m === '0,2,4,2' && d.fx.lull !== hsDay()) { d.fx.lull = hsDay(); hsSan(8); hsToast('THE LULLABY: +8 SANITY'); SFX.heal(); }
     if (m === '6,0,6,0' && sanity > 40 && d.fx.wrong !== hsDay()) { d.fx.wrong = hsDay(); HS.melody = []; saveGame(); SFX.glitch(); hsMenuClose(); HS.black = 1.2; hsToast('SOMETHING IN THE HALL HAS MOVED'); hsLoad('HALL'); }
 }
+// ---------- random things the house does ----------
+function hsEvent() {
+    const name = playerName(), r = restlessTenants();
+    const pool = ['flicker', 'knock', 'seal', 'radio', 'steps', 'name', 'cold', 'flicker', 'knock', 'steps'];
+    if (r.length) pool.push('tenant', 'tenant', 'seal');
+    if (isNight()) pool.push('seal', 'name', 'radio');
+    const k = pool[Math.floor(Math.random() * pool.length)];
+    if (k === 'flicker') { HS.blink = 0.45; SFX.glitch(); hsToast('THE LIGHTS FLICKER'); }
+    else if (k === 'knock') { [0, 260, 520].forEach(ms => setTimeout(() => { try { tone(70, 'sine', 0.14, 0.55, { slideTo: 50 }); } catch (e) {} }, ms)); hsToast('KNOCK. KNOCK. KNOCK.'); }
+    else if (k === 'seal') { HS.seal = 8; SFX.thump(); hsToast('EVERY DOOR JUST LOCKED'); }
+    else if (k === 'radio') { const was = Music.getTrack(); try { Music.setTrack('deadair'); } catch (e) {} hsToast('THE RADIO CHANGED STATION'); setTimeout(() => { try { Music.setTrack(was); } catch (e) {} }, 26000); }
+    else if (k === 'steps') { SFX.thump(); setTimeout(() => SFX.thump(), 420); hsToast('FOOTSTEPS ABOVE YOU'); }
+    else if (k === 'name') { hsSan(-2); SFX.whisper(); hsSay('A VOICE', [name + '.', 'It was said kindly. That is the worst part.'], '#94a3b8'); }
+    else if (k === 'cold') { HS.cold = 4; hsToast('THE ROOM GOES COLD'); SFX.whisper(); }
+    else if (k === 'tenant') { const t = r[Math.floor(Math.random() * r.length)]; SFX.thump(); hsToast((HOUSE_FOLK[t] ? HOUSE_FOLK[t].name : t) + ' IS LOOKING FOR YOU'); }
+}
+function hsLight() {
+    if (!HS.on || HS.menu || HS.dlg) return;
+    const d = hsData();
+    if (HS.lamp > 0) { hsToast('THE LAMP IS ALREADY LIT'); return; }
+    if ((d.scraps.CANDLE || 0) < 1) { SFX.empty(); hsToast('NO CANDLE STUBS'); return; }
+    d.scraps.CANDLE--; saveGame(); HS.lamp = 90; SFX.bell(); hsToast('LAMP LIT: THE HOUSE KEEPS ITS DISTANCE');
+    try { unlockAchievement('FIRST_LIGHT'); } catch (e) {}
+}
+function hsTenantMenu() {
+    hsMenu('THE LODGERS', () => {
+        const L = tenantList();
+        const rows = TENANT_KEYS.map(k => {
+            const f = HOUSE_FOLK[k], p = TENANT_PERKS[k];
+            if (!hsBeaten(k)) return { text: '? ? ?', sub: 'An empty frame. Beat them and they may move in.' };
+            const st = tenantState(k);
+            return { text: f.name + '  [' + st + ']', sub: p.perk + ': ' + p.text + (st === 'RESTLESS' ? '  (they are angry)' : st === 'CONTENT' ? '  (done for today)' : '  (visit for the favour)') };
+        });
+        return { intro: 'Every dealer you beat moves in. Visit them once a day for a favour. Ignore one for ' + TENANT_DAYS + ' days and it turns.', rows, foot: L.length ? (nextRunSummary().join(', ') || 'Nothing waiting for the next run yet.') : 'Nobody lives here yet.' };
+    });
+}
+function hsGrudgeMenu(k) {
+    const f = HOUSE_FOLK[k], p = TENANT_PERKS[k];
+    hsMenu(f.name + ' IS RESTLESS', () => ({
+        intro: p.line + '  You have not visited in days. They do not forgive things. They invoice them.',
+        rows: [
+            { text: 'PAY THE RENT  ($80)', sub: 'They calm down. Their favour is ready again.', btn: 'PAY', off: globalMoney < 80, fn: () => { globalMoney -= 80; updateMoneyDisplay(true); tenantAppease(k); hsCash(); SFX.chip(); hsMenuClose(); hsToast(f.name + ' CALMS DOWN'); } },
+            { text: 'FACE THEM', sub: 'Your next run starts with -8 Sanity, but pays 15% more. They settle for now.', btn: 'FACE', fn: () => { tenantCurse(k); SFX.whisper(); hsMenuClose(); hsToast('-8 SANITY, +15% PAY NEXT RUN'); } }],
+        foot: 'Restless tenants walk the Hall at night and leak into your runs.' }));
+}
+function hsTenantVisit(k) {
+    if (!TENANT_PERKS[k] || !hsBeaten(k)) return;
+    const st = tenantState(k);
+    if (st === 'RESTLESS') { hsGrudgeMenu(k); return; }
+    if (st === 'READY') {
+        const r = tenantFavour(k), d = hsData(); d.seen['fav_' + k] = 1;
+        SFX.win(); hsToast(r.name + ': ' + r.text); hsChore('tenant');
+        if (Object.keys(d.seen).filter(x => x.startsWith('fav_')).length >= 4) { try { unlockAchievement('LANDLORD'); } catch (e) {} }
+    }
+}
 function hsAct(o) {
     SFX.click();
     const d = hsData();
@@ -642,6 +766,7 @@ function hsAct(o) {
             hsSay(f.name, r.lines, f.trim, () => {
                 if (r.fresh && k === 'ARCHITECT' && !d.seen.archMark) { d.seen.archMark = 1; addMarks(2); saveGame(); hsToast('+2 MARKS'); SFX.win(); }
                 if (r.fresh && f.pieces.every((p, i) => (d.talk[k] || 0) > i) && !d.seen['all_' + k]) { d.seen['all_' + k] = 1; addMarks(1); saveGame(); hsToast('+1 MARK: ' + f.name + ' told you everything'); SFX.win(); }
+                hsTenantVisit(k);
             });
             return; }
         case 'fortune': {
@@ -721,6 +846,7 @@ function hsAct(o) {
             d.seen.chest = 1; addMarks(3); saveGame(); SFX.win(); HS.flash = 0.5;
             hsSay('OLD CHEST', ['Under a rotten sleeve, three small tokens. They are warm.', '+3 MARKS'], '#fbbf24'); return; }
         case 'phone': {
+            try { if (HS.ring) unlockAchievement('ANSWERED'); } catch (e) {}
             if (!HS.ring) { hsSay('THE TELEPHONE', ['A dial tone. A long one. Under it, if you listen, a second line, breathing.'], '#94a3b8'); return; }
             HS.ring = false; HS.ringT = 50 + Math.random() * 60; hsSan(-4);
             const nm = playerName(), sin = meta.sin, r = Math.floor(Math.random() * 6);
@@ -744,6 +870,11 @@ function hsAct(o) {
             const d = hsData(), nm = playerName();
             hsSay('THE WALL', [nm.toUpperCase() + '. ' + nm.toUpperCase() + '. ' + nm.toUpperCase() + '.', 'In your handwriting. Dozens of times, pressed deep, the last one unfinished.', 'Whoever wrote it did not stop. They were taken mid-letter.'], '#b91c1c', () => { if (!d.seen.scrawl) { d.seen.scrawl = 1; hsSan(-5); saveGame(); hsToast('-5 SANITY'); SFX.whisper(); } });
             return; }
+        case 'pc': {
+            HS.flash = 0.7; SFX.click();
+            setTimeout(() => { if (!HS.on) return; closeHouse(); houseReturn = false; showMenu(); const mm = document.getElementById('main-menu'); mm.classList.add('pc-in'); setTimeout(() => mm.classList.remove('pc-in'), 700); }, 240);
+            return; }
+        case 'photo': return hsTenantMenu();
         case 'ledger': {
             const be = meta.beaten || {}, n = Object.keys(DEALER_PERSONALITIES).filter(k => be[k]).length;
             hsSay('THE LEDGER', ['Column one: names. Column two: how many hands each of them dealt.', 'Your name is at the bottom. It was already there. The ink is still wet.',
@@ -811,6 +942,7 @@ function hsTick(ts) {
     HS.raf = requestAnimationFrame(hsTick);
 }
 function hsEnter(p) {
+    if (HS.seal > 0 && p.to !== 'EXIT') { HS.cool = 1; HS.y -= 10; SFX.empty(); hsToast('THE DOOR WON\'T OPEN'); return; }
     if (p.to === 'EXIT') { closeHouse(); houseReturn = false; showMenu(); return; }
     if (p.lock && !meta[p.lock]) {
         HS.cool = 1.2;
@@ -821,7 +953,7 @@ function hsEnter(p) {
     HS.flash = 0.6; SFX.click();
     let to = p.to, sx = p.sx, sy = p.sy;
     if (HS.map === 'WRONG' && to === 'HALL' && sanity <= 20 && Math.random() < 0.45) { to = 'WRONG'; sx = 9; sy = 11; setTimeout(() => hsSay('THE DOOR', ['It was a wall. Then it was a door again.', 'You are fairly sure this is the same room.'], '#e2e8f0'), 200); }
-    if (to === 'HALL' && sanity <= 45) { const dd = hsData(); dd.fx.doll = Math.min(5, (dd.fx.doll || 0) + 1); }
+    if (to === 'HALL' && sanity <= 45 && !(HS.lamp > 0)) { const dd = hsData(); dd.fx.doll = Math.min(5, (dd.fx.doll || 0) + 1); }
     hsLoad(to, sx, sy);
     const e = document.getElementById('house-room'); if (e) e.textContent = HOUSE_MAPS[to].name;
     const d = hsData();
@@ -834,9 +966,10 @@ function hsEnter(p) {
 function hsKeyDown(e) {
     if (!HS.on) return;
     const k = e.key;
-    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ', 'Enter', 'Escape', 'e', 'E', 'w', 'a', 's', 'd', 'W', 'A', 'S', 'D'].includes(k)) { if (HS.menu && (k === 'Escape')) { e.preventDefault(); e.stopImmediatePropagation(); hsMenuClose(); return; } if (HS.menu) return; e.preventDefault(); e.stopImmediatePropagation(); }
+    if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', ' ', 'Enter', 'Escape', 'e', 'E', 'l', 'L', 'w', 'a', 's', 'd', 'W', 'A', 'S', 'D'].includes(k)) { if (HS.menu && (k === 'Escape')) { e.preventDefault(); e.stopImmediatePropagation(); hsMenuClose(); return; } if (HS.menu) return; e.preventDefault(); e.stopImmediatePropagation(); }
     if (HS.menu) return;
     if (k === 'Escape') { if (HS.dlg) { HS.dlg.lines = ['']; HS.dlg.i = 0; HS.dlg.pos = 0; hsAdvance(); } else closeHouseBtn(); return; }
+    if (k === 'l' || k === 'L') { if (!e.repeat) hsLight(); return; }
     if (k === ' ' || k === 'Enter' || k === 'e' || k === 'E') { if (e.repeat) return; hsA(); return; }
     HS.keys[k] = true;
 }
@@ -855,6 +988,7 @@ function hsBindPad() {
         b.addEventListener('contextmenu', ev => ev.preventDefault());
     });
     document.getElementById('house-a').addEventListener('pointerdown', ev => { ev.preventDefault(); hsA(); });
+    const hl = document.getElementById('house-l'); if (hl) hl.addEventListener('pointerdown', ev => { ev.preventDefault(); hsLight(); });
     document.getElementById('house-dlg').addEventListener('pointerdown', ev => { ev.preventDefault(); hsAdvance(); });
     const tg = document.getElementById('house-padtoggle');
     const setPad = on => { pad.classList.toggle('show-dpad', on); try { localStorage.setItem('malicex_hpad', on ? '1' : '0'); } catch (e) {} if (tg) tg.textContent = on ? 'PAD: ON' : 'PAD: OFF'; };
@@ -922,15 +1056,16 @@ function openHouse() {
     document.body.classList.add('house-on'); activeGame = 'HOUSE'; HS.on = true; HS.keys = {}; HS.pad = {}; HS.dlg = null; HS.tap = null; HS.stick = null; HS.ghost = null; HS.t = 0; HS.menu = null; HS.black = 0; HS.blink = 0; HS.winT = 3; HS.melody = [];
     const mn = document.getElementById('house-menu'); if (mn) mn.classList.add('hidden');
     document.getElementById('house-dlg').classList.add('hidden');
-    const d = hsData(), first = !d.seen.HALL;
+    const d = hsData(), first = !d.seen.HALL && !d.seen.STUDY;
     HS.dir = 'down';
     const keep = HS.x && HOUSE_MAPS[HS.map] && !(HS.map === 'CELLAR' && !meta.brassKey) && HS.map !== 'WRONG';
     hsBindPad(); hsFit();
-    if (keep) { const x = HS.x, y = HS.y; hsLoad(HS.map); HS.x = x; HS.y = y; hsCam(true); } else hsLoad('HALL', 10, 10);
+    if (keep) { const x = HS.x, y = HS.y; hsLoad(HS.map); HS.x = x; HS.y = y; hsCam(true); } else hsLoad('STUDY', 7, 3);
     document.getElementById('house-room').textContent = HOUSE_MAPS[HS.map].name;
     setTimeout(hsFit, 60);
     cancelAnimationFrame(HS.raf); HS.last = performance.now(); HS.raf = requestAnimationFrame(hsTick);
-    if (first) hsSay('THE HOUSE', ['You thought it was one room.', 'It never was. Walk. Look. Talk to the ones who sit in the Row. They say more once you have beaten them.', 'Drag on the screen to walk, tap a thing to use it, or press A. There is a lot to do here. Not all of it is kind.'], '#38bdf8');
+    if (first) hsSay('YOUR ROOM', ['This is where you start. The computer on the desk is how you sit at the table and begin a run.', 'Past the door is the House. Walk. Look. Talk. Every dealer you beat moves in, and you owe them visits.', 'Drag on the screen to walk, tap a thing to use it, or press A. L lights a lamp (it needs a candle stub). The SKIP button takes you straight to the computer.'], '#38bdf8');
+    else if (!d.seen.v7) { d.seen.v7 = 1; saveGame(); hsSay('SOMETHING HAS CHANGED', ['The House is your home now. The computer in the Study is the menu.', 'Dealers you beat move in. Visit them for favours. Ignore them for three days and they turn.', 'There is a day and a night. The night pays more, and costs more.'], '#38bdf8'); }
     else if (hsLate()) hsSay('3:00 AM', ['The house is awake too.'], '#ef4444');
 }
 function closeHouse() {
