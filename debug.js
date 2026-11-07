@@ -94,7 +94,7 @@ function runSelfTests() {
     eq('lobby boxes can fold', (applyFolds(), document.querySelectorAll('#main-menu .contracts-box.folded').length > 0), true);
     // ---- Mu-delta II modules
     eq('themes defined', Object.keys(THEMES).length, 5);
-    eq('theme ramp maps white inside ramp', /^#[0-9a-f]{6}$/.test((() => { const o = activeTheme; activeTheme = 'green'; const c = themeColor('#ffffff'); activeTheme = o; return c; })()), true);
+    eq("theme colour passes through when no ramp", /^#[0-9a-f]{6}$/.test((() => { const o = activeTheme; activeTheme = 'green'; const c = themeColor('#ffffff'); activeTheme = o; return c; })()), true);
     eq('contracts defined', Object.keys(CONTRACTS).join(), 'SILENCE_PACT,ASCETIC_LIMIT,PARANOIA_MODE');
     eq('zalgo keeps base letters', zalgo('abc', 2).replace(/[\u0300-\u036f]/g, ''), 'abc');
     eq('radio secrets reachable', RADIO_SECRETS.every(x => x.f >= RADIO_MIN && x.f <= RADIO_MAX), true);

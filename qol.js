@@ -248,3 +248,6 @@ document.addEventListener('click', e => {
 const _foldRenderLobby = renderLobby;
 renderLobby = function() { const r = _foldRenderLobby.apply(this, arguments); applyFolds(); return r; };
 setTimeout(applyFolds, 0);
+
+// body state for CSS (the floating sound button hides itself in the lobby and the house on small screens)
+setInterval(() => { try { document.body.classList.toggle('menu-on', typeof activeGame !== 'undefined' && activeGame === 'MENU'); } catch (e) {} }, 300);

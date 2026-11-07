@@ -19,7 +19,7 @@ const HS = { on: false, raf: 0, last: 0, map: 'HALL', x: 0, y: 0, dir: 'down', w
              cool: 0, flash: 0, ghost: null, ghostT: 6, step: 0, t: 0, msg: '', msgT: 0, cam: { x: 0, y: 0 }, trail: [], trailT: 0,
              follow: null, dark: 0, darkT: 40, stick: null, cat: null, win: [0, 0, 0, 0], menu: null, roomT: 0, lastRoom: '' };
 let houseReturn = false;
-const TILE = 16, VW = 320; let VH = 208;
+const TILE = 16; let VW = 320, VH = 208;
 
 function hsData() { meta.house = meta.house || { talk: {}, pick: {}, seen: {} }; const d = meta.house; d.scraps = d.scraps || {}; d.notes = d.notes || {}; d.chore = d.chore || { day: '', done: {} }; d.fx = d.fx || {}; return d; }
 function hsDay() { return new Date().toDateString(); }
@@ -29,88 +29,88 @@ function hsLate() { const h = new Date().getHours(); return h === 3; }   // 03:0
 // ---------- maps ----------
 // every map: w,h in tiles. rows 0-1 and the bottom row are wall, as are the side columns.
 const HOUSE_MAPS = {
-    HALL: { name: 'THE HALL', w: 32, h: 16, floor: ['#241a14', '#2a1f18'], wall: '#14110f', trim: '#7c5a3a', song: 'house_hall',
+    HALL: { name: 'THE HALL', w: 22, h: 13, floor: ['#241a14', '#2a1f18'], wall: '#14110f', trim: '#7c5a3a', song: 'house_hall',
         objs: [
-            { t: 'portal', x: 0, y: 7, w: 1, h: 2, to: 'ARCADE', sx: 28, sy: 8 },
-            { t: 'portal', x: 31, y: 7, w: 1, h: 2, to: 'CORRIDOR', sx: 2, sy: 7 },
-            { t: 'portal', x: 31, y: 11, w: 1, h: 2, to: 'LIBRARY', sx: 2, sy: 9 },
-            { t: 'portal', x: 15, y: 15, w: 2, h: 1, to: 'CELLAR', sx: 12, sy: 3, lock: 'brassKey' },
-            { t: 'portal', x: 6, y: 15, w: 2, h: 1, to: 'EXIT' },
-            { t: 'portal', x: 0, y: 11, w: 1, h: 2, to: 'WRONG', sx: 17, sy: 7, cond: 'wrong' },
-            { t: 'shelf', x: 3, y: 0, w: 2, h: 2, solid: 1, act: 'archive', label: 'THE ARCHIVE' },
-            { t: 'window', x: 6, y: 0, w: 2, h: 2, wi: 0 },
-            { t: 'stall', x: 9, y: 0, w: 3, h: 2, solid: 1, act: 'market', label: 'BLACK MARKET' },
-            { t: 'window', x: 13, y: 0, w: 2, h: 2, wi: 1 },
-            { t: 'board', x: 16, y: 0, w: 2, h: 2, solid: 1, act: 'board', label: 'CHORE BOARD' },
-            { t: 'clock', x: 19, y: 0, w: 1, h: 2, solid: 1, act: 'clock', label: 'THE CLOCK' },
-            { t: 'radio', x: 21, y: 0, w: 2, h: 2, solid: 1, act: 'radio', label: 'THE RADIO' },
-            { t: 'window', x: 24, y: 0, w: 2, h: 2, wi: 2 },
-            { t: 'mirror', x: 27, y: 0, w: 2, h: 2, solid: 1, act: 'mirror', label: 'MIRROR' },
-            { t: 'table', x: 14, y: 7, w: 4, h: 3, solid: 1, act: 'table', label: 'SIT DOWN' },
-            { t: 'vend', x: 2, y: 4, w: 2, h: 2, solid: 1, act: 'vend', label: 'VENDING MACHINE' },
-            { t: 'bench', x: 27, y: 4, w: 3, h: 2, solid: 1, act: 'bench', label: 'WORKBENCH' },
-            { t: 'piano', x: 3, y: 9, w: 3, h: 2, solid: 1, act: 'piano', label: 'THE PIANO' },
-            { t: 'rug', x: 10, y: 5, w: 12, h: 8 },
-            { t: 'coin', x: 4, y: 13, w: 1, h: 1, id: 'hall1', amt: 60, label: 'COIN' },
-            { t: 'coin', x: 27, y: 13, w: 1, h: 1, id: 'hall2', amt: 90, label: 'COIN' },
-            { t: 'scrap', x: 10, y: 13, w: 1, h: 1, id: 'hs1', k: 'CANDLE', label: 'CANDLE STUB' },
-            { t: 'scrap', x: 22, y: 3, w: 1, h: 1, id: 'hs2', k: 'WIRE', label: 'COPPER WIRE' }] },
-    ARCADE: { name: 'THE ARCADE', w: 30, h: 14, floor: ['#14122a', '#1a1738'], wall: '#0a0918', trim: '#38bdf8', song: 'house_arcade',
+            { t: 'portal', x: 0, y: 6, w: 1, h: 2, to: 'ARCADE', sx: 20, sy: 6 },
+            { t: 'portal', x: 21, y: 6, w: 1, h: 2, to: 'CORRIDOR', sx: 2, sy: 5 },
+            { t: 'portal', x: 21, y: 9, w: 1, h: 2, to: 'LIBRARY', sx: 2, sy: 8 },
+            { t: 'portal', x: 10, y: 12, w: 2, h: 1, to: 'CELLAR', sx: 10, sy: 3, lock: 'brassKey' },
+            { t: 'portal', x: 4, y: 12, w: 2, h: 1, to: 'EXIT' },
+            { t: 'portal', x: 0, y: 9, w: 1, h: 2, to: 'WRONG', sx: 17, sy: 7, cond: 'wrong' },
+            { t: 'shelf', x: 1, y: 0, w: 2, h: 2, solid: 1, act: 'archive', label: 'THE ARCHIVE' },
+            { t: 'window', x: 4, y: 0, w: 2, h: 2, wi: 0 },
+            { t: 'stall', x: 7, y: 0, w: 3, h: 2, solid: 1, act: 'market', label: 'BLACK MARKET' },
+            { t: 'board', x: 11, y: 0, w: 2, h: 2, solid: 1, act: 'board', label: 'CHORE BOARD' },
+            { t: 'clock', x: 14, y: 0, w: 1, h: 2, solid: 1, act: 'clock', label: 'THE CLOCK' },
+            { t: 'radio', x: 16, y: 0, w: 2, h: 2, solid: 1, act: 'radio', label: 'THE RADIO' },
+            { t: 'mirror', x: 19, y: 0, w: 2, h: 2, solid: 1, act: 'mirror', label: 'MIRROR' },
+            { t: 'table', x: 9, y: 6, w: 4, h: 3, solid: 1, act: 'table', label: 'SIT DOWN' },
+            { t: 'vend', x: 1, y: 3, w: 2, h: 2, solid: 1, act: 'vend', label: 'VENDING MACHINE' },
+            { t: 'bench', x: 18, y: 3, w: 3, h: 2, solid: 1, act: 'bench', label: 'WORKBENCH' },
+            { t: 'piano', x: 2, y: 8, w: 3, h: 2, solid: 1, act: 'piano', label: 'THE PIANO' },
+            { t: 'rug', x: 6, y: 4, w: 10, h: 7 },
+            { t: 'phone', x: 16, y: 9, w: 1, h: 1, solid: 1, act: 'phone', label: 'THE TELEPHONE' },
+            { t: 'coin', x: 3, y: 11, w: 1, h: 1, id: 'hall1', amt: 60, label: 'COIN' },
+            { t: 'coin', x: 18, y: 11, w: 1, h: 1, id: 'hall2', amt: 90, label: 'COIN' },
+            { t: 'scrap', x: 7, y: 11, w: 1, h: 1, id: 'hs1', k: 'CANDLE', label: 'CANDLE STUB' },
+            { t: 'scrap', x: 16, y: 4, w: 1, h: 1, id: 'hs2', k: 'WIRE', label: 'COPPER WIRE' }] },
+    ARCADE: { name: 'THE ARCADE', w: 22, h: 12, floor: ['#14122a', '#1a1738'], wall: '#0a0918', trim: '#38bdf8', song: 'house_arcade',
         objs: [
-            { t: 'portal', x: 29, y: 7, w: 1, h: 2, to: 'HALL', sx: 1, sy: 8 },
-            { t: 'cab', x: 3, y: 0, w: 2, h: 2, solid: 1, act: 'bj', label: 'BLACKJACK', c: '#22c55e' },
-            { t: 'cab', x: 6, y: 0, w: 2, h: 2, solid: 1, act: 'slots', label: 'SLOTS', c: '#ef4444' },
-            { t: 'cab', x: 9, y: 0, w: 2, h: 2, solid: 1, act: 'cups', label: 'CUPS', c: '#fbbf24' },
-            { t: 'cab', x: 12, y: 0, w: 2, h: 2, solid: 1, act: 'hilo', label: 'HI-LO', c: '#38bdf8' },
-            { t: 'claw', x: 16, y: 0, w: 3, h: 2, solid: 1, act: 'claw', label: 'CLAW MACHINE' },
-            { t: 'jukebox', x: 21, y: 0, w: 2, h: 2, solid: 1, act: 'juke', label: 'JUKEBOX' },
-            { t: 'npc', who: 'CUSTODIAN', x: 22, y: 8, w: 1, h: 1, solid: 1, act: 'talk' },
-            { t: 'coin', x: 4, y: 10, w: 1, h: 1, id: 'arc1', amt: 70, label: 'COIN' },
-            { t: 'scrap', x: 26, y: 11, w: 1, h: 1, id: 'as1', k: 'FILM', label: 'FILM REEL' },
-            { t: 'scrap', x: 12, y: 11, w: 1, h: 1, id: 'as2', k: 'TOOTH', label: 'LOOSE TOOTH' }] },
-    CORRIDOR: { name: "DEALERS' ROW", w: 40, h: 13, floor: ['#2a0f14', '#32141a'], wall: '#12080a', trim: '#b45309', song: 'house_corridor',
+            { t: 'portal', x: 21, y: 6, w: 1, h: 2, to: 'HALL', sx: 1, sy: 7 },
+            { t: 'cab', x: 2, y: 0, w: 2, h: 2, solid: 1, act: 'bj', label: 'BLACKJACK', c: '#22c55e' },
+            { t: 'cab', x: 5, y: 0, w: 2, h: 2, solid: 1, act: 'slots', label: 'SLOTS', c: '#ef4444' },
+            { t: 'cab', x: 8, y: 0, w: 2, h: 2, solid: 1, act: 'cups', label: 'CUPS', c: '#fbbf24' },
+            { t: 'cab', x: 11, y: 0, w: 2, h: 2, solid: 1, act: 'hilo', label: 'HI-LO', c: '#38bdf8' },
+            { t: 'claw', x: 14, y: 0, w: 3, h: 2, solid: 1, act: 'claw', label: 'CLAW MACHINE' },
+            { t: 'jukebox', x: 18, y: 0, w: 2, h: 2, solid: 1, act: 'juke', label: 'JUKEBOX' },
+            { t: 'npc', who: 'CUSTODIAN', x: 16, y: 7, w: 1, h: 1, solid: 1, act: 'talk' },
+            { t: 'coin', x: 3, y: 9, w: 1, h: 1, id: 'arc1', amt: 70, label: 'COIN' },
+            { t: 'scrap', x: 19, y: 9, w: 1, h: 1, id: 'as1', k: 'FILM', label: 'FILM REEL' },
+            { t: 'scrap', x: 9, y: 9, w: 1, h: 1, id: 'as2', k: 'TOOTH', label: 'LOOSE TOOTH' }] },
+    CORRIDOR: { name: "DEALERS' ROW", w: 28, h: 11, floor: ['#2a0f14', '#32141a'], wall: '#12080a', trim: '#b45309', song: 'house_corridor',
         objs: [
-            { t: 'portal', x: 0, y: 6, w: 1, h: 2, to: 'HALL', sx: 30, sy: 8 },
-            { t: 'window', x: 8, y: 0, w: 2, h: 2, wi: 3 }, { t: 'window', x: 20, y: 0, w: 2, h: 2, wi: 4 }, { t: 'window', x: 32, y: 0, w: 2, h: 2, wi: 5 },
-            { t: 'npc', who: 'SADISTIC', x: 5, y: 3, w: 1, h: 1, solid: 1, act: 'talk' },
-            { t: 'npc', who: 'CALCULATING', x: 12, y: 3, w: 1, h: 1, solid: 1, act: 'talk' },
-            { t: 'npc', who: 'UNPREDICTABLE', x: 17, y: 3, w: 1, h: 1, solid: 1, act: 'talk' },
-            { t: 'npc', who: 'ANCIENT', x: 25, y: 3, w: 1, h: 1, solid: 1, act: 'talk' },
-            { t: 'npc', who: 'ORACLE', x: 31, y: 3, w: 1, h: 1, solid: 1, act: 'fortune' },
-            { t: 'npc', who: 'MIMIC', x: 7, y: 9, w: 1, h: 1, solid: 1, act: 'talk' },
-            { t: 'npc', who: 'WARDEN', x: 15, y: 9, w: 1, h: 1, solid: 1, act: 'talk' },
-            { t: 'npc', who: 'FIRST', x: 28, y: 9, w: 1, h: 1, solid: 1, act: 'talk' },
-            { t: 'coin', x: 37, y: 6, w: 1, h: 1, id: 'cor1', amt: 80, label: 'COIN' },
-            { t: 'scrap', x: 20, y: 11, w: 1, h: 1, id: 'cs1', k: 'TOOTH', label: 'LOOSE TOOTH' },
-            { t: 'scrap', x: 36, y: 10, w: 1, h: 1, id: 'cs2', k: 'FILM', label: 'FILM REEL' }] },
-    LIBRARY: { name: 'THE LIBRARY', w: 24, h: 14, floor: ['#1a1410', '#21190f'], wall: '#0e0a07', trim: '#a16207', song: 'house_library',
+            { t: 'portal', x: 0, y: 5, w: 1, h: 2, to: 'HALL', sx: 20, sy: 7 },
+            { t: 'window', x: 6, y: 0, w: 2, h: 2, wi: 3 }, { t: 'window', x: 13, y: 0, w: 2, h: 2, wi: 4 }, { t: 'window', x: 21, y: 0, w: 2, h: 2, wi: 5 },
+            { t: 'npc', who: 'SADISTIC', x: 4, y: 3, w: 1, h: 1, solid: 1, act: 'talk' },
+            { t: 'npc', who: 'CALCULATING', x: 9, y: 3, w: 1, h: 1, solid: 1, act: 'talk' },
+            { t: 'npc', who: 'UNPREDICTABLE', x: 14, y: 3, w: 1, h: 1, solid: 1, act: 'talk' },
+            { t: 'npc', who: 'ANCIENT', x: 18, y: 3, w: 1, h: 1, solid: 1, act: 'talk' },
+            { t: 'npc', who: 'ORACLE', x: 23, y: 3, w: 1, h: 1, solid: 1, act: 'fortune' },
+            { t: 'npc', who: 'MIMIC', x: 5, y: 8, w: 1, h: 1, solid: 1, act: 'talk' },
+            { t: 'npc', who: 'WARDEN', x: 12, y: 8, w: 1, h: 1, solid: 1, act: 'talk' },
+            { t: 'npc', who: 'FIRST', x: 19, y: 8, w: 1, h: 1, solid: 1, act: 'talk' },
+            { t: 'coin', x: 25, y: 5, w: 1, h: 1, id: 'cor1', amt: 80, label: 'COIN' },
+            { t: 'scrap', x: 15, y: 9, w: 1, h: 1, id: 'cs1', k: 'TOOTH', label: 'LOOSE TOOTH' },
+            { t: 'scrap', x: 24, y: 8, w: 1, h: 1, id: 'cs2', k: 'FILM', label: 'FILM REEL' }] },
+    LIBRARY: { name: 'THE LIBRARY', w: 18, h: 12, floor: ['#1a1410', '#21190f'], wall: '#0e0a07', trim: '#a16207', song: 'house_library',
         objs: [
-            { t: 'portal', x: 0, y: 9, w: 1, h: 2, to: 'HALL', sx: 30, sy: 12 },
-            { t: 'books', x: 3, y: 0, w: 2, h: 2, solid: 1, act: 'note', nid: 'n1', label: 'A BOOK' },
-            { t: 'books', x: 6, y: 0, w: 2, h: 2, solid: 1, act: 'note', nid: 'n2', label: 'A BOOK' },
-            { t: 'books', x: 9, y: 0, w: 2, h: 2, solid: 1, act: 'note', nid: 'n3', label: 'A BOOK' },
-            { t: 'fire', x: 12, y: 0, w: 3, h: 2, solid: 1, act: 'rest', label: 'THE FIRE' },
-            { t: 'books', x: 16, y: 0, w: 2, h: 2, solid: 1, act: 'note', nid: 'n4', label: 'A BOOK' },
-            { t: 'books', x: 19, y: 0, w: 2, h: 2, solid: 1, act: 'note', nid: 'n5', label: 'A BOOK' },
-            { t: 'desk', x: 17, y: 9, w: 3, h: 1, solid: 1, act: 'note', nid: 'n6', label: 'A LOOSE PAGE' },
-            { t: 'chair', x: 12, y: 5, w: 2, h: 2, solid: 1, act: 'sit', label: 'THE ARMCHAIR' },
-            { t: 'coin', x: 4, y: 11, w: 1, h: 1, id: 'lib1', amt: 75, label: 'COIN' },
-            { t: 'scrap', x: 21, y: 6, w: 1, h: 1, id: 'ls1', k: 'CANDLE', label: 'CANDLE STUB' }] },
-    CELLAR: { name: 'THE CELLAR', w: 26, h: 16, floor: ['#10151c', '#141b24'], wall: '#080a0e', trim: '#475569', dark: 1, song: 'house_cellar',
+            { t: 'portal', x: 0, y: 8, w: 1, h: 2, to: 'HALL', sx: 20, sy: 10 },
+            { t: 'books', x: 1, y: 0, w: 2, h: 2, solid: 1, act: 'note', nid: 'n1', label: 'A BOOK' },
+            { t: 'books', x: 3, y: 0, w: 2, h: 2, solid: 1, act: 'note', nid: 'n2', label: 'A BOOK' },
+            { t: 'books', x: 5, y: 0, w: 2, h: 2, solid: 1, act: 'note', nid: 'n3', label: 'A BOOK' },
+            { t: 'fire', x: 8, y: 0, w: 3, h: 2, solid: 1, act: 'rest', label: 'THE FIRE' },
+            { t: 'books', x: 12, y: 0, w: 2, h: 2, solid: 1, act: 'note', nid: 'n4', label: 'A BOOK' },
+            { t: 'books', x: 14, y: 0, w: 2, h: 2, solid: 1, act: 'note', nid: 'n5', label: 'A BOOK' },
+            { t: 'desk', x: 12, y: 8, w: 3, h: 1, solid: 1, act: 'note', nid: 'n6', label: 'A LOOSE PAGE' },
+            { t: 'chair', x: 8, y: 5, w: 2, h: 2, solid: 1, act: 'sit', label: 'THE ARMCHAIR' },
+            { t: 'coin', x: 3, y: 9, w: 1, h: 1, id: 'lib1', amt: 75, label: 'COIN' },
+            { t: 'scrap', x: 15, y: 5, w: 1, h: 1, id: 'ls1', k: 'CANDLE', label: 'CANDLE STUB' }] },
+    CELLAR: { name: 'THE CELLAR', w: 20, h: 13, floor: ['#10151c', '#141b24'], wall: '#080a0e', trim: '#475569', dark: 1, song: 'house_cellar',
         objs: [
-            { t: 'portal', x: 12, y: 1, w: 2, h: 1, to: 'HALL', sx: 15, sy: 13 },
-            { t: 'npc', who: 'ARCHITECT', x: 12, y: 7, w: 1, h: 1, solid: 1, act: 'talk' },
-            { t: 'chest', x: 4, y: 10, w: 2, h: 1, solid: 1, act: 'chest', label: 'OLD CHEST' },
-            { t: 'desk', x: 19, y: 10, w: 3, h: 1, solid: 1, act: 'ledger', label: 'THE LEDGER' },
-            { t: 'npc', who: 'COLLECTOR', x: 3, y: 13, w: 1, h: 1, solid: 1, act: 'talk' },
-            { t: 'npc', who: 'CONFESSOR', x: 9, y: 13, w: 1, h: 1, solid: 1, act: 'talk' },
-            { t: 'npc', who: 'CLOCKWORK', x: 15, y: 13, w: 1, h: 1, solid: 1, act: 'talk' },
-            { t: 'npc', who: 'HOST', x: 21, y: 13, w: 1, h: 1, solid: 1, act: 'talk' },
-            { t: 'torch', x: 5, y: 2, w: 1, h: 1, solid: 1 }, { t: 'torch', x: 20, y: 2, w: 1, h: 1, solid: 1 },
-            { t: 'scrap', x: 23, y: 5, w: 1, h: 1, id: 'cl1', k: 'WIRE', label: 'COPPER WIRE' }] },
+            { t: 'portal', x: 9, y: 1, w: 2, h: 1, to: 'HALL', sx: 10, sy: 11 },
+            { t: 'npc', who: 'ARCHITECT', x: 9, y: 5, w: 1, h: 1, solid: 1, act: 'talk' },
+            { t: 'chest', x: 3, y: 8, w: 2, h: 1, solid: 1, act: 'chest', label: 'OLD CHEST' },
+            { t: 'desk', x: 14, y: 8, w: 3, h: 1, solid: 1, act: 'ledger', label: 'THE LEDGER' },
+            { t: 'npc', who: 'COLLECTOR', x: 3, y: 11, w: 1, h: 1, solid: 1, act: 'talk' },
+            { t: 'npc', who: 'CONFESSOR', x: 7, y: 11, w: 1, h: 1, solid: 1, act: 'talk' },
+            { t: 'npc', who: 'CLOCKWORK', x: 12, y: 11, w: 1, h: 1, solid: 1, act: 'talk' },
+            { t: 'npc', who: 'HOST', x: 16, y: 11, w: 1, h: 1, solid: 1, act: 'talk' },
+            { t: 'scrawl', x: 5, y: 0, w: 4, h: 2, solid: 1, act: 'scrawl', label: 'THE WALL' },
+            { t: 'torch', x: 4, y: 2, w: 1, h: 1, solid: 1 }, { t: 'torch', x: 15, y: 2, w: 1, h: 1, solid: 1 },
+            { t: 'scrap', x: 17, y: 5, w: 1, h: 1, id: 'cl1', k: 'WIRE', label: 'COPPER WIRE' }] },
     WRONG: { name: 'THE HALL', w: 20, h: 13, floor: ['#1a1a1a', '#202020'], wall: '#0a0a0a', trim: '#e2e8f0', dark: 1, wrong: 1, song: 'house_wrong',
         objs: [
-            { t: 'portal', x: 9, y: 12, w: 2, h: 1, to: 'HALL', sx: 1, sy: 12 },
+            { t: 'portal', x: 9, y: 12, w: 2, h: 1, to: 'HALL', sx: 1, sy: 10 },
             { t: 'npc', who: 'ECHO', x: 9, y: 5, w: 1, h: 1, solid: 1, act: 'talk' },
             { t: 'npc', who: 'STAND', x: 3, y: 4, w: 1, h: 1, solid: 1 }, { t: 'npc', who: 'STAND', x: 6, y: 8, w: 1, h: 1, solid: 1 },
             { t: 'npc', who: 'STAND', x: 13, y: 8, w: 1, h: 1, solid: 1 }, { t: 'npc', who: 'STAND', x: 16, y: 4, w: 1, h: 1, solid: 1 },
@@ -238,12 +238,16 @@ function hsPortalOpen(o) { if (o.cond === 'wrong') return sanity <= 40 || (HS.ma
 function hsLoad(id, sx, sy) {
     const m = HOUSE_MAPS[id]; HS.map = id; hsMW = m.w; hsMH = m.h;
     hsObjs = m.objs.filter(o => o.cond !== 'wrong' || sanity <= 40 || hsData().fx.wrong === hsDay());
+    if (id === 'HALL') {
+        const d = hsData(); if (sanity >= 70) d.fx.doll = 0;
+        if (d.fx.doll > 0 && sanity <= 45) { const P = [[2, 11], [5, 10], [8, 11], [14, 10], [8, 9]], p = P[Math.min(P.length - 1, d.fx.doll - 1)]; hsObjs = hsObjs.concat([{ t: 'doll', x: p[0], y: p[1], w: 1, h: 1, act: 'doll', label: 'A DOLL' }]); }
+    }
     hsGrid = [];
     for (let y = 0; y < hsMH; y++) { hsGrid[y] = []; for (let x = 0; x < hsMW; x++) hsGrid[y][x] = (y < 2 || y >= hsMH - 1 || x === 0 || x === hsMW - 1) ? 1 : 0; }
     hsObjs.filter(o => o.t === 'portal').forEach(o => { for (let y = o.y; y < o.y + o.h; y++) for (let x = o.x; x < o.x + o.w; x++) if (hsGrid[y]) hsGrid[y][x] = 0; });
     if (sx !== undefined) { HS.x = sx * TILE + 8; HS.y = sy * TILE + 14; }
     HS.cool = 0.5; HS.near = null; HS.trail = []; HS.follow = null; HS.roomT = 0;
-    HS.cat = (id === 'HALL' || id === 'LIBRARY') ? { x: (id === 'HALL' ? 9 : 14) * TILE, y: (id === 'HALL' ? 11 : 8) * TILE + 12, tx: 0, ty: 0, wait: 1, dir: 1, sit: 0 } : null;
+    HS.cat = (id === 'HALL' || id === 'LIBRARY') ? { x: (id === 'HALL' ? 9 : 6) * TILE, y: (id === 'HALL' ? 11 : 9) * TILE + 12, tx: 0, ty: 0, wait: 1, dir: 1, sit: 0 } : null;
     hsCam(true);
     const hc = document.getElementById('house-cash'); if (hc) hc.textContent = globalMoney;
     hsData().seen[id] = 1;
@@ -331,6 +335,9 @@ function hsDrawObj(g, o, t) {
             hsRect(g, x + 7, y + 16 + Math.floor(Math.sin(t * 3) * 1.5), 2, 6, '#fbbf24'); break; }
         case 'scrap': if (!hsPickDone(o)) { const b = Math.sin(t * 3 + o.x) > 0 ? 0 : 1; hsRect(g, x + 5, y + 7 + b, 6, 5, HS_SCRAP[o.k]); hsRect(g, x + 6, y + 6 + b, 4, 1, '#ffffff'); hsRect(g, x + 4, y + 13, 8, 1, 'rgba(0,0,0,.4)'); } break;
         case 'coin': if (!hsPickDone(o)) { const b = Math.floor(Math.sin(t * 5 + o.x) * 1.5); hsRect(g, x + 4, y + 6 + b, 8, 8, '#d97706'); hsRect(g, x + 5, y + 7 + b, 6, 6, '#fbbf24'); hsRect(g, x + 7, y + 8 + b, 2, 4, '#fde68a'); hsRect(g, x + 4, y + 14, 8, 1, 'rgba(0,0,0,.4)'); } break;
+        case 'phone': { const r = HS.ring ? (Math.sin(t * 40) > 0 ? 1 : -1) : 0; hsRect(g, x + 1, y + 6, 14, 9, '#3f1d0e'); hsRect(g, x + 3 + r, y + 3, 10, 5, '#111827'); hsRect(g, x + 2 + r, y + 4, 3, 3, '#1f2937'); hsRect(g, x + 11 + r, y + 4, 3, 3, '#1f2937'); hsRect(g, x + 6, y + 9, 4, 3, '#94a3b8'); if (HS.ring && Math.sin(t * 8) > 0) hsRect(g, x + 7, y - 1, 2, 2, '#ef4444'); break; }
+        case 'doll': { const lx = HS.x < x + 8 ? -1 : 1; hsRect(g, x + 3, y + 7, 10, 8, '#7f1d1d'); hsRect(g, x + 4, y + 1, 8, 7, '#fde7d0'); hsRect(g, x + 5, y, 6, 2, '#1f2937'); hsRect(g, x + 5 + (lx > 0 ? 1 : 0), y + 4, 2, 2, '#0b0b0b'); hsRect(g, x + 9 + (lx > 0 ? 1 : 0), y + 4, 2, 2, '#0b0b0b'); hsRect(g, x + 7, y + 6, 2, 1, '#be123c'); hsRect(g, x + 4, y + 15, 3, 1, '#0b0b0b'); hsRect(g, x + 9, y + 15, 3, 1, '#0b0b0b'); break; }
+        case 'scrawl': { hsRect(g, x, y, w, h, '#14181f'); g.save(); g.font = '7px monospace'; g.fillStyle = sanity <= 30 ? '#b91c1c' : '#6b2b2b'; const nm = playerName().toUpperCase().slice(0, 10); for (let i = 0; i < 4; i++) g.fillText((i === 3 ? nm.slice(0, Math.max(1, nm.length - 2)) : nm), x + 2 + (i % 2) * 3, y + 7 + i * 7 + (Math.sin(t * 5 + i) > 0.97 ? 1 : 0)); g.restore(); break; }
         case 'portal': break;
     }
 }
@@ -461,6 +468,10 @@ function hsHorror(dt) {
         HS.darkT -= dt;
         if (HS.darkT <= 0) { HS.darkT = (late ? 20 : 30) + Math.random() * 40; HS.black = 0.7 + Math.random() * 0.8; SFX.glitch(); }
     }
+    // the telephone, whispers and a heartbeat that is not yours
+    if (HS.map === 'HALL' && (sanity <= 50 || late) && !HS.ring) { HS.ringT = (HS.ringT === undefined ? 20 : HS.ringT) - dt; if (HS.ringT <= 0) { HS.ring = true; HS.ringT = 3; hsToast('A PHONE IS RINGING'); } }
+    if (HS.ring) { HS.ringT -= dt; if (Math.floor(HS.t * 2) % 2 === 0 && Math.floor((HS.t - dt) * 2) % 2 !== 0) try { tone(880, 'square', 0.12, 0.07); setTimeout(() => tone(740, 'square', 0.12, 0.07), 140); } catch (e) {} if (HS.ringT <= -40) HS.ring = false; }
+    if (sanity <= 35) { HS.whT = (HS.whT === undefined ? 12 : HS.whT) - dt; if (HS.whT <= 0) { HS.whT = 14 + Math.random() * 16; Math.random() < 0.5 ? SFX.whisper() : SFX.heartbeat(); } }
     // the cat
     const c = HS.cat;
     if (c) {
@@ -709,6 +720,30 @@ function hsAct(o) {
             if (d.seen.chest) { hsSay('OLD CHEST', ['Empty. The lining smells like someone else\'s coat.'], '#a16207'); return; }
             d.seen.chest = 1; addMarks(3); saveGame(); SFX.win(); HS.flash = 0.5;
             hsSay('OLD CHEST', ['Under a rotten sleeve, three small tokens. They are warm.', '+3 MARKS'], '#fbbf24'); return; }
+        case 'phone': {
+            if (!HS.ring) { hsSay('THE TELEPHONE', ['A dial tone. A long one. Under it, if you listen, a second line, breathing.'], '#94a3b8'); return; }
+            HS.ring = false; HS.ringT = 50 + Math.random() * 60; hsSan(-4);
+            const nm = playerName(), sin = meta.sin, r = Math.floor(Math.random() * 6);
+            const L = [
+                ['Breathing. Then: "' + nm + '. You left the stove on."', 'You do not own a stove here.'],
+                ['"This is the house calling. I am calling from inside you."', 'The line clicks. Your own pulse, through the receiver, a half beat late.'],
+                [sin === 'THIEF' ? '"Put it back. You know which one. You know whose."' : sin === 'PARRICIDE' ? '"He wants to say he is sorry. Let him. It is the last thing he has."' : '"Whatever you did, we have the tape."', 'The tape is quiet. It is your own voice, saying nothing, very patiently.'],
+                ['"Count the windows."', 'You count. The number is one more than there are.'],
+                ['"Say hello to yourself. He is right behind you."', 'Do not turn around. Count to ten.'],
+                ['A child\'s voice, counting hands. "One. Two. Twenty-one. You lose, ' + nm + '."', 'Then the dial tone, as if nothing happened.']];
+            hsSay('THE TELEPHONE', L[r], '#ef4444', () => {
+                SFX.glitch(); hsGain('FILM'); hsToast('-4 SANITY.  +1 FILM REEL');
+                if (r === 3) for (let i = 0; i < 6; i++) HS.win[i] = 6;
+                if (r === 4) { HS.black = 1.1; HS.ghost = { x: HS.x, y: HS.y + 14 }; HS.ghostT = 4; }
+            }); return; }
+        case 'doll': {
+            const d = hsData();
+            hsSay('A DOLL', ['It is wearing your coat. The buttons are the ones you lost.', 'It was nearer the door the last time. Or it was never anywhere.'].concat(sanity <= 25 ? ['Its head is not turned toward you. It is turned toward what is behind you.'] : []), '#fde7d0', () => { if (!d.seen.doll) { d.seen.doll = 1; addMarks(1); saveGame(); hsToast('+1 MARK'); } });
+            return; }
+        case 'scrawl': {
+            const d = hsData(), nm = playerName();
+            hsSay('THE WALL', [nm.toUpperCase() + '. ' + nm.toUpperCase() + '. ' + nm.toUpperCase() + '.', 'In your handwriting. Dozens of times, pressed deep, the last one unfinished.', 'Whoever wrote it did not stop. They were taken mid-letter.'], '#b91c1c', () => { if (!d.seen.scrawl) { d.seen.scrawl = 1; hsSan(-5); saveGame(); hsToast('-5 SANITY'); SFX.whisper(); } });
+            return; }
         case 'ledger': {
             const be = meta.beaten || {}, n = Object.keys(DEALER_PERSONALITIES).filter(k => be[k]).length;
             hsSay('THE LEDGER', ['Column one: names. Column two: how many hands each of them dealt.', 'Your name is at the bottom. It was already there. The ink is still wet.',
@@ -786,6 +821,7 @@ function hsEnter(p) {
     HS.flash = 0.6; SFX.click();
     let to = p.to, sx = p.sx, sy = p.sy;
     if (HS.map === 'WRONG' && to === 'HALL' && sanity <= 20 && Math.random() < 0.45) { to = 'WRONG'; sx = 9; sy = 11; setTimeout(() => hsSay('THE DOOR', ['It was a wall. Then it was a door again.', 'You are fairly sure this is the same room.'], '#e2e8f0'), 200); }
+    if (to === 'HALL' && sanity <= 45) { const dd = hsData(); dd.fx.doll = Math.min(5, (dd.fx.doll || 0) + 1); }
     hsLoad(to, sx, sy);
     const e = document.getElementById('house-room'); if (e) e.textContent = HOUSE_MAPS[to].name;
     const d = hsData();
@@ -862,10 +898,12 @@ function hsBindPad() {
 function hsFit() {
     const cv = document.getElementById('house-canvas'), wrap = document.getElementById('house-stage'); if (!cv || !wrap) return;
     const aw = wrap.clientWidth, ah = wrap.clientHeight; if (!aw || !ah) return;
+    VW = aw < 600 ? 256 : 320;
     let s = aw / VW, vh = Math.floor(ah / s);
-    if (vh < 208) { s = ah / 208; vh = 208; }
+    if (vh < 176) { s = ah / 176; vh = 176; }
     vh = Math.min(vh, 416);
     VH = vh; cv.width = VW; cv.height = VH;
+    if (HS.on && hsGrid) hsCam(true);
     cv.style.width = Math.floor(VW * s) + 'px'; cv.style.height = Math.floor(VH * s) + 'px';
     const vw = document.getElementById('house-view'); vw.style.width = cv.style.width; vw.style.height = cv.style.height;
     vw.style.setProperty('--hs', Math.max(0.6, Math.min(1.4, s / 2.2)));
@@ -888,7 +926,7 @@ function openHouse() {
     HS.dir = 'down';
     const keep = HS.x && HOUSE_MAPS[HS.map] && !(HS.map === 'CELLAR' && !meta.brassKey) && HS.map !== 'WRONG';
     hsBindPad(); hsFit();
-    if (keep) { const x = HS.x, y = HS.y; hsLoad(HS.map); HS.x = x; HS.y = y; hsCam(true); } else hsLoad('HALL', 14, 11);
+    if (keep) { const x = HS.x, y = HS.y; hsLoad(HS.map); HS.x = x; HS.y = y; hsCam(true); } else hsLoad('HALL', 10, 10);
     document.getElementById('house-room').textContent = HOUSE_MAPS[HS.map].name;
     setTimeout(hsFit, 60);
     cancelAnimationFrame(HS.raf); HS.last = performance.now(); HS.raf = requestAnimationFrame(hsTick);
