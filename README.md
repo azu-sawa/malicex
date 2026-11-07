@@ -71,3 +71,4 @@ Self-test: open `index.html?test` and check the console (38 checks).
 - Things to do: Workbench (craft from scraps you find: Sanity Lamp, Copper Charm, Starter Kit, Black Candle, all feed the NEXT run), Oracle (daily fortune), Chore Board (4 daily chores, paid), vending machine, claw machine, piano (lullaby heals), fireplace, six lore notes, a cat, daily coins and scraps.
 - Horror: faces in the windows, a figure that follows you at low Sanity, blackouts, corrupted dialogue, a different 3 AM house, a hall that loops, the other mirror.
 - Music per room, and casino music for the side games. Themes now change the real background. Shop descriptions are larger.
+- Device pass: checked 12 screen sizes (320x568 up to 1920x1080, portrait and landscape phones, iPad both ways). No horizontal overflow on the lobby, market, side games, 1v1, house, fight or pause. Narrow screens get compact header, sticky tabs, wrapped game buttons, and a pop-up that fits.

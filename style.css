@@ -2162,3 +2162,16 @@ body.house-on #money-hud, body.house-on #sanity-hud { display: none !important; 
   .mode-card, .lobby-tab, .btn-retro, .btn-chip { min-height: 44px; }
 }
 @media (max-width: 600px) { .lobby-tabs { padding-right: 64px; } .lobby-tab span { font-size: .72rem; } }
+
+/* ---- every device: slim buttons never break mid-label, text scales with the screen ---- */
+.mode-slim { font-size: clamp(.9rem, 3.8vw, 1.15rem); letter-spacing: 0; line-height: 1.15; word-break: normal; overflow-wrap: anywhere; }
+@media (max-width: 380px) { .lobby-grid { gap: 6px; } .mode-slim { padding: 6px 4px; } }
+@media (max-width: 480px) {
+  .btn-retro.w-64, .btn-retro.w-32, .btn-retro.w-40, .btn-retro.w-48 { width: auto !important; max-width: 100%; min-width: 0; padding-left: 12px; padding-right: 12px; }
+  .flex.gap-4 { flex-wrap: wrap; justify-content: center; }
+  h1.text-5xl { font-size: 2.1rem !important; line-height: 1.1 !important; }
+  h1.text-4xl { font-size: 1.8rem !important; line-height: 1.1 !important; }
+  #shop-menu, #blackjack-screen, #slots-screen, #cups-screen, #hilo-screen { overflow-x: hidden; }
+}
+@media (max-width: 380px) { .lobby-tabs { padding-right: 0; } .lobby-tab { padding-left: 2px; padding-right: 2px; } .lobby-tab span { font-size: .56rem; letter-spacing: 0; } .lobby-tab i { margin-bottom: 2px; } }
+@media (max-width: 460px) { .achievement-popup { width: calc(100vw - 24px) !important; left: -110vw !important; top: calc(8px + env(safe-area-inset-top)) !important; padding: 8px 10px !important; } .achievement-popup.show { left: 12px !important; } }
