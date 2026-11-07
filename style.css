@@ -2175,3 +2175,7 @@ body.house-on #money-hud, body.house-on #sanity-hud { display: none !important; 
 }
 @media (max-width: 380px) { .lobby-tabs { padding-right: 0; } .lobby-tab { padding-left: 2px; padding-right: 2px; } .lobby-tab span { font-size: .56rem; letter-spacing: 0; } .lobby-tab i { margin-bottom: 2px; } }
 @media (max-width: 460px) { .achievement-popup { width: calc(100vw - 24px) !important; left: -110vw !important; top: calc(8px + env(safe-area-inset-top)) !important; padding: 8px 10px !important; } .achievement-popup.show { left: 12px !important; } }
+html { background-color: var(--bg-color, #090a0f); transition: background-color .7s ease; }
+html[data-theme] #house-canvas { background: transparent; }
+.house-view { background: transparent; }
+@media (max-width: 460px) { .lobby-tab span { font-size: .62rem; letter-spacing: 0; } }

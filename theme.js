@@ -83,12 +83,11 @@ function applyTheme(id, persist, instant) {
     if (persist) Store.set(THEME_KEY, id);
     if (instant || !changed || !document.body) { swap(); }
     else {
-        // cross-fade: every colour eases over 0.7s, and sprites are re-cut while the screen is dipped
+        // seamless: every colour eases over 0.7s, with no dip through black
         root.classList.add('theme-fading');
-        document.body.style.opacity = '.55';
+        swap();
         clearTimeout(themeFadeTimer);
-        setTimeout(() => { swap(); document.body.style.opacity = ''; }, 220);
-        themeFadeTimer = setTimeout(() => root.classList.remove('theme-fading'), 1000);
+        themeFadeTimer = setTimeout(() => root.classList.remove('theme-fading'), 900);
     }
     syncThemeButtons();
 }

@@ -384,8 +384,8 @@ function hsDraw() {
     const cv = document.getElementById('house-canvas'); if (!cv) return;
     const g = cv.getContext('2d'); g.imageSmoothingEnabled = false;
     const t = HS.t, m = HOUSE_MAPS[HS.map];
-    g.setTransform(1, 0, 0, 1, 0, 0); g.fillStyle = '#000'; g.fillRect(0, 0, VW, VH);
-    if (HS.black > 0) { return; }
+    g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, VW, VH);
+    if (HS.black > 0) { g.fillStyle = '#000'; g.fillRect(0, 0, VW, VH); return; }
     g.setTransform(1, 0, 0, 1, -Math.round(HS.cam.x), -Math.round(HS.cam.y));
     hsDrawMap(g, t);
     const list = [];
