@@ -2249,3 +2249,19 @@ body.ln-on .house-l { border-color: #7c2d12; }
 /* Md8: object names and the lamp timer are real text now, not scaled-up canvas pixels */
 .house-tag { position: absolute; z-index: 5; transform: translate(-50%, -100%); padding: 2px 8px 3px; background: rgba(0,0,0,.82); border: 1px solid #a16207; color: #fde68a; font-family: 'VT323', monospace; font-size: clamp(.95rem, 2.4vw, 1.35rem); line-height: 1.1; letter-spacing: .06em; white-space: nowrap; pointer-events: none; text-shadow: 0 0 6px rgba(253,230,138,.35); }
 .house-tag.lamp { left: 8px; top: 8px; transform: none; border-color: #b45309; color: #fbbf24; }
+
+/* 1.0: first-night guide + collapsible lobby groups */
+.guide-card { border: 2px solid #fbbf24; background: rgba(251,191,36,.07); padding: 10px 12px; display: flex; flex-direction: column; gap: 6px; }
+.guide-card.hidden { display: none; }
+.guide-top { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-family: 'Press Start 2P', monospace; font-size: .5rem; color: #fbbf24; line-height: 1.6; }
+.guide-top span { color: #94a3b8; }
+.guide-next { font-size: 1.35rem; color: #e2e8f0; line-height: 1.15; }
+.guide-next small { display: block; font-size: 1.05rem; color: #94a3b8; margin-top: 2px; }
+.guide-all summary { cursor: pointer; font-size: 1rem; color: #64748b; min-height: 32px; display: flex; align-items: center; }
+.guide-row { font-size: 1.05rem; color: #94a3b8; padding: 1px 0; } .guide-row.on { color: #4ade80; }
+.guide-hide { align-self: flex-end; min-height: 32px; padding: 2px 10px; border: 1px solid #475569; background: transparent; color: #94a3b8; font-family: 'Press Start 2P', monospace; font-size: .45rem; cursor: pointer; }
+.lobby-details { display: flex; flex-direction: column; gap: 8px; }
+.lobby-details > summary { list-style: none; cursor: pointer; }
+.lobby-details > summary::-webkit-details-marker { display: none; }
+.lobby-details > summary::after { content: ' \25BE'; }
+.lobby-details[open] > summary::after { content: ' \25B4'; }

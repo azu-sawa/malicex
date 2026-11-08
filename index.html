@@ -14,8 +14,8 @@
     <link rel="manifest" href="manifest.webmanifest">
     <style>.hidden{display:none!important}</style>
     <script>try{var _t=localStorage.getItem("malicex_theme");if(_t==="green"||_t==="blood"||_t==="void"||_t==="dust")document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
-    <link rel="stylesheet" href="style.css?v=Md8.1">
-    <link rel="stylesheet" href="tailwind.css?v=Md8.1">
+    <link rel="stylesheet" href="style.css?v=1.0rc1">
+    <link rel="stylesheet" href="tailwind.css?v=1.0rc1">
     <meta name="theme-color" content="#090a0f">
 </head>
 <body class="flex flex-col items-center justify-between p-4 screen-flicker">
@@ -142,24 +142,28 @@
 
         <!-- PLAY -->
         <section id="tab-play" class="lobby-panel" role="tabpanel">
+            <div id="guide-card" class="guide-card hidden"></div>
             <div id="sin-card" class="sin-card"></div>
             <button id="menu-btn-normal" class="mode-card" onclick="selectDifficulty('NORMAL')">NORMAL</button>
-            <button id="menu-btn-hard" class="mode-card mode-red" onclick="selectDifficulty('HARD')">HARDCORE</button>
             <button id="menu-btn-gauntlet" class="mode-card mode-amber" onclick="selectDifficulty('GAUNTLET')">GAUNTLET <span id="gauntlet-sub" class="mode-sub"></span></button>
             <button id="menu-btn-daily" class="mode-card mode-cyan" onclick="selectDifficulty('DAILY')">DAILY SEED <span id="daily-sub" class="mode-sub"></span></button>
-            <div id="terms-box" class="contracts-box"></div>
-            <div id="architect-box" class="contracts-box"></div>
             <button class="mode-card mode-amber house-btn" onclick="openHouse()">THE HOUSE <span class="mode-sub">Walk the rooms. Talk to the dealers. Find what they hide.</span></button>
-            <button id="menu-btn-asc" class="mode-card mode-slim" onclick="cycleAscension()">ASCENSION 0 / 0</button>
-            <button class="mode-card mode-slim mode-purple" onclick="toggleAdvancedModes()" aria-expanded="false">HARDER TABLES &#9662;</button>
-            <div id="advanced-modes" class="hidden lobby-sub-panel">
-                <button id="menu-btn-merc" class="mode-card mode-purple" onclick="selectDifficulty('MERCENARY')">THE MERCENARY</button>
-                <button id="menu-btn-boss" class="mode-card mode-red hidden" onclick="selectDifficulty('BOSS')">THE DEVIL</button>
-                <button id="menu-btn-ancient" class="mode-card mode-amber hidden" onclick="selectDifficulty('ANCIENT')">THE ANCIENT</button>
-                <button id="menu-btn-endless" class="mode-card hidden" onclick="selectDifficulty('ENDLESS')">ENDLESS NIGHTMARE</button>
-                <button id="menu-btn-finale" class="mode-card mode-finale" onclick="selectDifficulty('FINALE')">THE LAST TABLE</button>
-                <button id="menu-btn-underside" class="mode-card mode-finale hidden" onclick="selectDifficulty('UNDERSIDE')">THE UNDERSIDE</button>
-            </div>
+            <details id="more-tables" class="lobby-details">
+                <summary class="mode-card mode-slim mode-purple">HARDER TABLES &amp; MODIFIERS</summary>
+                <div class="lobby-sub-panel">
+                    <button id="menu-btn-hard" class="mode-card mode-red" onclick="selectDifficulty('HARD')">HARDCORE</button>
+                    <button id="menu-btn-merc" class="mode-card mode-purple" onclick="selectDifficulty('MERCENARY')">THE MERCENARY</button>
+                    <button id="menu-btn-boss" class="mode-card mode-red hidden" onclick="selectDifficulty('BOSS')">THE DEVIL</button>
+                    <button id="menu-btn-ancient" class="mode-card mode-amber hidden" onclick="selectDifficulty('ANCIENT')">THE ANCIENT</button>
+                    <button id="menu-btn-endless" class="mode-card hidden" onclick="selectDifficulty('ENDLESS')">ENDLESS NIGHTMARE</button>
+                    <button id="menu-btn-finale" class="mode-card mode-finale" onclick="selectDifficulty('FINALE')">THE LAST TABLE</button>
+                    <button id="menu-btn-underside" class="mode-card mode-finale hidden" onclick="selectDifficulty('UNDERSIDE')">THE UNDERSIDE</button>
+                    <button id="menu-btn-asc" class="mode-card mode-slim" onclick="cycleAscension()">ASCENSION 0 / 0</button>
+                    <div id="terms-box" class="contracts-box"></div>
+                    <div id="architect-box" class="contracts-box"></div>
+                </div>
+            </details>
+            <div id="advanced-modes" class="hidden"></div>
         </section>
 
         <!-- ARCHIVE -->
@@ -192,18 +196,21 @@
 
         <!-- SYSTEM -->
         <section id="tab-system" class="lobby-panel hidden" role="tabpanel">
-            <button class="mode-card" onclick="openTutorial()">HOW TO PLAY <span class="mode-sub">Short guide, 6 pages</span></button>
+            <button class="mode-card" onclick="openTutorial()">HOW TO PLAY <span class="mode-sub">The short guide. Your first-night checklist is on the Play tab.</span></button>
             <div class="lobby-grid">
                 <button id="btn-audio" class="mode-card mode-slim" onclick="toggleAudio()">AUDIO: ON</button>
                 <button id="btn-music" class="mode-card mode-slim" onclick="toggleMusic()">MUSIC: ON</button>
+                <button id="set-boot" class="mode-card mode-slim" onclick="toggleBoot()">START IN: THE HOUSE</button>
+                <button id="set-fast" class="mode-card mode-slim" onclick="toggleSetting('fast')">FAST HANDS: OFF</button>
+            </div>
+            <details class="lobby-details"><summary class="mode-card mode-slim">DISPLAY &amp; ACCESSIBILITY</summary>
+            <div class="lobby-grid">
                 <button id="set-cursor" class="mode-card mode-slim" onclick="toggleSetting('cursor')">CRT POINTER: ON</button>
                 <button id="set-haptics" class="mode-card mode-slim" onclick="toggleSetting('haptics')">VIBRATION: ON</button>
                 <button id="set-lowfx" class="mode-card mode-slim" onclick="toggleSetting('lowfx')">LOW EFFECTS: OFF</button>
                 <button id="set-bigtext" class="mode-card mode-slim" onclick="toggleSetting('bigtext')">LARGE TEXT: OFF</button>
                 <button id="set-letters" class="mode-card mode-slim" onclick="toggleSetting('shellletters')">SHELL LETTERS: OFF</button>
                 <button id="set-crtfx" class="mode-card mode-slim" onclick="toggleSetting('crtfx')">CRT SCREEN: ON</button>
-                <button id="set-fast" class="mode-card mode-slim" onclick="toggleSetting('fast')">FAST HANDS: OFF</button>
-                <button id="set-boot" class="mode-card mode-slim" onclick="toggleBoot()">START IN: THE HOUSE</button>
                 <button class="mode-card mode-slim" onclick="runUiSelfTest()">RUN SELF-TEST</button>
             </div>
             <div class="lobby-sub-title">SCREEN COLOURS</div>
@@ -214,6 +221,8 @@
                 <button id="theme-void" class="mode-card mode-slim" onclick="setTheme('void')">VOID VIOLET</button>
                 <button id="theme-dust" class="mode-card mode-slim" onclick="setTheme('dust')">DUST SEPIA</button>
             </div>
+            </details>
+            <details class="lobby-details"><summary class="mode-card mode-slim">SOUND, KEYS &amp; RADIO</summary>
             <div class="lobby-sub-title">VOLUME</div>
             <label class="vol-row" for="vol-master"><span>MASTER</span><input id="vol-master" type="range" min="0" max="100" value="100" oninput="setVol('master',this.value)"></label>
             <label class="vol-row" for="vol-sfx"><span>EFFECTS</span><input id="vol-sfx" type="range" min="0" max="100" value="100" oninput="setVol('sfx',this.value)"></label>
@@ -221,6 +230,7 @@
             <div id="radio-box" class="contracts-box"></div>
             <label class="lobby-sub-title" for="music-vol">MUSIC VOLUME</label>
             <input id="music-vol" type="range" min="0" max="100" value="60" oninput="setMusicVolume(this.value)">
+            </details>
             <div class="lobby-sub-title">INSTALL &middot; on iPad: Share, then Add to Home Screen. It then plays offline.</div>
             <div class="lobby-sub-title">SAVE DATA &middot; stored only in this browser. Backups are automatic.</div>
             <div id="save-panel" class="save-panel"></div>
@@ -581,57 +591,58 @@
 
     <!-- ========== SCRIPTS ========== -->
 
-    <script src="rng.js?v=Md8.1"></script>
-    <script src="timers.js?v=Md8.1"></script>
-    <script src="state.js?v=Md8.1"></script>
-    <script src="store.js?v=Md8.1"></script>
-    <script src="theme.js?v=Md8.1"></script>
-    <script src="audio.js?v=Md8.1"></script>
-    <script src="sanity.js?v=Md8.1"></script>
-    <script src="util.js?v=Md8.1"></script>
-    <script src="pixel.js?v=Md8.1"></script>
-    <script src="data.js?v=Md8.1"></script>
-    <script src="dialogue.js?v=Md8.1"></script>
-    <script src="dealers.js?v=Md8.1"></script>
-    <script src="combat.js?v=Md8.1"></script>
-    <script src="poker.js?v=Md8.1"></script>
-    <script src="items.js?v=Md8.1"></script>
-    <script src="ai.js?v=Md8.1"></script>
-    <script src="render.js?v=Md8.1"></script>
-    <script src="hud.js?v=Md8.1"></script>
-    <script src="effects.js?v=Md8.1"></script>
-    <script src="run.js?v=Md8.1"></script>
-    <script src="gauntlet.js?v=Md8.1"></script>
-    <script src="endings.js?v=Md8.1"></script>
-    <script src="content.js?v=Md8.1"></script>
-    <script src="save.js?v=Md8.1"></script>
-    <script src="shop.js?v=Md8.1"></script>
-    <script src="minigames.js?v=Md8.1"></script>
-    <script src="ui.js?v=Md8.1"></script>
-    <script src="lobby.js?v=Md8.1"></script>
-    <script src="tutorial.js?v=Md8.1"></script>
-    <script src="psyche.js?v=Md8.1"></script>
-    <script src="sin.js?v=Md8.1"></script>
-    <script src="cinema.js?v=Md8.1"></script>
-    <script src="habit.js?v=Md8.1"></script>
-    <script src="underside.js?v=Md8.1"></script>
-    <script src="progress.js?v=Md8.1"></script>
-    <script src="boss.js?v=Md8.1"></script>
-    <script src="architect.js?v=Md8.1"></script>
-    <script src="hallu.js?v=Md8.1"></script>
-    <script src="keys.js?v=Md8.1"></script>
-    <script src="arcana.js?v=Md8.1"></script>
-    <script src="reward.js?v=Md8.1"></script>
-    <script src="radio.js?v=Md8.1"></script>
-    <script src="minicine.js?v=Md8.1"></script>
-    <script src="house.js?v=Md8.1"></script>
-    <script src="tenants.js?v=Md8.1"></script>
-    <script src="fragments.js?v=Md8.1"></script>
-    <script src="puzzles.js?v=Md8.1"></script>
-    <script src="longnight.js?v=Md8.1"></script>
-    <script src="qol.js?v=Md8.1"></script>
-    <script src="debug.js?v=Md8.1"></script>
-    <script src="main.js?v=Md8.1"></script>
+    <script src="rng.js?v=1.0rc1"></script>
+    <script src="timers.js?v=1.0rc1"></script>
+    <script src="state.js?v=1.0rc1"></script>
+    <script src="store.js?v=1.0rc1"></script>
+    <script src="theme.js?v=1.0rc1"></script>
+    <script src="audio.js?v=1.0rc1"></script>
+    <script src="sanity.js?v=1.0rc1"></script>
+    <script src="util.js?v=1.0rc1"></script>
+    <script src="pixel.js?v=1.0rc1"></script>
+    <script src="data.js?v=1.0rc1"></script>
+    <script src="dialogue.js?v=1.0rc1"></script>
+    <script src="dealers.js?v=1.0rc1"></script>
+    <script src="combat.js?v=1.0rc1"></script>
+    <script src="poker.js?v=1.0rc1"></script>
+    <script src="items.js?v=1.0rc1"></script>
+    <script src="ai.js?v=1.0rc1"></script>
+    <script src="render.js?v=1.0rc1"></script>
+    <script src="hud.js?v=1.0rc1"></script>
+    <script src="effects.js?v=1.0rc1"></script>
+    <script src="run.js?v=1.0rc1"></script>
+    <script src="gauntlet.js?v=1.0rc1"></script>
+    <script src="endings.js?v=1.0rc1"></script>
+    <script src="content.js?v=1.0rc1"></script>
+    <script src="save.js?v=1.0rc1"></script>
+    <script src="shop.js?v=1.0rc1"></script>
+    <script src="minigames.js?v=1.0rc1"></script>
+    <script src="ui.js?v=1.0rc1"></script>
+    <script src="lobby.js?v=1.0rc1"></script>
+    <script src="tutorial.js?v=1.0rc1"></script>
+    <script src="guide.js?v=1.0rc1"></script>
+    <script src="psyche.js?v=1.0rc1"></script>
+    <script src="sin.js?v=1.0rc1"></script>
+    <script src="cinema.js?v=1.0rc1"></script>
+    <script src="habit.js?v=1.0rc1"></script>
+    <script src="underside.js?v=1.0rc1"></script>
+    <script src="progress.js?v=1.0rc1"></script>
+    <script src="boss.js?v=1.0rc1"></script>
+    <script src="architect.js?v=1.0rc1"></script>
+    <script src="hallu.js?v=1.0rc1"></script>
+    <script src="keys.js?v=1.0rc1"></script>
+    <script src="arcana.js?v=1.0rc1"></script>
+    <script src="reward.js?v=1.0rc1"></script>
+    <script src="radio.js?v=1.0rc1"></script>
+    <script src="minicine.js?v=1.0rc1"></script>
+    <script src="house.js?v=1.0rc1"></script>
+    <script src="tenants.js?v=1.0rc1"></script>
+    <script src="fragments.js?v=1.0rc1"></script>
+    <script src="puzzles.js?v=1.0rc1"></script>
+    <script src="longnight.js?v=1.0rc1"></script>
+    <script src="qol.js?v=1.0rc1"></script>
+    <script src="debug.js?v=1.0rc1"></script>
+    <script src="main.js?v=1.0rc1"></script>
 
 </body>
 </html>

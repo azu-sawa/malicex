@@ -83,6 +83,12 @@ Self-test: open `index.html?test` and check the console (38 checks).
 - **Polish.** Dialogue sits above the on-screen buttons, narrow phones no longer clip the A button, interaction prompts name the thing you are about to use, four new trophies (LANDLORD, NIGHT OWL, ANSWERED, FIRST LIGHT) with hints.
 - Self-test: 90 checks (`index.html?test`).
 
+## 1.0 RC1 - final touch
+- **First Night guide** (Play tab): a 7-step checklist (play, win, walk the House, Black Market, buy, Grimoire, backup). It ticks itself off, pays $1,000 once when finished and can be hidden.
+- **Simpler lobby:** a new player sees SIT DOWN, NORMAL, THE HOUSE and the guide. After the first win Gauntlet, Daily and one "Harder tables & modifiers" fold appear (Hardcore, Mercenary, Devil, Ancient, Endless, Last Table, Underside, Ascension, Terms, Architect). System settings are grouped into folds.
+- **Fix:** tapping a mode twice during the screen wipe no longer charges twice or starts twice.
+- Autoplay bot: 8 modes played to a result with zero errors.
+
 ## Md8 - THE LONG NIGHT
 - **Md8.1 cut:** the Weekly seed and THE WARD were removed to keep the game focused (Tenants stay). Saves migrate to schema 3: the Nurse's Key is refunded in Marks and leftover Ward/weekly data is dropped.
 - **The Long Night** (ring the bell in the Study, once a day): five minutes in the dark House. Tenants you beat hunt you room to room. Candles, salt and doors keep you alive, a caught player plays a short shell duel (THE CATCH) in the menu. Dawn pays cash, marks and sometimes a lore page. A night cut off by a closed tab is handed back.

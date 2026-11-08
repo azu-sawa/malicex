@@ -20,6 +20,8 @@ function addRunSummary(el) {
 
 // ---------- RUN START ----------
 function selectDifficulty(diff) {
+    // a second tap during the screen wipe must not charge twice or start twice
+    if (window.__runStarting && Date.now() - window.__runStarting < 3000) return;
     let cost = 0;
     if (diff === 'HARD') cost = 200;
     else if (diff === 'MERCENARY') cost = 2000;
@@ -30,6 +32,7 @@ function selectDifficulty(diff) {
     else if (diff === 'FINALE') { if (!finaleUnlocked()) { SFX.empty(); return; } }
     if (globalMoney < cost) { shakeElement(document.getElementById('money-display'));
         SFX.empty(); return; }
+    window.__runStarting = Date.now();
     globalMoney -= cost;
     settings.lastMode = diff; saveSettings();
     saveGame();
@@ -64,6 +67,7 @@ function beginRun() {
 }
 
 function startGame() {
+    window.__runStarting = 0;
     const asc = ascLevel();
     setSanityDirect(Math.max(SANITY.RUN_FLOOR, Math.min(100, sanity)));
     if (asc >= 3) setSanityDirect(Math.max(30, sanity - 15));

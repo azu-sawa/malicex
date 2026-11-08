@@ -12,7 +12,7 @@
 //    side settings (theme, keys, radio, volume...) travel with it
 // =====================================================================
 const SAVE = {
-    SCHEMA: 3, FMT: 2, VER: 'Md8.1',
+    SCHEMA: 3, FMT: 2, VER: '1.0rc1',
     KEY: VERSION, BAK: [VERSION + '_bak1', VERSION + '_bak2'], BAD: VERSION + '_bad',
     rev: 0, lastSum: '', lastWrite: 0, lastBak: 0, source: 'new',
     failed: false, behind: false, frozen: false, persisted: null,

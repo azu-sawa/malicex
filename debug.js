@@ -84,6 +84,10 @@ function runSelfTests() {
     eq('Md8 cash items are well formed', SHOP_CATALOG.filter(i => i.buy || i.on).every(i => i.en_n && i.en_d && i.price > 0 && (i.repeat || typeof i.on === 'function')), true);
     eq('Md8 Marks items are well formed', MARKS_CATALOG.filter(i => i.buy).every(i => i.n && i.d && i.cost > 0 && (i.repeat || typeof i.on === 'function')), true);
     eq('every new achievement has a hint', ['DAWN_BREAKS', 'UNSEEN', 'CAUGHT_3', 'SAFE_CRACKED', 'MUSIC_BOX', 'FIVE_FRAMES', 'LOCK_PICKED', 'FILM_5', 'FILM_ALL'].every(k => ACHIEVEMENTS[k] && ACHIEVEMENTS[k].hint), true);
+    // ---- 1.0 checks: first-night guide ----
+    eq('guide steps have text and checks', GUIDE_STEPS.every(g => g.t && g.h && typeof g.ok === 'function'), true);
+    eq('guide state counts done steps', (() => { const g = guideState(); return g.done.length + (g.next ? 1 : 0) <= GUIDE_STEPS.length && (g.all || !!g.next); })(), true);
+    eq('a second tap cannot start a run twice', (() => { const m = globalMoney; window.__runStarting = Date.now(); selectDifficulty('HARD'); const same = globalMoney === m; window.__runStarting = 0; return same; })(), true);
     // ---- Mu-delta checks ----
     eq('sin endings registered', SIN_ENDINGS.every(k => ENDINGS[k] && ENDINGS[k].en_t), true);
     eq('every cutscene script has art that exists', Object.values(CINE_SCRIPTS).every(sc => sc.shots.every(s => ART[s.art] && s.text.length)), true);

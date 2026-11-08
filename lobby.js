@@ -88,6 +88,10 @@ function renderLobby() {
         ud.innerHTML = `<span class="mode-name">THE UNDERSIDE</span><span class="mode-sub">Act II. Three new dealers and the Host.</span><span class="mode-cost">$${UNDERSIDE_COST + 500}</span>`;
     }
     if (q('marks-n')) q('marks-n').textContent = meta.marks || 0;
+    // progressive reveal: a new player sees one table, the House and the checklist
+    const vet = (meta.wins || 0) >= 1;
+    ['menu-btn-gauntlet', 'menu-btn-daily', 'more-tables'].forEach(id => { const e = q(id); if (e) e.classList.toggle('hidden', !vet); });
+    try { renderGuide(); } catch (e) {}
     renderSinCard();
     renderTermsBox();
     renderContracts();
@@ -109,9 +113,4 @@ function lobbyPrimary() {
     if (!settings.lastMode) selectDifficulty('NORMAL'); else replayLast();
 }
 
-function toggleAdvancedModes() {
-    const p = document.getElementById('advanced-modes');
-    p.classList.toggle('hidden');
-    const b = p.previousElementSibling;
-    if (b) b.setAttribute('aria-expanded', p.classList.contains('hidden') ? 'false' : 'true');
-}
+function toggleAdvancedModes() { const d = document.getElementById('more-tables'); if (d) d.open = !d.open; }
