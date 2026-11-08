@@ -58,6 +58,7 @@ window.onload = function() {
     loadAudioPrefs();
     loadGame();
     psycheInit();
+    SAVE.init();
     if (settings.name) DISTURBING_WORDS.push(settings.name.toUpperCase());
     updateSanityUI();
     updateMoneyDisplay();

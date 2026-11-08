@@ -33,7 +33,7 @@ function renderShop() {
     if (sub) sub.textContent = shopTab === 'cash' ? '"Everything here has a price. Not all of it is money."' : '"Marks are what the house keeps of you. Spend them before it does."';
     if (shopTab === 'marks') {
         MARKS_CATALOG.forEach(m => {
-            const own = !m.repeat && (m.id === 'nightTuner' ? meta.nightTuner : m.id === 'brassKey' ? meta.brassKey : meta.blackCard);
+            const own = !m.repeat && (m.on ? m.on() : m.id === 'nightTuner' ? meta.nightTuner : m.id === 'brassKey' ? meta.brassKey : meta.blackCard);
             const afford = (meta.marks || 0) >= m.cost;
             grid.appendChild(shopCard({ name: m.n, desc: m.d, color: m.color, icon: m.icon, mark: true, sold: !!own,
                 priceText: m.cost + ' MARKS', locked: !afford, onBuy: () => buyMarksItem(m) }));
@@ -42,7 +42,8 @@ function renderShop() {
     }
     SHOP_CATALOG.forEach(item => {
         let soldOut = false;
-        if (item.isCrate || item.grant || item.id === 'sedativePack' || item.id === 'tarotDeck') soldOut = false;
+        if (item.repeat || item.isCrate || item.grant || item.id === 'sedativePack' || item.id === 'tarotDeck') soldOut = false;
+        else if (item.on) soldOut = !!item.on();
         else if (upgrades[item.id]) soldOut = true;
         grid.appendChild(shopCard({ name: item.en_n, desc: item.en_d, color: item.color, icon: item.icon, sold: soldOut,
             priceText: '$' + shopPrice(item), onBuy: () => (item.isCrate ? buyCrate() : buyItem(item)) }));
@@ -51,7 +52,8 @@ function renderShop() {
 
 function buyMarksItem(m) {
     if ((meta.marks || 0) < m.cost) { SFX.empty(); shakeElement(document.getElementById('shop-marks-display')); return; }
-    if (m.id === 'sealedCard') {
+    if (m.buy) { const r = m.buy(); if (r === false) { SFX.empty(); setShopMsg('There is nothing left for this to give you.'); return; } setShopMsg(r);
+    } else if (m.id === 'sealedCard') {
         const a = (meta.arcana = meta.arcana || { owned: {}, seen: {}, played: {} });
         const left = Object.keys(ARCANA).filter(k => !a.owned[k]);
         if (!left.length) { SFX.empty(); setShopMsg('You already own every card.'); return; }
@@ -86,7 +88,7 @@ function buyItem(item) {
         SFX.empty(); return; }
     globalMoney -= shopPrice(item);
     SFX.buy();
-    if (item.id === 'sedativePack') { for (let i = 0; i < 3; i++) nextRunItems.push('SEDATIVE'); } else if (
+    if (item.buy) { setShopMsg(item.buy() || ''); } else if (item.id === 'sedativePack') { for (let i = 0; i < 3; i++) nextRunItems.push('SEDATIVE'); } else if (
         item.id === 'tarotDeck') {
         nextRunItems.push('TAROT');
     } else {

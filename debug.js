@@ -53,6 +53,42 @@ function runSelfTests() {
     eq('mode multipliers cover finale', MODE_MULT.FINALE > 1, true);
     eq('name fill', psychFill('{name}|{runs}').split('|').length, 2);
     eq('import rejects junk', (() => { const b = document.getElementById('save-io'); const o = b.value; b.value = 'nope'; importSave(); b.value = o; return true; })(), true);
+    // ---- Md8 checks: save system ----
+    { const env = SAVE.envelope(SAVE.collect(), 7), r = SAVE.parse(env.raw);
+      eq('save envelope roundtrips with its checksum', r.ok && r.rev === 7 && r.data.money === globalMoney, true);
+      eq('a changed save fails its checksum', SAVE.parse(env.raw.replace(/"money":-?\d+/, '"money":123456789')).why, 'checksum');
+      eq('sanitise clamps junk', (() => { const c = SAVE.sanitise({ money: 'x', sanity: 400, achievements: ['A', 'A', 3], unlockedLore: [1, 1, 'z'], upgrades: null, meta: 5 }); return c.money === 200 && c.sanity === 100 && c.achievements.length === 1 && c.unlockedLore.length === 1 && typeof c.upgrades === 'object'; })(), true);
+      eq('sanitise is idempotent', JSON.stringify(SAVE.sanitise(SAVE.sanitise(SAVE.collect()))) === JSON.stringify(SAVE.sanitise(SAVE.collect())), true);
+      eq('hash is stable', SAVE.sum('malicex') === SAVE.sum('malicex') && SAVE.sum('a') !== SAVE.sum('b'), true); }
+    // ---- Md8 checks: the Long Night ----
+    { const keep = meta.brassKey; meta.brassKey = 1;
+      eq('every night room is reachable from the Study', LN_ROOMS.every(r => lnRoomPath('STUDY', r) !== null), true);
+      eq('a room path is a chain of doors', LN_ROOMS.every(r => { const p = lnRoomPath('STUDY', r); let c = 'STUDY'; return p.every(n => { const ok = lnAdj(c).includes(n); c = n; return ok; }); }), true);
+      meta.brassKey = keep;
+      const hs = lnPickHunters(); eq('2 to 4 distinct valid hunters', hs.length >= 2 && hs.length <= 4 && new Set(hs).size === hs.length && hs.every(k => HOUSE_FOLK[k]), true);
+      const all = ['SADISTIC', 'CALCULATING', 'UNPREDICTABLE', 'MIMIC', 'ANCIENT', 'WARDEN'];
+      eq('duels always finish and keep the shell count honest', (() => { for (let g = 0; g < 400; g++) { const S = lnDuelNew(all[g % all.length], g % 300); let n = 0; while (!S.over && n++ < 300) { const who = S.turn; lnDuelShoot(S, who, who === 'me' ? (Math.random() < 0.5 ? 'other' : 'self') : lnDuelAI(S)); if (S.live < 0 || S.blank < 0 || S.live + S.blank !== S.chamber.length) return false; } if (!S.over || (S.me > 0 && S.him > 0)) return false; } return true; })(), true);
+      eq('duel AI answers sensibly', all.every(k => ['other', 'self'].includes(lnDuelAI({ k, live: 2, blank: 3, last: 'self' }))), true);
+      eq('shooting a blank at yourself keeps your turn', (() => { const S = lnDuelNew('SADISTIC', 0); S.chamber = [0, 1, 1]; S.live = 2; S.blank = 1; S.turn = 'me'; lnDuelShoot(S, 'me', 'self'); return S.turn === 'me' && S.me === 2; })(), true); }
+    // ---- Md8 checks: puzzles and films ----
+    { const perms = a => a.length < 2 ? [a] : a.flatMap((x, i) => perms(a.slice(0, i).concat(a.slice(i + 1))).map(r => [x].concat(r)));
+      const rule = o => { const at = k => o.indexOf(k); return (at('MIMIC') === 0 || at('MIMIC') === 3) && Math.abs(at('CALCULATING') - at('MIMIC')) === 1 && at('SADISTIC') < at('WARDEN') && at('WARDEN') !== 0 && at('WARDEN') !== 3; };
+      const sol = perms(['SADISTIC', 'WARDEN', 'CALCULATING', 'MIMIC']).filter(rule);
+      eq('the portrait riddle has exactly one answer, and it is the stored one', sol.length === 1 && pzSolved(sol[0]), true); }
+    eq('every fragment film points at a real lore page and cutscene', Object.keys(FRAG_FILMS).every(id => LORE_ENTRIES.some(l => l.id === +id) && CINE_SCRIPTS[FRAG_FILMS[id]]), true);
+    eq('every film has a title', Object.values(FRAG_FILMS).every(f => FRAG_TITLES[f]), true);
+    eq('Md8 cutscenes exist', ['ln_begin', 'ln_dawn', 'ln_taken', 'ward_in', 'ward_out'].every(k => CINE_SCRIPTS[k]), true);
+    eq('new lore pages have text', [60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71].every(i => { const l = LORE_ENTRIES.find(x => x.id === i); return l && l.text && l.text.length > 10; }), true);
+    eq('puzzle objects sit inside their rooms', Object.keys(PZ_OBJS).every(r => PZ_OBJS[r].every(o => o.x >= 0 && o.y >= 0 && o.x + o.w <= HOUSE_MAPS[r].w && o.y + o.h <= HOUSE_MAPS[r].h)), true);
+    // ---- Md8 checks: the Ward ----
+    eq('the Ward asks about what was shown, with 3 distinct options that include the chart and the truth', (() => { for (let n = 1; n <= 6; n++) for (let g = 0; g < 40; g++) { const fs = wardFacts(n); if (fs.length !== 3 || fs[0].k !== 'pop') return false; fs.forEach(f => { if (!f.pool.includes(f.val)) f.pool.push(f.val); }); for (const f of fs) { const ch = wardChart(f, n), o = wardOptions(f, ch); if (new Set(o).size !== 3 || !o.includes(ch.val) || !o.includes(f.val)) return false; } } return true; })(), true);
+    eq('the chart is honest for the first two days', (() => { for (let g = 0; g < 60; g++) for (const n of [1, 2]) for (const f of wardFacts(n)) if (wardChart(f, n).lied) return false; return true; })(), true);
+    eq('the chart always lies about the dayroom from day 3', (() => { for (let n = 3; n <= 5; n++) { const f = wardFacts(n)[0]; if (!wardChart(f, n).lied && f.val !== '5') return false; } return true; })(), true);
+    eq('every Ward event has 3 choices with outcomes', WARD_EVENTS.every(e => e.ch.length === 3 && e.ch.every(c => c.o && c.r)), true);
+    // ---- Md8 checks: shop ----
+    eq('Md8 cash items are well formed', SHOP_CATALOG.filter(i => i.buy || i.on).every(i => i.en_n && i.en_d && i.price > 0 && (i.repeat || typeof i.on === 'function')), true);
+    eq('Md8 Marks items are well formed', MARKS_CATALOG.filter(i => i.buy).every(i => i.n && i.d && i.cost > 0 && (i.repeat || typeof i.on === 'function')), true);
+    eq('every new achievement has a hint', ['DAWN_BREAKS', 'UNSEEN', 'CAUGHT_3', 'SAFE_CRACKED', 'MUSIC_BOX', 'FIVE_FRAMES', 'LOCK_PICKED', 'FILM_5', 'FILM_ALL', 'WARD_CLEAR', 'GOOD_PATIENT', 'NO_PILLS'].every(k => ACHIEVEMENTS[k] && ACHIEVEMENTS[k].hint), true);
     // ---- Mu-delta checks ----
     eq('sin endings registered', SIN_ENDINGS.every(k => ENDINGS[k] && ENDINGS[k].en_t), true);
     eq('every cutscene script has art that exists', Object.values(CINE_SCRIPTS).every(sc => sc.shots.every(s => ART[s.art] && s.text.length)), true);
@@ -110,7 +146,6 @@ function runSelfTests() {
     eq('contracts defined', Object.keys(CONTRACTS).join(), 'SILENCE_PACT,ASCETIC_LIMIT,PARANOIA_MODE');
     eq('zalgo keeps base letters', zalgo('abc', 2).replace(/[\u0300-\u036f]/g, ''), 'abc');
     eq('radio secrets reachable', RADIO_SECRETS.every(x => x.f >= RADIO_MIN && x.f <= RADIO_MAX), true);
-    eq('versus items', Object.keys(VS_ITEMS).length, 7);
     eq('arcana cards', ARCANA_KEYS.length, 14);
     eq('key actions unique', new Set(KEY_ACTIONS.map(a => a[0])).size, KEY_ACTIONS.length);
     eq('run timers idle in lobby', RunTimers.active() || activeGame !== 'MENU', activeGame !== 'MENU');

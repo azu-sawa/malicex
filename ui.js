@@ -161,13 +161,6 @@ function showMenu() {
 // ---------- TOGGLES ----------
 
 
-function resetSave() {
-    if (confirm('Erase all progress, settings and trophies on this device? This cannot be undone.')) {
-        [VERSION, PREV_VERSION, LEGACY_VERSION, SETTINGS_KEY, AUDIO_PREF_KEY, 'malicex_theme', 'malicex_bgm', 'malicex_keys', 'malicex_fold', 'malicex_architect', 'malicex_vol', 'malicex_radio'].forEach(k => Store.remove(k));
-        location.reload();
-    }
-}
-
 // ---------- LEDGER ----------
 function openLedger() {
     document.getElementById('main-menu').classList.add('hidden');
@@ -235,6 +228,11 @@ function renderLedger() {
             const div = document.createElement('div');
             div.className = `lore-entry ${isUnlocked ? '' : 'locked'}`;
             div.innerHTML = isUnlocked ? entry.text : "[ PAGE MISSING ]";
+            if (isUnlocked && typeof FRAG_FILMS !== 'undefined' && FRAG_FILMS[entry.id]) {
+                const seenF = (meta.cineSeen || {})[FRAG_FILMS[entry.id]];
+                const bt = document.createElement('button'); bt.className = 'frag-play' + (seenF ? '' : ' fresh'); bt.textContent = seenF ? '\u25B6 FILM' : '\u25B6 NEW FILM';
+                bt.onclick = () => playFragFilm(entry.id); div.appendChild(bt);
+            }
             loreList.appendChild(div);
         });
     }

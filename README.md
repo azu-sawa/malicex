@@ -10,7 +10,6 @@ Plain HTML/CSS/JS, no build step, no external requests (fonts, art and sound are
 
 ## Mu-delta II (modules)
 - **Hallucinations** (Sanity 25 or lower): Zalgo item text, +-2px card jitter, phantom items in empty slots (15% per turn; click = hollow sound, -2 Sanity for 20 s), 5% false "Opponent aims at YOU..." flicker. All of it clears above 25.
-- **1v1 Versus** (PLAY tab): pass-and-play for two people on one device, or practice against the house. Shuffled shotgun, Live/Blank counts each round, four item slots, seven items. Shoot yourself on a blank to go again. A PASS THE DEVICE cover hides private peeks. Win counter kept in the save.
 - **The Architect's Contracts** (PLAY tab): SILENCE PACT, ASCETIC LIMIT, PARANOIA MODE. +25% score each. Stored in localStorage (`malicex_architect`).
 - **Radio** (SYSTEM tab): procedural static and a 64-108 MHz dial. Secret signals at 66.6, 94.4 and 103.6 MHz. Hold a lock for 2 s: lore page plus a small effect.
 - **Screen colours** (SYSTEM tab): Cyan/Amber, Green Mono, Blood Amber. Remembered, applied before first paint.
@@ -49,7 +48,7 @@ If you edit classes in the HTML or JS, rebuild Tailwind: `npx tailwindcss -c tai
 Self-test: open `index.html?test` and check the console (38 checks).
 
 
-## Md4 (touch + 1v1 + compact lobby)
+## Md4 (touch + compact lobby)
 - 1v1 now uses the same layout as the main fight (HP blocks, shell chamber, item row, big buttons). The player whose turn it is always sits at the bottom; the pass-the-device cover is unchanged.
 - Architect's Contracts panel rebuilt (it rendered as run-together text); buttons lock during a run.
 - Lobby boxes fold (tap a title). Fold state is remembered; most start folded.
@@ -83,4 +82,13 @@ Self-test: open `index.html?test` and check the console (38 checks).
 - **More horror.** Random House events (flicker, knocking, doors that lock, the radio changing station, footsteps, your name, cold), a lamp that holds the House back for 90 seconds (burns a candle stub; L key or LAMP button), run intrusions (a word, a whisper, the shell count lying for a second, a blackout, a tenant speaking), and small lobby disturbances at night or low Sanity. Everything switches off with LOW EFFECTS.
 - **Polish.** Dialogue sits above the on-screen buttons, narrow phones no longer clip the A button, interaction prompts name the thing you are about to use, four new trophies (LANDLORD, NIGHT OWL, ANSWERED, FIRST LIGHT) with hints.
 - Self-test: 90 checks (`index.html?test`).
+
+## Md8 - THE LONG NIGHT
+- **The Long Night** (ring the bell in the Study, once a day): five minutes in the dark House. Tenants you beat hunt you room to room. Candles, salt and doors keep you alive, a caught player plays a short shell duel (THE CATCH) in the menu. Dawn pays cash, marks and sometimes a lore page. A night cut off by a closed tab is handed back.
+- **THE WARD** (lobby): a psychological-horror mode with no shells. Six days in a bright ward. You see things by day, the nurse reads you the chart, and from day three the chart lies. GRIP is shown, TRUST and TRUTH are hidden. Four endings (door, discharged, broken), pills blur what you will have to remember.
+- **House puzzles**: a safe, a music box, a four-portrait riddle, a three-pin lock.
+- **Lore films**: every lore fragment now has a short cutscene, replayable from the Grimoire.
+- **Shop + Marks shop**: candle box, lantern, felt soles, salt, earplugs, coffee, fragment finder, lockpicks, stethoscope; second night, hunter's map, last candle, tenant's deed, last rites, lost page, nurse's key.
+- **Save system v2**: checksummed envelope, schema migrations, two rotating backups plus a backup at every run start, a damaged save is kept (never deleted) and the game falls back to a backup, other-tab guard, flush on tab hide, quota handling, gear returned after a cut-off run, export as short compressed code or .json file with settings included, backup list with restore, import preview.
+- 1v1 mode removed. Object names in the House are real text now, not scaled canvas pixels.
 

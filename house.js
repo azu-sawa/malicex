@@ -448,8 +448,8 @@ function hsDraw() {
     const cv = document.getElementById('house-canvas'); if (!cv) return;
     const g = cv.getContext('2d'); g.imageSmoothingEnabled = false;
     const t = HS.t, m = HOUSE_MAPS[HS.map];
-    g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, VW, VH);
-    if (HS.black > 0) { g.fillStyle = '#000'; g.fillRect(0, 0, VW, VH); return; }
+    g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, VW, VH); let tagWant = null, lampWant = null;
+    if (HS.black > 0) { g.fillStyle = '#000'; g.fillRect(0, 0, VW, VH); hsTags(null, null); return; }
     g.setTransform(1, 0, 0, 1, -Math.round(HS.cam.x), -Math.round(HS.cam.y));
     hsDrawMap(g, t);
     const list = [];
@@ -482,7 +482,7 @@ function hsDraw() {
         const bounce = Math.floor(Math.sin(t * 6) * 1.5);
         hsRect(g, cx - 5, cy - 8 + bounce, 10, 9, '#fde68a'); hsRect(g, cx - 4, cy - 7 + bounce, 8, 7, '#0f172a');
         hsRect(g, cx - 1, cy - 6 + bounce, 2, 3, '#fde68a'); hsRect(g, cx - 1, cy - 2 + bounce, 2, 1, '#fde68a');
-        if (o.label) { g.save(); g.font = '6px monospace'; g.textAlign = 'center'; const tw = g.measureText(o.label).width; g.fillStyle = 'rgba(0,0,0,.7)'; g.fillRect(cx - tw / 2 - 2, cy - 17 + bounce, tw + 4, 8); g.fillStyle = '#fde68a'; g.fillText(o.label, cx, cy - 11 + bounce); g.restore(); }
+        if (o.label) tagWant = { text: o.label, x: cx - HS.cam.x, y: cy - 8 + bounce - HS.cam.y };
     }
     g.setTransform(1, 0, 0, 1, 0, 0);
     // darkness: grows as Sanity falls; some rooms are dark to begin with; the clock at 3 is darker still
@@ -498,9 +498,19 @@ function hsDraw() {
         g.fillStyle = gr; g.fillRect(0, 0, VW, VH);
         if (sanity <= 40 && Math.sin(t * 17) > 0.96) { g.fillStyle = 'rgba(180,0,0,.08)'; g.fillRect(0, 0, VW, VH); }
     }
-    if (HS.lamp > 0) { const px = HS.x - HS.cam.x, py = HS.y - HS.cam.y - 8, gl = g.createRadialGradient(px, py, 4, px, py, 70); gl.addColorStop(0, 'rgba(253,186,60,.20)'); gl.addColorStop(1, 'rgba(253,186,60,0)'); g.fillStyle = gl; g.fillRect(0, 0, VW, VH); g.save(); g.font = '6px monospace'; g.fillStyle = '#fde68a'; g.fillText('LAMP ' + Math.ceil(HS.lamp) + 's', 4, 10); g.restore(); }
+    if (HS.lamp > 0) { const px = HS.x - HS.cam.x, py = HS.y - HS.cam.y - 8, gl = g.createRadialGradient(px, py, 4, px, py, 70); gl.addColorStop(0, 'rgba(253,186,60,.20)'); gl.addColorStop(1, 'rgba(253,186,60,0)'); g.fillStyle = gl; g.fillRect(0, 0, VW, VH); lampWant = 'LAMP ' + Math.ceil(HS.lamp) + 's'; }
     if (HS.blink > 0) { g.fillStyle = `rgba(0,0,0,${Math.min(1, HS.blink * 2)})`; g.fillRect(0, 0, VW, VH); }
     if (HS.flash > 0) { g.fillStyle = `rgba(255,255,255,${HS.flash})`; g.fillRect(0, 0, VW, VH); }
+    hsTags(tagWant, lampWant);
+}
+
+// Text on the pixel canvas is drawn at 320x208 and scaled up, which smears it. Names and the lamp timer are real DOM text on top instead, so they stay sharp at any size.
+function hsTags(tag, lamp) {
+    const view = document.getElementById('house-view'); if (!view) return;
+    let a = document.getElementById('house-tag'), b = document.getElementById('house-lamptag');
+    if (!a) { a = document.createElement('div'); a.id = 'house-tag'; a.className = 'house-tag'; view.appendChild(a); b = document.createElement('div'); b.id = 'house-lamptag'; b.className = 'house-tag lamp'; view.appendChild(b); }
+    if (tag) { if (a.textContent !== tag.text) a.textContent = tag.text; a.style.display = 'block'; const fx = Math.max(0.12, Math.min(0.88, tag.x / VW)); a.style.left = (fx * 100) + '%'; a.style.top = (Math.max(0, tag.y) / VH * 100) + '%'; a.style.transform = tag.y < 22 ? 'translate(-50%, 30px)' : ''; } else a.style.display = 'none';
+    if (lamp) { if (b.textContent !== lamp) b.textContent = lamp; b.style.display = 'block'; } else b.style.display = 'none';
 }
 
 // ---------- the house is watching ----------
@@ -621,6 +631,7 @@ function hsMenu(title, build) {
             if (r.btn) { const bt = document.createElement('button'); bt.className = 'hm-b'; bt.textContent = r.btn; bt.disabled = !!r.off; bt.onclick = () => { if (r.fn) r.fn(); draw(); }; row.appendChild(bt); }
             c.appendChild(row);
         });
+        if (b.node) c.appendChild(b.node);
         if (b.foot) { const f = document.createElement('div'); f.className = 'hm-foot'; f.textContent = b.foot; c.appendChild(f); }
         const x = document.createElement('button'); x.className = 'hm-close'; x.textContent = 'CLOSE'; x.onclick = hsMenuClose; c.appendChild(x);
         hsCash();

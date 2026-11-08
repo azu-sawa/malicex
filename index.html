@@ -14,8 +14,8 @@
     <link rel="manifest" href="manifest.webmanifest">
     <style>.hidden{display:none!important}</style>
     <script>try{var _t=localStorage.getItem("malicex_theme");if(_t==="green"||_t==="blood"||_t==="void"||_t==="dust")document.documentElement.setAttribute("data-theme",_t);}catch(e){}</script>
-    <link rel="stylesheet" href="style.css?v=Md7">
-    <link rel="stylesheet" href="tailwind.css?v=Md7">
+    <link rel="stylesheet" href="style.css?v=Md8">
+    <link rel="stylesheet" href="tailwind.css?v=Md8">
     <meta name="theme-color" content="#090a0f">
 </head>
 <body class="flex flex-col items-center justify-between p-4 screen-flicker">
@@ -121,7 +121,7 @@
 
         <h1 id="lobby-title" class="menu-title glitch" data-text="MALICEX">MALICEX</h1>
         <div id="phase-label" class="phase-label"></div>
-        <div id="version-label" class="lobby-version">VERSION Μδ · THE TENANTS</div>
+        <div id="version-label" class="lobby-version">VERSION Μδ · THE LONG NIGHT</div>
         <div id="story-mode-indicator" class="lobby-subject"></div>
         <div id="news-ticker" class="lobby-whisper" aria-live="polite"></div>
 
@@ -151,7 +151,6 @@
             <div id="terms-box" class="contracts-box"></div>
             <div id="architect-box" class="contracts-box"></div>
             <button class="mode-card mode-amber house-btn" onclick="openHouse()">THE HOUSE <span class="mode-sub">Walk the rooms. Talk to the dealers. Find what they hide.</span></button>
-            <div class="lobby-grid"><button id="menu-btn-versus" class="mode-card mode-red" onclick="openVersus('friend')">1V1 WITH A FRIEND <span class="mode-sub">One device, pass and play.</span></button><button id="menu-btn-versus-cpu" class="mode-card mode-slim" onclick="openVersus('cpu')">1V1 VS THE HOUSE <span class="mode-sub">Practice.</span></button></div>
             <button id="menu-btn-asc" class="mode-card mode-slim" onclick="cycleAscension()">ASCENSION 0 / 0</button>
             <button class="mode-card mode-slim mode-purple" onclick="toggleAdvancedModes()" aria-expanded="false">HARDER TABLES &#9662;</button>
             <div id="advanced-modes" class="hidden lobby-sub-panel">
@@ -224,12 +223,16 @@
             <label class="lobby-sub-title" for="music-vol">MUSIC VOLUME</label>
             <input id="music-vol" type="range" min="0" max="100" value="60" oninput="setMusicVolume(this.value)">
             <div class="lobby-sub-title">INSTALL &middot; on iPad: Share, then Add to Home Screen. It then plays offline.</div>
-            <div class="lobby-sub-title">SAVE DATA &middot; stored only in this browser</div>
+            <div class="lobby-sub-title">SAVE DATA &middot; stored only in this browser. Backups are automatic.</div>
+            <div id="save-panel" class="save-panel"></div>
             <textarea id="save-io" class="save-io" rows="3" spellcheck="false" placeholder="Save code appears here. Paste a code to restore."></textarea>
             <div class="lobby-grid">
                 <button class="mode-card mode-slim" onclick="exportSave()">EXPORT CODE</button>
                 <button class="mode-card mode-slim" onclick="importSave()">IMPORT CODE</button>
+                <button class="mode-card mode-slim" onclick="exportFile()">DOWNLOAD FILE</button>
+                <button class="mode-card mode-slim" onclick="document.getElementById('save-file').click()">IMPORT FILE</button>
             </div>
+            <input id="save-file" type="file" accept=".json,.txt,application/json,text/plain" class="hidden" onchange="importFile(this)">
             <div id="sys-msg" class="lobby-msg"></div>
             <button id="menu-btn-wipe" class="mode-card mode-slim mode-danger" onclick="resetSave()">ERASE EVERYTHING</button>
         </section>
@@ -238,54 +241,6 @@
       </div>
     </div>
 
-    <!-- ========== 1V1 VERSUS ========== -->
-    <div id="versus-screen" class="hidden bg-black z-[900] vs-screen" role="dialog" aria-label="1v1 Versus">
-        <div class="vs-game">
-            <div class="w-full max-w-4xl flex justify-between items-start px-4">
-                <div class="flex flex-col items-start w-1/2">
-                    <div class="hp-wrapper items-start">
-                        <span class="hp-label text-red-600 font-bold text-sm" id="vs-top-name">OPPONENT</span>
-                        <div id="vs-top-hp" class="hp-container text-red-700"></div>
-                    </div>
-                    <div id="vs-top-tags" class="vs-tags"></div>
-                </div>
-                <div class="flex flex-col items-end w-1/2">
-                    <div id="versus-turn" class="vs-turn"></div>
-                    <div id="vs-top-items" class="flex gap-1 flex-wrap justify-end vs-mini"></div>
-                </div>
-            </div>
-            <div class="flex-1 w-full max-w-4xl flex flex-col items-center justify-center relative min-h-0">
-                <div id="versus-msg" class="vs-msg" aria-live="polite"></div>
-                <div class="relative w-full max-w-sm bg-gray-900 border-2 border-gray-800 p-4 rounded shadow-2xl flex flex-col items-center justify-center" id="vs-gun-panel">
-                    <div id="versus-shells" class="flex gap-1 h-12 items-center justify-center mb-1 w-full bg-black/40 p-1 border border-gray-800 shadow-inner" aria-hidden="true"></div>
-                    <div class="flex gap-8 text-2xl font-bold mt-1">
-                        <span class="text-red-600 drop-shadow-[0_0_8px_red]"><span id="vs-live">0</span> LIVE</span>
-                        <span class="text-gray-500"><span id="vs-blank">0</span> BLANK</span>
-                    </div>
-                    <div id="versus-count" class="vs-peek"></div>
-                </div>
-            </div>
-            <div class="w-full max-w-4xl px-4">
-                <div class="flex justify-between items-end mb-2">
-                    <div class="hp-wrapper items-start">
-                        <span class="hp-label text-green-500 font-bold text-sm" id="vs-bot-name">YOU</span>
-                        <div id="vs-bot-hp" class="hp-container text-green-600"></div>
-                    </div>
-                    <div id="vs-bot-tags" class="vs-tags"></div>
-                </div>
-                <div class="border-t border-gray-800 pt-2 px-2 bg-gray-900/30 pb-2 controls-panel">
-                    <div id="vs-bot-items" class="grid grid-cols-4 gap-1 mb-2 min-h-[40px]"></div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <button id="versus-shoot" class="btn-retro hover:bg-red-900 hover:text-white py-3 text-lg border-red-800 text-red-500" onclick="vsShoot('opp')"><span class="vs-lbl">SHOOT</span> <span class="khint">[SPACE]</span></button>
-                        <button id="versus-self" class="btn-retro hover:bg-green-900 hover:text-white py-3 text-lg border-green-800 text-green-500" onclick="vsShoot('self')">SHOOT SELF <span class="khint">[S]</span></button>
-                    </div>
-                    <div class="vs-foot"><span>Blank on yourself: shoot again. Items are public, a peek is private.</span><button class="btn-chip" onclick="closeVersus()">LEAVE</button></div>
-                </div>
-            </div>
-        </div>
-        <div id="versus-cover" class="duel-end hidden"></div>
-        <div id="versus-end" class="duel-end hidden"></div>
-    </div>
 
     <div id="house-screen" class="hidden house-screen" role="dialog" aria-label="The House">
         <div class="house-bar">
@@ -321,7 +276,7 @@
             <label class="vol-row" for="pv-sfx"><span>EFFECTS</span><input id="pv-sfx" type="range" min="0" max="100" value="100" oninput="setVol('sfx',this.value)"></label>
             <button class="btn-retro" onclick="setPaused(false)">RESUME <span class="khint">[ESC]</span></button>
             <button id="pause-quit" class="btn-retro border-red-900 text-red-500" onclick="pauseQuit()">QUIT TO MENU</button>
-            <div class="duel-sub">1-6 items &middot; SPACE shoot opponent &middot; S shoot self</div>
+            
         </div>
     </div>
     <div id="arcana-overlay" class="hidden" role="dialog" aria-label="Arcana"></div>
@@ -627,55 +582,58 @@
 
     <!-- ========== SCRIPTS ========== -->
 
-    <script src="rng.js?v=Md7"></script>
-    <script src="timers.js?v=Md7"></script>
-    <script src="state.js?v=Md7"></script>
-    <script src="store.js?v=Md7"></script>
-    <script src="theme.js?v=Md7"></script>
-    <script src="audio.js?v=Md7"></script>
-    <script src="sanity.js?v=Md7"></script>
-    <script src="util.js?v=Md7"></script>
-    <script src="pixel.js?v=Md7"></script>
-    <script src="data.js?v=Md7"></script>
-    <script src="dialogue.js?v=Md7"></script>
-    <script src="dealers.js?v=Md7"></script>
-    <script src="combat.js?v=Md7"></script>
-    <script src="poker.js?v=Md7"></script>
-    <script src="items.js?v=Md7"></script>
-    <script src="ai.js?v=Md7"></script>
-    <script src="render.js?v=Md7"></script>
-    <script src="hud.js?v=Md7"></script>
-    <script src="effects.js?v=Md7"></script>
-    <script src="run.js?v=Md7"></script>
-    <script src="gauntlet.js?v=Md7"></script>
-    <script src="endings.js?v=Md7"></script>
-    <script src="content.js?v=Md7"></script>
-    <script src="save.js?v=Md7"></script>
-    <script src="shop.js?v=Md7"></script>
-    <script src="minigames.js?v=Md7"></script>
-    <script src="ui.js?v=Md7"></script>
-    <script src="lobby.js?v=Md7"></script>
-    <script src="tutorial.js?v=Md7"></script>
-    <script src="psyche.js?v=Md7"></script>
-    <script src="sin.js?v=Md7"></script>
-    <script src="cinema.js?v=Md7"></script>
-    <script src="habit.js?v=Md7"></script>
-    <script src="underside.js?v=Md7"></script>
-    <script src="progress.js?v=Md7"></script>
-    <script src="boss.js?v=Md7"></script>
-    <script src="architect.js?v=Md7"></script>
-    <script src="hallu.js?v=Md7"></script>
-    <script src="keys.js?v=Md7"></script>
-    <script src="arcana.js?v=Md7"></script>
-    <script src="versus.js?v=Md7"></script>
-    <script src="reward.js?v=Md7"></script>
-    <script src="radio.js?v=Md7"></script>
-    <script src="minicine.js?v=Md7"></script>
-    <script src="house.js?v=Md7"></script>
-    <script src="tenants.js?v=Md7"></script>
-    <script src="qol.js?v=Md7"></script>
-    <script src="debug.js?v=Md7"></script>
-    <script src="main.js?v=Md7"></script>
+    <script src="rng.js?v=Md8"></script>
+    <script src="timers.js?v=Md8"></script>
+    <script src="state.js?v=Md8"></script>
+    <script src="store.js?v=Md8"></script>
+    <script src="theme.js?v=Md8"></script>
+    <script src="audio.js?v=Md8"></script>
+    <script src="sanity.js?v=Md8"></script>
+    <script src="util.js?v=Md8"></script>
+    <script src="pixel.js?v=Md8"></script>
+    <script src="data.js?v=Md8"></script>
+    <script src="dialogue.js?v=Md8"></script>
+    <script src="dealers.js?v=Md8"></script>
+    <script src="combat.js?v=Md8"></script>
+    <script src="poker.js?v=Md8"></script>
+    <script src="items.js?v=Md8"></script>
+    <script src="ai.js?v=Md8"></script>
+    <script src="render.js?v=Md8"></script>
+    <script src="hud.js?v=Md8"></script>
+    <script src="effects.js?v=Md8"></script>
+    <script src="run.js?v=Md8"></script>
+    <script src="gauntlet.js?v=Md8"></script>
+    <script src="endings.js?v=Md8"></script>
+    <script src="content.js?v=Md8"></script>
+    <script src="save.js?v=Md8"></script>
+    <script src="shop.js?v=Md8"></script>
+    <script src="minigames.js?v=Md8"></script>
+    <script src="ui.js?v=Md8"></script>
+    <script src="lobby.js?v=Md8"></script>
+    <script src="tutorial.js?v=Md8"></script>
+    <script src="psyche.js?v=Md8"></script>
+    <script src="sin.js?v=Md8"></script>
+    <script src="cinema.js?v=Md8"></script>
+    <script src="habit.js?v=Md8"></script>
+    <script src="underside.js?v=Md8"></script>
+    <script src="progress.js?v=Md8"></script>
+    <script src="boss.js?v=Md8"></script>
+    <script src="architect.js?v=Md8"></script>
+    <script src="hallu.js?v=Md8"></script>
+    <script src="keys.js?v=Md8"></script>
+    <script src="arcana.js?v=Md8"></script>
+    <script src="reward.js?v=Md8"></script>
+    <script src="radio.js?v=Md8"></script>
+    <script src="minicine.js?v=Md8"></script>
+    <script src="house.js?v=Md8"></script>
+    <script src="tenants.js?v=Md8"></script>
+    <script src="fragments.js?v=Md8"></script>
+    <script src="puzzles.js?v=Md8"></script>
+    <script src="longnight.js?v=Md8"></script>
+    <script src="ward.js?v=Md8"></script>
+    <script src="qol.js?v=Md8"></script>
+    <script src="debug.js?v=Md8"></script>
+    <script src="main.js?v=Md8"></script>
 
 </body>
 </html>

@@ -77,10 +77,12 @@ function startGame() {
         usedCheatSkills: [],
         bluffTurns: 0
     };
+    meta.runGear = [...nextRunItems];      // handed back if the tab dies mid-run (see SAVE.hooks)
     nextRunItems = [];
     Object.assign(state, runDefaults());
     meta.runs++;
     meta.inRun = true;
+    SAVE.snap();                            // a backup at every run start
     saveGame();
     if (meta.runs >= 25) unlockAchievement('MARATHON');
     { const hr = new Date().getHours(); if (hr < 5) unlockAchievement('WITCHING'); }

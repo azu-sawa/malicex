@@ -490,7 +490,7 @@ function startTurn() {
             updateSanity(5);
             setTimeout(startRound, 2000);
         }
-        if (rnd() < 0.15 && unlockedLore.length < LORE_ENTRIES.length) {
+        if (rnd() < 0.15 + (upgrades.fragFinder ? 0.10 : 0) && unlockedLore.length < LORE_ENTRIES.length) {
             const available = LORE_ENTRIES.filter(l => !unlockedLore.includes(l.id));
             if (available.length > 0) {
                 const newLore = available[Math.floor(rnd() * available.length)];

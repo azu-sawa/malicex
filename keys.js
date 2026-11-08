@@ -95,7 +95,7 @@ document.addEventListener('keydown', e => {
     if (cine && !cine.classList.contains('hidden')) return;
     const key = normKey(e.key);
     const eat = () => { e.preventDefault(); e.stopImmediatePropagation(); if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); };
-    if (key === KEYMAP.pause && (activeGame === 'MAIN' || activeGame === 'VERSUS')) { eat(); setPaused(!QOL.paused); return; }
+    if (key === KEYMAP.pause && (activeGame === 'MAIN')) { eat(); setPaused(!QOL.paused); return; }
     if (QOL.paused) { e.stopImmediatePropagation(); return; }
     if (activeGame !== 'MAIN') return;
     const acts = KEY_ACTIONS.map(a => a[0]).filter(a => KEYMAP[a] === key);

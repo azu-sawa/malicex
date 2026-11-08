@@ -113,7 +113,6 @@ function pauseQuit() {
     const b = document.getElementById('pause-quit');
     if (!QOL.quitArmed) { QOL.quitArmed = true; b.textContent = 'SURE? THIS COUNTS AS A LOSS'; return; }
     setPaused(false, true);
-    if (activeGame === 'VERSUS') { closeVersus(); return; }
     meta.winStreak = 0; meta.inRun = false; saveGame();
     returnToMenu();
 }
@@ -125,10 +124,6 @@ function tipInfoFor(btn) {
     const row = btn.parentElement;
     if (!row) return null;
     const i = Array.prototype.indexOf.call(row.children, btn);
-    if (/^vs-[ab]-items$/.test(row.id)) {
-        const d = VS && VS_ITEMS[VS.items[row.id[3]][i]];
-        return d ? { name: d.n, desc: d.d, cost: '' } : null;
-    }
     if (row.id !== 'player-items-row' || typeof state === 'undefined') return null;
     let key = state.playerItems[i];
     if (!key && state.phantoms) key = state.phantoms[i];

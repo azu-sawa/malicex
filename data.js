@@ -141,7 +141,23 @@ const SHOP_CATALOG = [
     { id: 'charmPack', price: 800, grant: ['LUCKY_CHARM', 'LUCKY_CHARM'], color: 'text-yellow-400', icon: px('clover'), en_n: "LUCKY PAIR", en_d: "2x Lucky Charm for next run" },
     { id: 'bluffPack', price: 650, grant: ['BLUFF', 'BLUFF'], color: 'text-pink-400', icon: px('mask'), en_n: "BLUFF KIT", en_d: "2x Bluff for next run" },
     { id: 'goldTooth', price: 4000, color: 'text-yellow-400', icon: px('skull'), en_n: "GOLD TOOTH", en_d: "+10% cash on every win (Permanent)" },
-    { id: 'steadyHands', price: 5000, color: 'text-blue-300', icon: px('brain'), en_n: "STEADY HANDS", en_d: "Every run starts with at least 70 Sanity" },
+    { id: 'steadyHands', price: 5000, color: 'text-blue-300', icon: px('brain'), en_n: "STEADY HANDS", en_d: "Every run starts with at least 70 Sanity" },,
+    // ---- Md8: THE LONG NIGHT, THE WARD, the House puzzles
+    { id: 'candleBox', price: 300, repeat: true, color: 'text-amber-300', icon: px('candle'), en_n: "CANDLE BOX", en_d: "3 candle stubs. The Long Night takes up to 3 into the dark with you",
+        buy: () => { const d = hsData(); d.scraps.CANDLE = (d.scraps.CANDLE || 0) + 3; return 'Three candle stubs go into your pocket.'; } },
+    { id: 'nightLantern', price: 1800, color: 'text-yellow-300', icon: px('candle'), en_n: "NIGHT LANTERN", en_d: "Long Night: a lit candle burns 8 seconds longer",
+        on: () => lnData().up.lantern, buy: () => { lnData().up.lantern = 1; return 'The lantern is heavier than it looks. It is warm.'; } },
+    { id: 'feltSoles', price: 1500, color: 'text-stone-300', icon: px('ear'), en_n: "FELT SOLES", en_d: "Long Night: hunters take 30% longer to find the next room",
+        on: () => lnData().up.soles, buy: () => { lnData().up.soles = 1; return 'You cannot hear your own steps. That is the point.'; } },
+    { id: 'saltPack', price: 700, repeat: true, color: 'text-slate-200', icon: px('drop'), en_n: "SALT PACK", en_d: "Long Night: one catch is waved off. Stacks",
+        buy: () => { lnData().salt++; return 'A line of salt in your coat hem. ' + lnData().salt + ' ready.'; } },
+    { id: 'earplugs', price: 900, color: 'text-sky-300', icon: px('ear'), en_n: "EARPLUGS", en_d: "Long Night: the dark wears on you half as fast. The Ward: the vent, the phone and the visitors cost 1 less GRIP",
+        on: () => lnData().up.plugs, buy: () => { lnData().up.plugs = 1; return 'Wax. The house goes quiet. That does not mean it stops.'; } },
+    { id: 'blackCoffee', price: 250, repeat: true, color: 'text-orange-400', icon: px('beer'), en_n: "BLACK COFFEE", en_d: "Next Long Night is 30s shorter, or the next Ward starts with +1 GRIP",
+        buy: () => { lnData().coffee = (lnData().coffee || 0) + 1; return 'It is very black. It is still warm, which it should not be.'; } },
+    { id: 'fragFinder', price: 2500, color: 'text-violet-400', icon: px('magnifier'), en_n: "FRAGMENT FINDER", en_d: "+10% chance of a lore page after each won round (Permanent)" },
+    { id: 'lockpicks', price: 1200, color: 'text-amber-400', icon: px('key'), en_n: "LOCKPICK SET", en_d: "House: the chest lock's pale zone is wider (Permanent)" },
+    { id: 'stethoscope', price: 1400, color: 'text-cyan-300', icon: px('lungs'), en_n: "STETHOSCOPE", en_d: "House: the safe tells you which dials are right (Permanent)" }
 ];
 
 // ---------- MARKS MARKET (bought with Marks, not cash) ----------
@@ -151,7 +167,22 @@ const MARKS_CATALOG = [
     { id: 'sealedCard', cost: 6, repeat: true, color: 'text-fuchsia-400', icon: px('card'), n: "SEALED CARD", d: "A random Arcana you do not own yet" },
     { id: 'nightTuner', cost: 4, color: 'text-cyan-400', icon: px('speaker'), n: "NIGHT TUNER", d: "Radio: unlocks 3 more background tracks" },
     { id: 'brassKey', cost: 6, color: 'text-amber-400', icon: px('key'), n: "BRASS KEY", d: "Opens the cellar door in THE HOUSE" },
-    { id: 'blackCard', cost: 9, color: 'text-pink-400', icon: px('skull'), n: "BLACK CARD", d: "The market restocks: cash prices drop 15% (Permanent)" }
+    { id: 'blackCard', cost: 9, color: 'text-pink-400', icon: px('skull'), n: "BLACK CARD", d: "The market restocks: cash prices drop 15% (Permanent)" },
+    // ---- Md8
+    { id: 'secondNight', cost: 3, repeat: true, color: 'text-indigo-300', icon: px('moon'), n: "SECOND NIGHT", d: "One more Long Night today. Ring the bell again",
+        buy: () => { lnData().pass++; return 'The bell is warm again. It will take another night.'; } },
+    { id: 'hunterMap', cost: 5, color: 'text-red-300', icon: px('eye'), n: "HUNTER'S MAP", d: "Long Night: the HUD shows which room each hunter is in (Permanent)",
+        on: () => lnData().up.map, buy: () => { lnData().up.map = 1; return 'A floor plan with four small marks that move.'; } },
+    { id: 'lastCandle', cost: 4, color: 'text-amber-300', icon: px('candle'), n: "LAST CANDLE", d: "Long Night: start with 2 extra candles (Permanent)",
+        on: () => lnData().up.candle2, buy: () => { lnData().up.candle2 = 1; return 'Two more. They will not be the last. They will feel like it.'; } },
+    { id: 'tenantDeed', cost: 7, color: 'text-emerald-300', icon: px('door'), n: "TENANT'S DEED", d: "Long Night: tenants who are CONTENT do not hunt you (Permanent)",
+        on: () => lnData().up.deed, buy: () => { lnData().up.deed = 1; return 'It is signed. They are all very polite about it.'; } },
+    { id: 'lastRites', cost: 6, repeat: true, color: 'text-rose-300', icon: px('cross'), n: "LAST RITES", d: "Long Night: one lost duel is forgiven. Stacks",
+        buy: () => { lnData().rites++; return 'You will rise once. Only once.'; } },
+    { id: 'lostPage', cost: 4, repeat: true, color: 'text-violet-300', icon: px('card'), n: "LOST PAGE", d: "A lore page you have not found, and its film",
+        buy: () => { const m = fragMissing(); if (!m.length) return false; const id = m[Math.floor(Math.random() * m.length)]; fragGive(id); return 'A loose page. It was in your pocket already.'; } },
+    { id: 'nurseKey', cost: 8, color: 'text-pink-300', icon: px('key'), n: "NURSE'S KEY", d: "The Ward: the chart tells the truth one day longer (Permanent)",
+        on: () => meta.nurseKey, buy: () => { meta.nurseKey = 1; return 'It is on a lanyard. It fits one lock in the whole ward.'; } }
 ];
 
 // ---------- EXPANDED TAROT EFFECTS (v6.0 + v5.4 merged) ----------
@@ -213,6 +244,18 @@ const ACHIEVEMENTS = {
     'NIGHT_OWL': { title: 'NIGHT OWL', desc: 'Win a run you started at night.', reward: 700, hint: 'The House is not the only thing that keeps time. Start a run after dark and survive it.' },
     'ANSWERED': { title: 'ANSWERED', desc: 'Pick up the telephone in the Hall.', reward: 250, hint: 'It rings when your mind is thin enough. Be in the Hall.' },
     'FIRST_LIGHT': { title: 'FIRST LIGHT', desc: 'Light the lamp in the House.', reward: 150, hint: 'Something in the Study burns when you ask it to. Candle stubs hide in the rooms.' },
+    'DAWN_BREAKS': { title: 'DAWN BREAKS', desc: 'Survive the Long Night.', reward: 600, hint: 'Ring the bell in the Study. Keep moving, keep a candle, keep your head.' },
+    'UNSEEN': { title: 'UNSEEN', desc: 'Survive the Long Night without being caught once.', reward: 1000, hint: 'Doors are cheaper than duels. Listen for the steps next door.' },
+    'CAUGHT_3': { title: 'THREE TIMES', desc: 'Be caught three times in one Long Night and still see dawn.', reward: 500, hint: 'Salt, last rites and good luck. Or just stubbornness.' },
+    'SAFE_CRACKED': { title: 'COMBINATION', desc: 'Open the safe in the House.', reward: 300, hint: 'Someone wrote the numbers down. In a room full of paper.' },
+    'MUSIC_BOX': { title: 'WIND IT UP', desc: 'Open the music box.', reward: 300, hint: 'It plays the same tune every time. Repeat it back.' },
+    'FIVE_FRAMES': { title: 'WHO SITS WHERE', desc: 'Hang the four portraits in the right order.', reward: 300, hint: 'Four dealers, four frames, and a note that contradicts itself unless you read it carefully.' },
+    'LOCK_PICKED': { title: 'THREE PINS', desc: 'Pick the lock on the old chest.', reward: 400, hint: 'Something in the House is locked and does not want to be. Timing, not strength.' },
+    'FILM_5': { title: 'PROJECTIONIST', desc: 'Watch five fragment films.', reward: 300, hint: 'Lore fragments have films. Replay them in the Grimoire.' },
+    'FILM_ALL': { title: 'THE WHOLE REEL', desc: 'Watch every fragment film.', reward: 1500, hint: 'Every fragment, every film. Some of them are hard to find.', secret: true },
+    'WARD_CLEAR': { title: 'DISCHARGE AGAINST ADVICE', desc: 'Walk out of the Ward by trusting what you saw.', reward: 1200, hint: 'The chart lies later in the week. Your memory does not.' },
+    'GOOD_PATIENT': { title: 'GOOD PATIENT', desc: 'Be discharged from the Ward by agreeing with the chart.', reward: 700, hint: 'Agree with everything. Take everything. Sign.', secret: true },
+    'NO_PILLS': { title: 'CLEAR HEAD', desc: 'Leave the Ward through the door without swallowing a single pill.', reward: 1500, hint: 'Cheek them or refuse them. Seven nights. Keep your head.' },
     'FIRST_BLOOD': { title: 'FIRST BLOOD', desc: 'Win your first round.', reward: 100 },
     'PACIFIST': { title: 'PACIFIST', desc: 'Win without shooting the Dealer.', reward: 500 },
     'PSYCHOPATH': { title: 'PSYCHOPATH', desc: 'Win by shooting only yourself.', reward: 666 },
