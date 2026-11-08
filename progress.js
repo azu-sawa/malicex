@@ -39,7 +39,7 @@ function renderTermsBox() {
         `<div class="terms-grid">` + Object.keys(TERMS).map(k => {
             const t = TERMS[k], isOn = on.includes(k);
             return `<button class="term ${isOn ? 'on' : ''}" onclick="toggleTerm('${k}')" aria-pressed="${isOn}"><b>${t.n}</b><span>${t.d}</span><i>+${Math.round(t.m * 100)}%</i></button>`;
-        }).join('') + `</div><div class="contracts-note">Up to two. They apply to the next run. Daily and Weekly ignore them.</div>`;
+        }).join('') + `</div><div class="contracts-note">Up to two. They apply to the next run. Daily ignores them.</div>`;
 }
 
 // ---------- state defaults ----------
@@ -191,7 +191,7 @@ function renderCollectionBox() {
         row('Cutscenes', cineList().filter(c => (meta.cineSeen || {})[c[0]]).length, cineList().length);
 }
 
-// ---------- hall of hands + weekly ----------
+// ---------- hall of hands ----------
 function recordBoard(r) {
     meta.board = meta.board || [];
     meta.board.push({ score: r.score, grade: r.grade, mode: r.mode, sin: r.sin, date: dailySeed() });
@@ -202,8 +202,7 @@ function renderBoardBox() {
     const box = document.getElementById('board-box');
     if (!box) return;
     const b = meta.board || [];
-    const wk = (meta.weeklyBest && meta.weeklyBest.date === weeklySeed()) ? meta.weeklyBest.score : 0;
-    box.innerHTML = `<div class="contracts-title">HALL OF HANDS <span class="terms-bonus">Weekly ${weeklySeed()} best ${wk}</span></div>` +
+    box.innerHTML = `<div class="contracts-title">HALL OF HANDS</div>` +
         (b.length ? b.map((x, i) => `<div class="coll-row"><span>${i + 1}. ${x.mode} &middot; ${x.sin}</span><b>${x.grade} ${x.score}</b></div>`).join('') : '<div class="contracts-note">No wins recorded yet.</div>');
 }
 
@@ -223,13 +222,9 @@ function afterResultHooks(won) {
         if (n > 0) { addMarks(n); if (m) m.innerHTML += `<div class="run-line text-amber-400">+${n} MARK${n > 1 ? 'S' : ''}</div>`; }
         if ((state.terms || []).length >= 2) unlockAchievement('TERMS_2');
         if (state.underside) unlockAchievement('UNDERSIDE_CLEAR');
-        recordBoard({ score: r.score, grade: r.grade, mode: modeLabel(isWeekly ? 'WEEKLY' : currentDifficulty), sin: storyMode });
-        if (isWeekly) {
-            if (!meta.weeklyBest || meta.weeklyBest.date !== weeklySeed() || r.score > meta.weeklyBest.score) meta.weeklyBest = { date: weeklySeed(), score: r.score };
-            unlockAchievement('WEEKLY_DONE');
-        }
+        recordBoard({ score: r.score, grade: r.grade, mode: modeLabel(currentDifficulty), sin: storyMode });
     }
-    meta.lastRun = { won, score: r.score, grade: r.grade, mode: modeLabel(isWeekly ? 'WEEKLY' : (isUnderside ? 'UNDERSIDE' : currentDifficulty)), sin: storyMode,
+    meta.lastRun = { won, score: r.score, grade: r.grade, mode: modeLabel(isUnderside ? 'UNDERSIDE' : currentDifficulty), sin: storyMode,
                      streak: meta.winStreak || 0, seed: isDaily ? runSeedKey() : '' };
     const sh = document.getElementById('res-btn-share');
     if (sh) sh.classList.remove('hidden');
@@ -255,7 +250,7 @@ function shareResult() {
     g.fillStyle = '#94a3b8'; g.font = '34px VT323, monospace';
     g.fillText(r.won ? 'SURVIVED' : 'DID NOT LEAVE', 340, 262);
     if (r.streak > 1) g.fillText('STREAK ' + r.streak, 340, 300);
-    if (r.seed) { g.fillStyle = '#38bdf8'; g.fillText('SEED ' + r.seed.replace('daily-', 'D ').replace('weekly-', 'W '), 44, 350); }
+    if (r.seed) { g.fillStyle = '#38bdf8'; g.fillText('SEED ' + r.seed.replace('daily-', 'D '), 44, 350); }
     const text = `MALICEX Μδ · ${r.mode} · ${r.sin} · grade ${r.grade} · score ${r.score}` + (r.seed ? ` · seed ${r.seed}` : '');
     c.toBlob(b => {
         if (!b) { fallbackShare(text); return; }
@@ -285,7 +280,6 @@ Object.assign(ACHIEVEMENTS, {
     BLOOD_BOUND: { title: 'BLOOD BOUND', desc: 'Survive a killing blow as the Parricide.', reward: 800, hint: 'The family does not let go easily.' },
     READ: { title: 'IT KNOWS', desc: 'Get read by the house.', reward: 400, hint: 'Play the same way long enough that it adapts.' },
     TERMS_2: { title: 'DOUBLE DOWN', desc: 'Win a run with two terms active.', reward: 800, hint: 'Pick two terms before the run, and live.' },
-    WEEKLY_DONE: { title: 'THE LONG WEEK', desc: 'Win the Weekly seed.', reward: 1200, hint: 'A harder table that changes every Monday.' },
     COLLECTOR_ALL: { title: 'COMPLETIONIST', desc: 'Beat every dealer at least once.', reward: 2000, hint: 'Every dealer has a face. See all of them.' },
     CINEMA_ALL: { title: 'FILM BUFF', desc: 'See every cutscene.', reward: 1500, hint: 'Some scenes only play on special endings.' },
     UNDERSIDE_CLEAR: { title: 'THE FLOOR BELOW', desc: 'Clear the Underside.', reward: 6000, hint: 'After the last table, there is a stair.', secret: true },

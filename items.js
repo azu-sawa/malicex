@@ -157,7 +157,7 @@ function handleGameEnd() {
             const streakNow = Math.min(5, meta.winStreak || 0);
             p = Math.floor(p * (1 + 0.1 * streakNow));
             if (isDaily) {
-                const pk = isWeekly ? 'weeklyPaid' : 'dailyPaid', pv = isWeekly ? weeklySeed() : dailySeed();
+                const pk = 'dailyPaid', pv = dailySeed();
                 if (meta[pk] === pv) p = 0;
                 else meta[pk] = pv;
             }

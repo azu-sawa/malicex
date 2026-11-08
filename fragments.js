@@ -79,8 +79,6 @@ LORE_ENTRIES.push(
     { id: 61, text: '"My bed is on the wrong side of the room. It has been since I came."' },
     { id: 62, text: '"A candle burns for every tenant. The wick is the person."' },
     { id: 63, text: '"Someone is counting the nights from outside the window."' },
-    { id: 64, text: '"The Ward has no doors, only the room you wake in."' },
-    { id: 65, text: '"I took the pills. The numbers were true. That was worse."' },
     { id: 66, text: '"Every night there is one more chair."' },
     { id: 67, text: '"Dawn is not the end of the night. It is the house deciding to let you see."' },
     { id: 68, text: '"The safe was never locked. I wanted a reason."' },
@@ -88,15 +86,15 @@ LORE_ENTRIES.push(
     { id: 70, text: '"Four portraits. I counted five frames."' },
     { id: 71, text: '"The chest is empty. That is what you take."' }
 );
-Object.assign(LORE_BY_ACH, { LANDLORD: 62, FIRST_LIGHT: 63, DAWN_BREAKS: 67, UNSEEN: 66, CAUGHT_3: 61, WARD_CLEAR: 64, NO_PILLS: 65, SAFE_CRACKED: 68, MUSIC_BOX: 69, FIVE_FRAMES: 70, LOCK_PICKED: 71, ANSWERED: 60 });
+Object.assign(LORE_BY_ACH, { LANDLORD: 62, FIRST_LIGHT: 63, DAWN_BREAKS: 67, UNSEEN: 66, CAUGHT_3: 61, SAFE_CRACKED: 68, MUSIC_BOX: 69, FIVE_FRAMES: 70, LOCK_PICKED: 71, ANSWERED: 60 });
 
 // ---------- the films ----------
 // lore id -> cutscene id
 const FRAG_FILMS = { 1: 'f_name', 3: 'f_wait', 5: 'f_prize', 8: 'f_reflect', 9: 'f_cards', 24: 'f_clocks', 25: 'f_left', 26: 'f_gaze', 29: 'f_count', 32: 'f_any',
-    60: 'f_phone', 61: 'f_bed', 62: 'f_wicks', 63: 'f_window', 64: 'f_ward', 65: 'f_coat', 66: 'f_chair', 67: 'f_dawn', 68: 'f_safe', 69: 'f_box', 70: 'f_frames', 71: 'f_chest' };
+    60: 'f_phone', 61: 'f_bed', 62: 'f_wicks', 63: 'f_window', 66: 'f_chair', 67: 'f_dawn', 68: 'f_safe', 69: 'f_box', 70: 'f_frames', 71: 'f_chest' };
 const FRAG_TITLES = { f_name: 'UNDER THE TABLE', f_wait: 'THE WAITING ROOM', f_prize: 'THE PRIZE', f_reflect: 'A HALF-SECOND LATE', f_cards: 'RED SUITS', f_clocks: 'FIVE CLOCKS',
     f_left: 'YOU LEFT', f_gaze: 'HOLD IT', f_count: 'THE COUNT', f_any: 'ANY TIME', f_phone: 'THE RECEIVER', f_bed: 'THE OTHER SIDE OF THE BED', f_wicks: 'WICKS',
-    f_window: 'THE WINDOW COUNTS', f_ward: 'THE WARD', f_coat: 'WHITE COAT', f_chair: 'THE EXTRA CHAIR', f_dawn: 'DAWN, LATE', f_safe: 'COMBINATION', f_box: 'THE MUSIC BOX',
+    f_window: 'THE WINDOW COUNTS', f_chair: 'THE EXTRA CHAIR', f_dawn: 'DAWN, LATE', f_safe: 'COMBINATION', f_box: 'THE MUSIC BOX',
     f_frames: 'FIVE FRAMES', f_chest: 'WHAT IS IN THE CHEST' };
 
 Object.assign(CINE_SCRIPTS, {
@@ -156,14 +154,6 @@ Object.assign(CINE_SCRIPTS, {
         { art: 'window', text: ['Someone is outside the Study window.', 'Not looking in. Counting.'] },
         { art: 'window', text: ['Tally marks on the glass, in fives.', 'They are on the inside.'] },
         { art: 'black', text: ['It is counting the nights you have been here.', 'It has reached a number you did not know.'] }] },
-    f_ward: { shots: [
-        { art: 'static', text: ['The ward has no doors. Only the room you wake in.'] },
-        { art: 'static', text: ['A woman in white tells you, kindly, that you have been here before.'] },
-        { art: 'hands', text: ['She holds out two cups. "Which of us is the patient?"', '"Take your time, {name}."'] }] },
-    f_coat: { shots: [
-        { art: 'hands', text: ['You took the pills. The numbers on the table were true.'] },
-        { art: 'table', text: ['It was worse.', 'You could finally see how few shells were left, and how many were for you.'] },
-        { art: 'black', text: ['Clarity is not a kindness.', 'It is just light.'] }] },
     f_chair: { shots: [
         { art: 'chair', text: ['Every night there is one more chair at the table.'] },
         { art: 'chair', text: ['No one moves it. No one admits to counting.'] },
@@ -188,7 +178,7 @@ Object.assign(CINE_SCRIPTS, {
         { art: 'pocket', text: ['The chest is empty. That is what you take.'] },
         { art: 'hands', text: ['You carry it up the stairs the way you carry something full.'] },
         { art: 'black', text: ['It gets heavier with every step.', 'Someone is putting things into it, one at a time.'] }] },
-    // the Long Night and the Ward
+    // the Long Night
     ln_begin: { shots: [
         { art: 'hall', text: ['The bell rings once. The house pulls in its breath.', 'Everyone you beat is awake.'] },
         { art: 'moon', text: ['Until dawn nothing here is a guest.', 'Keep the light. Keep moving. Do not count the footsteps.'] }] },
@@ -198,15 +188,8 @@ Object.assign(CINE_SCRIPTS, {
     ln_taken: { shots: [
         { art: 'bed', text: ['You wake in the Study. It is not morning.', 'There is a dent in the chair beside you.'] },
         { art: 'black', text: ['It is still warm.'] }] },
-    ward_in: { shots: [
-        { art: 'static', text: ['The room is white. The door is white.', 'The nurse says your name and you are sure it is yours.'] },
-        { art: 'hands', text: ['"Only two rules," she says. "Take what helps. Remember what it cost."'] }] },
-    ward_out: { shots: [
-        { art: 'hands', text: ['You sign something. You do not read it.', 'The pen is warm.'] },
-        { art: 'black', text: ['Outside, the corridor is exactly as you left it.', 'That is the first thing that frightens you.'] }] }
 });
-[['ln_begin', 'THE BELL', 'The Long Night'], ['ln_dawn', 'LIGHT, SIDEWAYS', 'The Long Night'], ['ln_taken', 'THE WARM DENT', 'The Long Night'],
- ['ward_in', 'THE WHITE ROOM', 'The Ward'], ['ward_out', 'DISCHARGED', 'The Ward']].forEach(c => CINE_LIST.push(c));
+[['ln_begin', 'THE BELL', 'The Long Night'], ['ln_dawn', 'LIGHT, SIDEWAYS', 'The Long Night'], ['ln_taken', 'THE WARM DENT', 'The Long Night']].forEach(c => CINE_LIST.push(c));
 Object.keys(FRAG_TITLES).forEach(id => CINE_LIST.push([id, FRAG_TITLES[id], 'Fragment film']));
 
 // ---------- playing them ----------

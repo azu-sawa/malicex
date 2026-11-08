@@ -25,7 +25,7 @@ Plain HTML/CSS/JS, no build step, no external requests (fonts, art and sound are
 - **Sins that matter:** the Thief lifts items off the dealer (LIFT button, pickpocket on poker wins). The Parricide builds Wrath from wounds and has Blood Bound. Each has a secret ending (THE HEIST, THE INHERITANCE) with its own cutscene. Switch sin in the lobby.
 - **15 pixel cutscenes** (replayable in Archive > Cinema), memory flashes mid-run, fight cards, a CRT power-off death.
 - **The house learns you:** it reads your habits and arms the dealer against them. At low Sanity item text and shell numbers can lie (the shell icons never do).
-- **New dealers:** The Collector, The Confessor, The Clockwork. **Act II: THE UNDERSIDE** (after the true ending), with The Host. **Weekly seed.**
+- **New dealers:** The Collector, The Confessor, The Clockwork. **Act II: THE UNDERSIDE** (after the true ending), with The Host.
 - **Terms** (side bets), **Marks and perks**, collection page, hall of hands, share card.
 - **Difficulty pass:** bosses fight in phases (Shield at the start, heal and rearm at half HP, doubled shot at a quarter). The house adapts if you stall. Gauntlet wounds carry over unless you were careful. Dealers counter the item you leaned on. Ascension 1-5 is much harder. Paper Skin now caps you at 3 HP and leaves the dealer his normal HP.
 - **Permanent sin and CRT screen:** you choose your sin once and it stays until you erase your save. The whole game now has curved glass, scanlines, a phosphor mask and a rolling bar (toggle in SYSTEM).
@@ -84,8 +84,8 @@ Self-test: open `index.html?test` and check the console (38 checks).
 - Self-test: 90 checks (`index.html?test`).
 
 ## Md8 - THE LONG NIGHT
+- **Md8.1 cut:** the Weekly seed and THE WARD were removed to keep the game focused (Tenants stay). Saves migrate to schema 3: the Nurse's Key is refunded in Marks and leftover Ward/weekly data is dropped.
 - **The Long Night** (ring the bell in the Study, once a day): five minutes in the dark House. Tenants you beat hunt you room to room. Candles, salt and doors keep you alive, a caught player plays a short shell duel (THE CATCH) in the menu. Dawn pays cash, marks and sometimes a lore page. A night cut off by a closed tab is handed back.
-- **THE WARD** (lobby): a psychological-horror mode with no shells. Six days in a bright ward. You see things by day, the nurse reads you the chart, and from day three the chart lies. GRIP is shown, TRUST and TRUTH are hidden. Four endings (door, discharged, broken), pills blur what you will have to remember.
 - **House puzzles**: a safe, a music box, a four-portrait riddle, a three-pin lock.
 - **Lore films**: every lore fragment now has a short cutscene, replayable from the Grimoire.
 - **Shop + Marks shop**: candle box, lantern, felt soles, salt, earplugs, coffee, fragment finder, lockpicks, stethoscope; second night, hunter's map, last candle, tenant's deed, last rites, lost page, nurse's key.

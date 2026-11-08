@@ -12,7 +12,7 @@
 //    side settings (theme, keys, radio, volume...) travel with it
 // =====================================================================
 const SAVE = {
-    SCHEMA: 2, FMT: 2, VER: 'Md8',
+    SCHEMA: 3, FMT: 2, VER: 'Md8.1',
     KEY: VERSION, BAK: [VERSION + '_bak1', VERSION + '_bak2'], BAD: VERSION + '_bad',
     rev: 0, lastSum: '', lastWrite: 0, lastBak: 0, source: 'new',
     failed: false, behind: false, frozen: false, persisted: null,
@@ -72,7 +72,16 @@ SAVE.MIGRATE = [
         d.nextRunItems = SAVE.arr(d.nextRunItems).filter(k => ITEMS[k] && k !== 'PHANTOM');
     },
     // 1 -> 2: the envelope. meta gets its Md8 branches, a play-since stamp and a reminder base
-    d => { d.meta = SAVE.obj(d.meta, {}); if (!d.meta.since) d.meta.since = Date.now(); }
+    d => { d.meta = SAVE.obj(d.meta, {}); if (!d.meta.since) d.meta.since = Date.now(); },
+    // 2 -> 3: THE WARD and the weekly seed were cut. Their leftovers go; the nurse's key is refunded
+    d => {
+        d.meta = SAVE.obj(d.meta, {});
+        if (d.meta.nurseKey) d.meta.marks = SAVE.num(d.meta.marks, 0, 0) + 8;
+        ['ward', 'nurseKey', 'weeklyBest', 'weeklyPaid'].forEach(k => delete d.meta[k]);
+        const gone = ['WEEKLY_DONE', 'WARD_CLEAR', 'GOOD_PATIENT', 'NO_PILLS'];
+        d.achievements = SAVE.arr(d.achievements).filter(k => gone.indexOf(k) < 0);
+        d.unlockedLore = SAVE.arr(d.unlockedLore).filter(n => n !== 64 && n !== 65);
+    }
 ];
 SAVE.sanitise = function(d) {
     const c = {};

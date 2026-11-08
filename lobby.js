@@ -35,7 +35,6 @@ function modeLabel(m) {
     if (m === 'DAILY') return 'DAILY SEED';
     if (m === 'GAUNTLET') return 'GAUNTLET';
     if (m === 'FINALE') return 'THE LAST TABLE';
-    if (m === 'WEEKLY') return 'WEEKLY SEED';
     if (m === 'UNDERSIDE') return 'THE UNDERSIDE';
     return (MODE_INFO[m] || MODE_INFO.NORMAL).n;
 }
@@ -82,11 +81,6 @@ function renderLobby() {
         const t = q('again-title'), s = q('again-sub');
         if (last) { t.textContent = 'ONE MORE HAND'; s.textContent = 'Same table again: ' + modeLabel(last); }
         else { t.textContent = 'SIT DOWN'; s.textContent = 'Your first hand. The house will show you how it works.'; }
-    }
-    const wk = q('menu-btn-weekly');
-    if (wk) {
-        const best = (meta.weeklyBest && meta.weeklyBest.date === weeklySeed()) ? meta.weeklyBest.score : 0;
-        wk.innerHTML = `<span class="mode-name">WEEKLY SEED</span><span class="mode-sub">${weeklySeed()}. A fresh table every week, same for everyone. Best ${best}</span><span class="mode-cost">Free</span>`;
     }
     const ud = q('menu-btn-underside');
     if (ud) {

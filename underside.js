@@ -2,8 +2,7 @@
 
 // =====================================================================
 // UNDERSIDE (Mu-delta): three new dealers with their own rules, the
-// Act II run (THE UNDERSIDE, opens after the true ending) and the
-// weekly seed.
+// Act II run (THE UNDERSIDE, opens after the true ending).
 // =====================================================================
 const NEW_DEALERS = ['COLLECTOR', 'CONFESSOR', 'CLOCKWORK'];
 const NOT_IN_POOL = ['ANCIENT', 'FIRST', 'HOST'];
@@ -103,26 +102,20 @@ function dealerPool() {
 // (ai.js calls dp.onPlayerSelfSafe() after a safe self-shot)
 
 // ---------- THE UNDERSIDE ----------
-let isUnderside = false, isWeekly = false;
+let isUnderside = false;
 const UNDERSIDE_COST = 2000;
 
 function undersideOpen() { return !!meta.trueEnd; }
 
 const _undSelect = selectDifficulty;
 selectDifficulty = function(diff) {
-    isUnderside = false; isWeekly = false;
+    isUnderside = false;
     if (diff === 'UNDERSIDE') {
         if (!undersideOpen() || globalMoney < UNDERSIDE_COST + 500) { SFX.empty(); shakeElement(document.getElementById('money-display')); return; }
         globalMoney -= UNDERSIDE_COST;
         isUnderside = true;
         _undSelect('GAUNTLET');
         settings.lastMode = 'UNDERSIDE'; saveSettings();
-        return;
-    }
-    if (diff === 'WEEKLY') {
-        isWeekly = true;
-        _undSelect('DAILY');
-        settings.lastMode = 'WEEKLY'; saveSettings();
         return;
     }
     _undSelect(diff);
@@ -144,16 +137,6 @@ const _undSetup = setupFight;
 setupFight = function(p, hp, items) { return _undSetup(p, hp, items); };
 
 const _undReward = rewardMult;
-rewardMult = function() { return _undReward() * ((state && state.underside) ? 1.5 : 1) * (isWeekly && isDaily ? 1.25 : 1); };
+rewardMult = function() { return _undReward() * ((state && state.underside) ? 1.5 : 1); };
 
-// ---------- WEEKLY ----------
-function weeklySeed() {
-    const d = new Date(Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
-    const day = d.getUTCDay() || 7;
-    d.setUTCDate(d.getUTCDate() + 4 - day);
-    const y0 = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    const wk = Math.ceil((((d - y0) / 86400000) + 1) / 7);
-    return d.getUTCFullYear() + '-W' + String(wk).padStart(2, '0');
-}
-
-function runSeedKey() { return isWeekly ? 'weekly-' + weeklySeed() : 'daily-' + dailySeed(); }
+function runSeedKey() { return 'daily-' + dailySeed(); }

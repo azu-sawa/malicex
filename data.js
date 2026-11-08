@@ -142,7 +142,7 @@ const SHOP_CATALOG = [
     { id: 'bluffPack', price: 650, grant: ['BLUFF', 'BLUFF'], color: 'text-pink-400', icon: px('mask'), en_n: "BLUFF KIT", en_d: "2x Bluff for next run" },
     { id: 'goldTooth', price: 4000, color: 'text-yellow-400', icon: px('skull'), en_n: "GOLD TOOTH", en_d: "+10% cash on every win (Permanent)" },
     { id: 'steadyHands', price: 5000, color: 'text-blue-300', icon: px('brain'), en_n: "STEADY HANDS", en_d: "Every run starts with at least 70 Sanity" },,
-    // ---- Md8: THE LONG NIGHT, THE WARD, the House puzzles
+    // ---- Md8: THE LONG NIGHT, the House puzzles
     { id: 'candleBox', price: 300, repeat: true, color: 'text-amber-300', icon: px('candle'), en_n: "CANDLE BOX", en_d: "3 candle stubs. The Long Night takes up to 3 into the dark with you",
         buy: () => { const d = hsData(); d.scraps.CANDLE = (d.scraps.CANDLE || 0) + 3; return 'Three candle stubs go into your pocket.'; } },
     { id: 'nightLantern', price: 1800, color: 'text-yellow-300', icon: px('candle'), en_n: "NIGHT LANTERN", en_d: "Long Night: a lit candle burns 8 seconds longer",
@@ -151,9 +151,9 @@ const SHOP_CATALOG = [
         on: () => lnData().up.soles, buy: () => { lnData().up.soles = 1; return 'You cannot hear your own steps. That is the point.'; } },
     { id: 'saltPack', price: 700, repeat: true, color: 'text-slate-200', icon: px('drop'), en_n: "SALT PACK", en_d: "Long Night: one catch is waved off. Stacks",
         buy: () => { lnData().salt++; return 'A line of salt in your coat hem. ' + lnData().salt + ' ready.'; } },
-    { id: 'earplugs', price: 900, color: 'text-sky-300', icon: px('ear'), en_n: "EARPLUGS", en_d: "Long Night: the dark wears on you half as fast. The Ward: the vent, the phone and the visitors cost 1 less GRIP",
+    { id: 'earplugs', price: 900, color: 'text-sky-300', icon: px('ear'), en_n: "EARPLUGS", en_d: "Long Night: the dark wears on you half as fast.",
         on: () => lnData().up.plugs, buy: () => { lnData().up.plugs = 1; return 'Wax. The house goes quiet. That does not mean it stops.'; } },
-    { id: 'blackCoffee', price: 250, repeat: true, color: 'text-orange-400', icon: px('beer'), en_n: "BLACK COFFEE", en_d: "Next Long Night is 30s shorter, or the next Ward starts with +1 GRIP",
+    { id: 'blackCoffee', price: 250, repeat: true, color: 'text-orange-400', icon: px('beer'), en_n: "BLACK COFFEE", en_d: "Next Long Night is 30s shorter",
         buy: () => { lnData().coffee = (lnData().coffee || 0) + 1; return 'It is very black. It is still warm, which it should not be.'; } },
     { id: 'fragFinder', price: 2500, color: 'text-violet-400', icon: px('magnifier'), en_n: "FRAGMENT FINDER", en_d: "+10% chance of a lore page after each won round (Permanent)" },
     { id: 'lockpicks', price: 1200, color: 'text-amber-400', icon: px('key'), en_n: "LOCKPICK SET", en_d: "House: the chest lock's pale zone is wider (Permanent)" },
@@ -180,9 +180,7 @@ const MARKS_CATALOG = [
     { id: 'lastRites', cost: 6, repeat: true, color: 'text-rose-300', icon: px('cross'), n: "LAST RITES", d: "Long Night: one lost duel is forgiven. Stacks",
         buy: () => { lnData().rites++; return 'You will rise once. Only once.'; } },
     { id: 'lostPage', cost: 4, repeat: true, color: 'text-violet-300', icon: px('card'), n: "LOST PAGE", d: "A lore page you have not found, and its film",
-        buy: () => { const m = fragMissing(); if (!m.length) return false; const id = m[Math.floor(Math.random() * m.length)]; fragGive(id); return 'A loose page. It was in your pocket already.'; } },
-    { id: 'nurseKey', cost: 8, color: 'text-pink-300', icon: px('key'), n: "NURSE'S KEY", d: "The Ward: the chart tells the truth one day longer (Permanent)",
-        on: () => meta.nurseKey, buy: () => { meta.nurseKey = 1; return 'It is on a lanyard. It fits one lock in the whole ward.'; } }
+        buy: () => { const m = fragMissing(); if (!m.length) return false; const id = m[Math.floor(Math.random() * m.length)]; fragGive(id); return 'A loose page. It was in your pocket already.'; } }
 ];
 
 // ---------- EXPANDED TAROT EFFECTS (v6.0 + v5.4 merged) ----------
@@ -253,9 +251,6 @@ const ACHIEVEMENTS = {
     'LOCK_PICKED': { title: 'THREE PINS', desc: 'Pick the lock on the old chest.', reward: 400, hint: 'Something in the House is locked and does not want to be. Timing, not strength.' },
     'FILM_5': { title: 'PROJECTIONIST', desc: 'Watch five fragment films.', reward: 300, hint: 'Lore fragments have films. Replay them in the Grimoire.' },
     'FILM_ALL': { title: 'THE WHOLE REEL', desc: 'Watch every fragment film.', reward: 1500, hint: 'Every fragment, every film. Some of them are hard to find.', secret: true },
-    'WARD_CLEAR': { title: 'DISCHARGE AGAINST ADVICE', desc: 'Walk out of the Ward by trusting what you saw.', reward: 1200, hint: 'The chart lies later in the week. Your memory does not.' },
-    'GOOD_PATIENT': { title: 'GOOD PATIENT', desc: 'Be discharged from the Ward by agreeing with the chart.', reward: 700, hint: 'Agree with everything. Take everything. Sign.', secret: true },
-    'NO_PILLS': { title: 'CLEAR HEAD', desc: 'Leave the Ward through the door without swallowing a single pill.', reward: 1500, hint: 'Cheek them or refuse them. Seven nights. Keep your head.' },
     'FIRST_BLOOD': { title: 'FIRST BLOOD', desc: 'Win your first round.', reward: 100 },
     'PACIFIST': { title: 'PACIFIST', desc: 'Win without shooting the Dealer.', reward: 500 },
     'PSYCHOPATH': { title: 'PSYCHOPATH', desc: 'Win by shooting only yourself.', reward: 666 },

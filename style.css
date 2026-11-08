@@ -2230,32 +2230,6 @@ body.ln-on .house-l { border-color: #7c2d12; }
 .ln-btns .pz-b:disabled { opacity: .35; }
 #house-menu.noclose .hm-close { display: none; }
 
-/* Md8: The Ward - a bright room, on purpose */
-#ward-screen { position: fixed; inset: 0; z-index: 70; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #d9ded6; color: #1b2220; font-family: 'VT323', monospace; padding: 14px 16px calc(14px + env(safe-area-inset-bottom)); overflow-y: auto; }
-#ward-screen.hidden { display: none; }
-#ward-screen::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0,0,0,.035) 0 1px, transparent 1px 3px); animation: wardHum 5s steps(2) infinite; }
-@keyframes wardHum { 50% { opacity: .5; } }
-.ward-in { position: relative; width: min(560px, 100%); display: flex; flex-direction: column; gap: 12px; }
-.ward-top { display: flex; justify-content: space-between; align-items: center; font-family: 'Press Start 2P', monospace; font-size: .55rem; color: #4b5753; }
-.ward-grip { letter-spacing: .12em; }
-.ward-grip b { color: #1b2220; font-weight: normal; }
-.ward-card { border: 2px solid #1b2220; background: #eef1ea; padding: 14px; min-height: 150px; font-size: 1.35rem; line-height: 1.25; }
-.ward-card h3 { font-family: 'Press Start 2P', monospace; font-size: .7rem; margin: 0 0 10px; color: #7f1d1d; letter-spacing: .08em; }
-.ward-card p { margin: 0 0 8px; }
-.ward-card .dim { color: #6b7673; }
-.ward-card .blur { color: #9aa49f; letter-spacing: .05em; }
-.ward-card .chart { border: 1px dashed #1b2220; padding: 6px 8px; margin: 8px 0; background: #e3e8df; }
-.ward-btns { display: flex; flex-direction: column; gap: 8px; }
-.ward-b { min-height: 48px; padding: 8px 12px; border: 2px solid #1b2220; background: #f7f9f4; color: #1b2220; font-family: 'VT323', monospace; font-size: 1.3rem; text-align: left; cursor: pointer; }
-.ward-b:active { background: #1b2220; color: #eef1ea; }
-.ward-b small { display: block; font-size: 1rem; color: #6b7673; }
-.ward-b:active small { color: #cbd5d0; }
-.ward-nurse { font-size: 1.1rem; color: #7f1d1d; }
-#ward-screen.dark { background: #0b0d0c; color: #cbd5d0; }
-#ward-screen.dark .ward-card { background: #121514; border-color: #cbd5d0; }
-#ward-screen.dark .ward-card h3 { color: #f87171; }
-#ward-screen.dark .ward-b { background: #121514; color: #cbd5d0; border-color: #cbd5d0; }
-#ward-screen.dark .ward-top { color: #94a3b8; } #ward-screen.dark .ward-grip b { color: #e2e8f0; }
 
 /* Md8: save system */
 #save-indicator.bad { color: #f87171; border-color: rgba(248,113,113,.6); }
@@ -2275,5 +2249,3 @@ body.ln-on .house-l { border-color: #7c2d12; }
 /* Md8: object names and the lamp timer are real text now, not scaled-up canvas pixels */
 .house-tag { position: absolute; z-index: 5; transform: translate(-50%, -100%); padding: 2px 8px 3px; background: rgba(0,0,0,.82); border: 1px solid #a16207; color: #fde68a; font-family: 'VT323', monospace; font-size: clamp(.95rem, 2.4vw, 1.35rem); line-height: 1.1; letter-spacing: .06em; white-space: nowrap; pointer-events: none; text-shadow: 0 0 6px rgba(253,230,138,.35); }
 .house-tag.lamp { left: 8px; top: 8px; transform: none; border-color: #b45309; color: #fbbf24; }
-.ward-leave { min-height: 36px; padding: 2px 10px; border: 1px solid currentColor; background: transparent; color: inherit; font-family: 'Press Start 2P', monospace; font-size: .5rem; cursor: pointer; opacity: .7; }
-.ward-btn .mode-sub { display: block; }

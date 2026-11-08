@@ -72,7 +72,7 @@ function recordRunEnd(el) {
     if (!el) return;
     if (state.gauntlet) {
         if (state.gauntlet.cleared > (meta.gauntletBest || 0)) meta.gauntletBest = state.gauntlet.cleared;
-        if (isDaily && !isWeekly) {
+        if (isDaily) {
             const won = state.playerHp > 0;
             const score = state.gauntlet.cleared * 1000 + (won ? 2000 : 0) + Math.max(0, state.playerHp) * 150 + Math.max(0, sanity) * 5;
             const today = dailySeed();

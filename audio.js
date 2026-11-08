@@ -256,8 +256,6 @@ const Music = (() => {
                           pad: 0.55, drone: 0.4, kick: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0], hat: 0.9, bell: 0.55, arp: 1, scale: [0, 2, 4, 7, 9, 12] },
         night_hunt:     { bpm: 44, beats: 4, root: 33, prog: [[0, [0, 3, 6]], [-1, [0, 3, 6]], [0, [0, 1, 6]], [-2, [0, 3, 6]]],
                           pad: 0.5, drone: 1.6, kick: [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,1,0], hat: 0, bell: 0.2, arp: 0, scale: [0, 1, 6, 7] },
-        ward:           { bpm: 52, beats: 4, root: 60, prog: [[0, [0, 4, 7]], [0, [0, 4, 7]], [-1, [0, 4, 7]], [1, [0, 3, 7]]],
-                          pad: 0.55, drone: 0.15, kick: null, hat: 0, bell: 0.9, arp: 0, scale: [0, 4, 7, 11] },
         death: { bpm: 40, beats: 4, root: 33, prog: [[0, [0, 3, 7]], [0, [0, 3, 6]], [-1, [0, 3, 7]], [0, [0, 3, 7]]],
                  pad: 0.6, drone: 1.2, kick: null, hat: 0, bell: 0.5, arp: 0, scale: [0, 3, 6, 7, 10] }
     };

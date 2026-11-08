@@ -77,25 +77,19 @@ function runSelfTests() {
       eq('the portrait riddle has exactly one answer, and it is the stored one', sol.length === 1 && pzSolved(sol[0]), true); }
     eq('every fragment film points at a real lore page and cutscene', Object.keys(FRAG_FILMS).every(id => LORE_ENTRIES.some(l => l.id === +id) && CINE_SCRIPTS[FRAG_FILMS[id]]), true);
     eq('every film has a title', Object.values(FRAG_FILMS).every(f => FRAG_TITLES[f]), true);
-    eq('Md8 cutscenes exist', ['ln_begin', 'ln_dawn', 'ln_taken', 'ward_in', 'ward_out'].every(k => CINE_SCRIPTS[k]), true);
-    eq('new lore pages have text', [60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71].every(i => { const l = LORE_ENTRIES.find(x => x.id === i); return l && l.text && l.text.length > 10; }), true);
+    eq('Md8 cutscenes exist', ['ln_begin', 'ln_dawn', 'ln_taken'].every(k => CINE_SCRIPTS[k]), true);
+    eq('new lore pages have text', [60, 61, 62, 63, 66, 67, 68, 69, 70, 71].every(i => { const l = LORE_ENTRIES.find(x => x.id === i); return l && l.text && l.text.length > 10; }), true);
     eq('puzzle objects sit inside their rooms', Object.keys(PZ_OBJS).every(r => PZ_OBJS[r].every(o => o.x >= 0 && o.y >= 0 && o.x + o.w <= HOUSE_MAPS[r].w && o.y + o.h <= HOUSE_MAPS[r].h)), true);
-    // ---- Md8 checks: the Ward ----
-    eq('the Ward asks about what was shown, with 3 distinct options that include the chart and the truth', (() => { for (let n = 1; n <= 6; n++) for (let g = 0; g < 40; g++) { const fs = wardFacts(n); if (fs.length !== 3 || fs[0].k !== 'pop') return false; fs.forEach(f => { if (!f.pool.includes(f.val)) f.pool.push(f.val); }); for (const f of fs) { const ch = wardChart(f, n), o = wardOptions(f, ch); if (new Set(o).size !== 3 || !o.includes(ch.val) || !o.includes(f.val)) return false; } } return true; })(), true);
-    eq('the chart is honest for the first two days', (() => { for (let g = 0; g < 60; g++) for (const n of [1, 2]) for (const f of wardFacts(n)) if (wardChart(f, n).lied) return false; return true; })(), true);
-    eq('the chart always lies about the dayroom from day 3', (() => { for (let n = 3; n <= 5; n++) { const f = wardFacts(n)[0]; if (!wardChart(f, n).lied && f.val !== '5') return false; } return true; })(), true);
-    eq('every Ward event has 3 choices with outcomes', WARD_EVENTS.every(e => e.ch.length === 3 && e.ch.every(c => c.o && c.r)), true);
     // ---- Md8 checks: shop ----
     eq('Md8 cash items are well formed', SHOP_CATALOG.filter(i => i.buy || i.on).every(i => i.en_n && i.en_d && i.price > 0 && (i.repeat || typeof i.on === 'function')), true);
     eq('Md8 Marks items are well formed', MARKS_CATALOG.filter(i => i.buy).every(i => i.n && i.d && i.cost > 0 && (i.repeat || typeof i.on === 'function')), true);
-    eq('every new achievement has a hint', ['DAWN_BREAKS', 'UNSEEN', 'CAUGHT_3', 'SAFE_CRACKED', 'MUSIC_BOX', 'FIVE_FRAMES', 'LOCK_PICKED', 'FILM_5', 'FILM_ALL', 'WARD_CLEAR', 'GOOD_PATIENT', 'NO_PILLS'].every(k => ACHIEVEMENTS[k] && ACHIEVEMENTS[k].hint), true);
+    eq('every new achievement has a hint', ['DAWN_BREAKS', 'UNSEEN', 'CAUGHT_3', 'SAFE_CRACKED', 'MUSIC_BOX', 'FIVE_FRAMES', 'LOCK_PICKED', 'FILM_5', 'FILM_ALL'].every(k => ACHIEVEMENTS[k] && ACHIEVEMENTS[k].hint), true);
     // ---- Mu-delta checks ----
     eq('sin endings registered', SIN_ENDINGS.every(k => ENDINGS[k] && ENDINGS[k].en_t), true);
     eq('every cutscene script has art that exists', Object.values(CINE_SCRIPTS).every(sc => sc.shots.every(s => ART[s.art] && s.text.length)), true);
     eq('every listed cutscene exists', CINE_LIST.every(c => CINE_SCRIPTS[c[0]]), true);
     eq('new dealers have the full interface', NEW_DEALERS.concat(['HOST']).every(k => { const d = DEALER_PERSONALITIES[k]; return d && d.name && d.aiBehavior && d.itemPriority && d.taunts.length; }), true);
     eq('pool hides boss dealers', dealerPool().some(k => NOT_IN_POOL.includes(k)), false);
-    eq('weekly seed format', /^\d{4}-W\d{2}$/.test(weeklySeed()), true);
     eq('perk requirements exist', Object.values(PERKS).every(p => p.req.every(r => PERKS[r])), true);
     eq('term multipliers positive', Object.values(TERMS).every(t => t.m > 0), true);
     const savedSan = sanity, savedRuns = meta.runs;
